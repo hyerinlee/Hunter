@@ -8,9 +8,9 @@ public class PlayerController : MonoBehaviour
     public Joystick joystick;
     public float moveSpeed;
     public float jumpForce;
-    public float jumpSpeed;
-    private bool isJumping = false;
     private SpriteRenderer sr;
+    private Vector2 boxCastSize = new Vector2(0.4f, 0.05f);
+    private float boxCastMaxDistance = 0.7f;
 
     public GameObject attackMsg;
 
@@ -21,19 +21,31 @@ public class PlayerController : MonoBehaviour
         attackMsg.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     private void FixedUpdate()
     {
         Move();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    void OnDrawGizmos()
     {
-        isJumping = false;
+        RaycastHit2D raycastHit = Physics2D.BoxCast(transform.position, boxCastSize, 0f, Vector2.down, boxCastMaxDistance, LayerMask.GetMask("Ground"));
+
+        Gizmos.color = Color.red;
+        if (raycastHit.collider != null)
+        {
+            Gizmos.DrawRay(transform.position, Vector2.down * raycastHit.distance);
+            Gizmos.DrawWireCube(transform.position + Vector3.down * raycastHit.distance, boxCastSize);
+        }
+        else
+        {
+            Gizmos.DrawRay(transform.position, Vector2.down * boxCastMaxDistance);
+        }
+    }
+
+    private bool IsOnGround()
+    {
+        RaycastHit2D raycastHit = Physics2D.BoxCast(transform.position, boxCastSize, 0f, Vector2.down, boxCastMaxDistance, LayerMask.GetMask("Ground"));
+        return (raycastHit.collider != null);
     }
 
     public void Move()
@@ -53,10 +65,9 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
-        if (!isJumping)
+        if (IsOnGround())
         {
             this.GetComponent<Rigidbody2D>().AddForce(Vector2.up * jumpForce);
-            isJumping = true;
         }
     }
 
