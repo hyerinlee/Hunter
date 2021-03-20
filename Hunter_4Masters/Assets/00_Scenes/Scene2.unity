@@ -494,7 +494,7 @@ GameObject:
   - component: {fileID: 211092411}
   - component: {fileID: 211092410}
   - component: {fileID: 211092409}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1812,7 +1812,6 @@ MonoBehaviour:
   joystick: {fileID: 1624416073}
   moveSpeed: 2
   jumpForce: 200
-  jumpSpeed: 0
   attackMsg: {fileID: 1078489273}
 --- !u!70 &1007528895
 CapsuleCollider2D:
@@ -1845,12 +1844,12 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 1.5
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!212 &1007528897
 SpriteRenderer:
   m_ObjectHideFlags: 0
