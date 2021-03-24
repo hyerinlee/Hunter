@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class AreaMove : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private GameObject selectPanel;
+
+    private SelectionPopup sp;
+    private int actionIndex = 0;    // 임시로 이동index == 0 으로 지정
+
+    private void Start()
     {
-        
+        sp = selectPanel.GetComponent<SelectionPopup>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        sp.SetPopup(actionIndex);
+        selectPanel.SetActive(true);
     }
+
 }
