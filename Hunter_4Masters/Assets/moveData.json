@@ -1,0 +1,512 @@
+{
+	"moveData_choice" : {
+		"Move_Title" : {
+			"Data_ID" : 400000,
+			"Name" : "종류",
+			"Area" : -10000,
+			"Category" : "Title",
+			"Consume" : [
+				{
+					"consume_variable" : "money",
+					"consume_value" : -10000.0
+				},
+				{
+					"consume_variable" : "time",
+					"consume_value" : -10000.0
+				},
+				{
+					"consume_variable" : "stamina",
+					"consume_value" : -10000.0
+				}
+			],
+			"PlusInfo" : "위험도",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0
+				}
+			],
+			"Event" : [
+				{
+					"event_ID" : -10000,
+					"event_per" : -10000.0
+				}
+			]
+		},
+		"Move_0_walk" : {
+			"Data_ID" : 400001,
+			"Name" : "걷기",
+			"Area" : 0,
+			"Category" : "Choice",
+			"Consume" : [
+				{
+					"consume_variable" : "money",
+					"consume_value" : 0.0
+				},
+				{
+					"consume_variable" : "time",
+					"consume_value" : -300.0
+				},
+				{
+					"consume_variable" : "stamina",
+					"consume_value" : -30.0
+				}
+			],
+			"PlusInfo" : "위험",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0
+				}
+			],
+			"Event" : [
+				{
+					"event_ID" : 402000,
+					"event_per" : 30.0
+				},
+				{
+					"event_ID" : 401110,
+					"event_per" : 30.0
+				},
+				{
+					"event_ID" : 401100,
+					"event_per" : 60.0
+				}
+			]
+		},
+		"Move_0_bus" : {
+			"Data_ID" : 400002,
+			"Name" : "버스",
+			"Area" : 0,
+			"Category" : "Choice",
+			"Consume" : [
+				{
+					"consume_variable" : "money",
+					"consume_value" : -50.0
+				},
+				{
+					"consume_variable" : "time",
+					"consume_value" : -180.0
+				},
+				{
+					"consume_variable" : "stamina",
+					"consume_value" : -10.0
+				}
+			],
+			"PlusInfo" : "보통",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0
+				}
+			],
+			"Event" : [
+				{
+					"event_ID" : 402000,
+					"event_per" : 15.0
+				},
+				{
+					"event_ID" : 401210,
+					"event_per" : 20.0
+				},
+				{
+					"event_ID" : 401200,
+					"event_per" : 65.0
+				}
+			]
+		},
+		"Move_0_conboy" : {
+			"Data_ID" : 400003,
+			"Name" : "호송서비스",
+			"Area" : 0,
+			"Category" : "Choice",
+			"Consume" : [
+				{
+					"consume_variable" : "money",
+					"consume_value" : -500.0
+				},
+				{
+					"consume_variable" : "time",
+					"consume_value" : -240.0
+				},
+				{
+					"consume_variable" : "stamina",
+					"consume_value" : -5.0
+				}
+			],
+			"PlusInfo" : "안전",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0
+				}
+			],
+			"Event" : [
+				{
+					"event_ID" : 402000,
+					"event_per" : 50.0
+				},
+				{
+					"event_ID" : 401310,
+					"event_per" : 10.0
+				},
+				{
+					"event_ID" : 401300,
+					"event_per" : 85.0
+				}
+			]
+		}
+	},
+	"moveData_event" : {
+		"00_move_walk" : {
+			"Data_ID" : 401100,
+			"Name" : "00_move_walk",
+			"Category" : "choice_event",
+			"Pre_ID" : 400001,
+			"Mention" : "열심히 걷고 있다.",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0,
+					"condition_per" : -10000.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "null",
+					"effect_min" : -10000.0,
+					"effect_max" : -10000.0
+				}
+			]
+		},
+		"00_move_w_accident" : {
+			"Data_ID" : 401110,
+			"Name" : "00_move_w_accident",
+			"Category" : "choice_event",
+			"Pre_ID" : 400001,
+			"Mention" : "돌부리에 걸려서 넘어졌다.",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0,
+					"condition_per" : -10000.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "stamina",
+					"effect_min" : -5.0,
+					"effect_max" : -3.0
+				},
+				{
+					"effect_variable" : "hp",
+					"effect_min" : -5.0,
+					"effect_max" : -1.0
+				}
+			]
+		},
+		"00_move_w_accident_2\r\n" : {
+			"Data_ID" : 401111,
+			"Name" : "00_move_w_accident_2",
+			"Category" : "event_event",
+			"Pre_ID" : 401110,
+			"Mention" : "돌부리가 있었지만 피했다.",
+			"Condition" : [
+				{
+					"condition_variable" : "dex",
+					"condition_con" : 1,
+					"condition_value" : 100.0,
+					"condition_per" : 20.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "dex",
+					"effect_min" : 1.0,
+					"effect_max" : 1.0
+				},
+				{
+					"effect_variable" : "int",
+					"effect_max" : 1.0,
+					"effect_min" : 1.0
+				}
+			]
+		},
+		"00_move_bus" : {
+			"Data_ID" : 401200,
+			"Name" : "00_move_bus",
+			"Category" : "choice_event",
+			"Pre_ID" : 400002,
+			"Mention" : "시골 버스는 승차감이 좋지 않다.",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0,
+					"condition_per" : -10000.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "null",
+					"effect_min" : -10000.0,
+					"effect_max" : -10000.0
+				}
+			]
+		},
+		"00_move_b_accident" : {
+			"Data_ID" : 401210,
+			"Name" : "00_move_b_accident",
+			"Category" : "choice_event",
+			"Pre_ID" : 400002,
+			"Mention" : "가벼운 교통사고가 났다.",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0,
+					"condition_per" : -10000.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "stamina",
+					"effect_min" : -5.0,
+					"effect_max" : -3.0
+				},
+				{
+					"effect_variable" : "hp",
+					"effect_min" : -5.0,
+					"effect_max" : -1.0
+				}
+			]
+		},
+		"00_move_b_accident_2" : {
+			"Data_ID" : 401211,
+			"Name" : "00_move_b_accident_2",
+			"Category" : "event_event",
+			"Pre_ID" : 401200,
+			"Mention" : "교통사고가 났지만 힘으로 견뎠다.",
+			"Condition" : [
+				{
+					"condition_variable" : "str",
+					"condition_con" : 1,
+					"condition_value" : 300.0,
+					"condition_per" : 15.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "stamina",
+					"effect_min" : -15.0,
+					"effect_max" : -10.0
+				},
+				{
+					"effect_variable" : "hp",
+					"effect_min" : -1.0,
+					"effect_max" : 0.0
+				}
+			]
+		},
+		"00_move_convoy" : {
+			"Data_ID" : 401300,
+			"Name" : "00_move_convoy",
+			"Category" : "choice_event",
+			"Pre_ID" : 400003,
+			"Mention" : "확실히 돈을 쓴 보람이 있다.",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0,
+					"condition_per" : -10000.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "null",
+					"effect_min" : -10000.0,
+					"effect_max" : -10000.0
+				}
+			]
+		},
+		"00_move_c_accident" : {
+			"Data_ID" : 401310,
+			"Name" : "00_move_c_accident",
+			"Category" : "choice_event",
+			"Pre_ID" : 400003,
+			"Mention" : "길이 막혀 있어서 우회했다.",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0,
+					"condition_per" : -10000.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "stamina",
+					"effect_min" : -10.0,
+					"effect_max" : -5.0
+				},
+				{
+					"effect_variable" : "time",
+					"effect_min" : -30.0,
+					"effect_max" : -20.0
+				}
+			]
+		},
+		"00_move_c_accident_2" : {
+			"Data_ID" : 401311,
+			"Name" : "00_move_c_accident_2",
+			"Category" : "choice_event",
+			"Pre_ID" : 401310,
+			"Mention" : "막혔던 길은 그냥 밀어버렸다.",
+			"Condition" : [
+				{
+					"condition_variable" : "str",
+					"condition_con" : 1,
+					"condition_value" : 400.0,
+					"condition_per" : 20.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "stamina",
+					"effect_min" : -5.0,
+					"effect_max" : -3.0
+				}
+			]
+		},
+		"00_move_robber" : {
+			"Data_ID" : 402000,
+			"Name" : "00_move_robber",
+			"Category" : "choice_event",
+			"Pre_ID" : 400001,
+			"Mention" : "무장강도가 나타났다.",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0,
+					"condition_per" : -10000.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "stamina",
+					"effect_min" : -20.0,
+					"effect_max" : -10.0
+				},
+				{
+					"effect_variable" : "hp",
+					"effect_min" : -20.0,
+					"effect_max" : -10.0
+				},
+				{
+					"effect_variable" : "money",
+					"effect_min" : -35.0,
+					"effect_max" : -25.0
+				}
+			]
+		},
+		"00_move_robber_2" : {
+			"Data_ID" : 402010,
+			"Name" : "00_move_robber_2",
+			"Category" : "event_event",
+			"Pre_ID" : 402000,
+			"Mention" : "무장강도가 나타났지만 무찔렀다.",
+			"Condition" : [
+				{
+					"condition_variable" : "str",
+					"condition_con" : 1,
+					"condition_value" : 200.0,
+					"condition_per" : 2.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "stamina",
+					"effect_min" : -17.0,
+					"effect_max" : -12.0
+				},
+				{
+					"effect_variable" : "hp",
+					"effect_min" : -20.0,
+					"effect_max" : -15.0
+				}
+			]
+		},
+		"00_move_robber_3" : {
+			"Data_ID" : 402020,
+			"Name" : "00_move_robber_3",
+			"Category" : "event_event",
+			"Pre_ID" : 402000,
+			"Mention" : "무장강도가 나타나서 짐을 버리고 일단 숨었다.",
+			"Condition" : [
+				{
+					"condition_variable" : "dex",
+					"condition_con" : 1,
+					"condition_value" : 200.0,
+					"condition_per" : 2.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "stamina",
+					"effect_min" : -10.0,
+					"effect_max" : -5.0
+				},
+				{
+					"effect_variable" : "money",
+					"effect_min" : -40.0,
+					"effect_max" : -30.0
+				},
+				{
+					"effect_variable" : "ran_item",
+					"effect_min" : -2.0,
+					"effect_max" : -1.0
+				}
+			]
+		},
+		"00_move_robber_4\r\n" : {
+			"Data_ID" : 402030,
+			"Name" : "00_move_robber_4\r\n",
+			"Category" : "event_event",
+			"Pre_ID" : 402000,
+			"Mention" : "무자비한 약탈자가 나타났다.",
+			"Condition" : [
+				{
+					"condition_variable" : "null",
+					"condition_con" : -10000,
+					"condition_value" : -10000.0,
+					"condition_per" : 1.0
+				}
+			],
+			"Effect" : [
+				{
+					"effect_variable" : "hp",
+					"effect_min" : -100.0,
+					"effect_max" : -50.0
+				},
+				{
+					"effect_variable" : "money",
+					"effect_min" : -100.0,
+					"effect_max" : -50.0
+				},
+				{
+					"effect_variable" : "ran_item",
+					"effect_min" : -20.0,
+					"effect_max" : -20.0
+				}
+			]
+		}
+	}
+}

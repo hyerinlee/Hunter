@@ -2,17 +2,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FosterManager : MonoBehaviour
+using Newtonsoft.Json;
+
+public class PlayerData
 {
-    // Start is called before the first frame update
-    void Start()
+    public Dictionary<string, float> foster_data;
+    public List<ItemData> items;
+
+    public PlayerData DeepCopy()
     {
-        
+        PlayerData other = (PlayerData)this.MemberwiseClone();
+        other.foster_data = new Dictionary<string, float>(foster_data);
+        other.items = new List<ItemData>(items);
+        return other;
+    }
+}
+
+public class FosterManager : Singleton<FosterManager>
+{
+
+    private PlayerData playerData;
+
+    private void Start()
+    {
+        LoadPlayerData();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void LoadPlayerData()
     {
-        
+        playerData = JsonConvert.DeserializeObject<PlayerData>(Resources.Load<TextAsset>($"Data/PlayerData").text);
+
+    }
+
+    public PlayerData GetPlayerData()
+    {
+        return playerData;
+    }
+
+    public void SetPlayerData(PlayerData pd)
+    {
+        playerData = pd;
     }
 }

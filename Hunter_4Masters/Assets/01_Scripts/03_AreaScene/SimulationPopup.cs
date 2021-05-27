@@ -2,65 +2,67 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class SimulationPopup : MonoBehaviour
 {
-    [SerializeField] private Animator simulAnim;
-    [SerializeField] private Text[] simulText = new Text[3];
+    [SerializeField] private GameObject resultPanel;
+    private ResultPopup resultPopup;
 
-    private int actionIndex;
-    private int optionIndex;
-    private float eventPercentage;
+    [SerializeField] private Animator simulAnimator;
+    [SerializeField] private Text[] simulText = new Text[3];
 
     private float textScrollSpeed = 0.3f;
     private float textScrollAmount = 66;
     private float textMaxY = 90;
 
-    // 테스트용 임시변수(실제로 사용 X)
-    private int eventOccurNum = 38;    // 0010 0110 (2,5,6번째에 실행)
-    private string[,] simulTextTempData = { {"...", "강도들이 나타났다.(Hp -20, 재화 -50%)"},
-                                        {"...", "돌부리에 걸려 넘어졌다.(Hp -20)" } };
-
-    public void SetPopup(int actIndex, int optIndex)
+    private void Start()
     {
-        actionIndex = actIndex;
-        optionIndex = optIndex;
-        simulAnim.SetInteger("actionIndex", actionIndex);
-        simulAnim.SetInteger("optionIndex", optionIndex);
-        StartCoroutine(Simulate());
+        resultPopup = resultPanel.GetComponent<ResultPopup>();
     }
 
-    IEnumerator Simulate()
+    public void Simulate(KeyValuePair<string, EventData>[] oea, Dictionary<string, float>[] ca, PlayerData beforePd, PlayerData afterPd)
     {
-        // 현재는 테스트용으로 지정 순서에 이벤트 발생하나, 실제로는 확률 적용해야함
-        for(int i = 0; i < 8; i++)
+        StartCoroutine(SimulateCoroutine(oea, ca, beforePd, afterPd));
+    }
+
+    IEnumerator SimulateCoroutine(KeyValuePair<string, EventData>[] oea, Dictionary<string, float>[] ca, PlayerData beforePd, PlayerData afterPd)
+    {
+        for (int i = 0; i < oea.Length; i++)
         {
-            if ((eventOccurNum & 128 >> i) != 0)
+            simulAnimator.Play(oea[i].Key);
+
+            string changeMention = "";
+            int cnt = 0;
+            foreach (KeyValuePair<string, float> pair in ca[i])
             {
-                simulText[i % 3].text = simulTextTempData[actionIndex, 1];
-                simulAnim.SetBool("isEventOccur", true);
+                if (pair.Key == "null") continue;
+                else if (cnt > 0) changeMention += ", ";
+                changeMention += pair.Key + " " + string.Format("{0:+0;-0}", pair.Value);
+                cnt++;
             }
-            else
-            {
-                simulText[i % 3].text = simulTextTempData[actionIndex, 0];
-                simulAnim.SetBool("isEventOccur", false);
-            }
+            if (changeMention != "") changeMention = " (" + changeMention + ")";
+            simulText[i % 3].text = oea[i].Value.mention + changeMention;
+
             if (i > 1)
             {
-                for(int j = 0; j < 3; j++)
+                for (int j = 0; j < 3; j++)
                 {
                     StartCoroutine(ScrollText(simulText[j]));
                 }
             }
             yield return new WaitForSeconds(1.0f);
         }
+        yield return null;
+
         // 시뮬레이션 끝난 후 텍스트내용 초기화
-        for(int i = 0; i < 2; i++)
+        for (int i = 0; i < 3; i++)
         {
             simulText[i].text = "";
         }
         this.gameObject.SetActive(false);
-        // resultPopup.SetActive(true);
+        resultPanel.SetActive(true);
+        resultPopup.SetPopup(oea, ca, beforePd, afterPd);
     }
 
     IEnumerator ScrollText(Text text)
@@ -76,6 +78,7 @@ public class SimulationPopup : MonoBehaviour
             yield return null;
         }
         text.rectTransform.anchoredPosition = endPos;
-        if (text.rectTransform.anchoredPosition.y > textMaxY) text.rectTransform.anchoredPosition += Vector2.down * textScrollAmount*3;
+        if (text.rectTransform.anchoredPosition.y > textMaxY) text.rectTransform.anchoredPosition += Vector2.down * textScrollAmount * 3;
+        yield return null;
     }
 }

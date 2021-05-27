@@ -1,0 +1,24 @@
+﻿{
+  "foster_data": {
+    "hp": 100.0,
+    "stamina": 100.0,
+    "money": 400.0,
+    "mental": 40.0,
+    "str": 50.0,
+    "dex": 150.0,
+    "int": 50.0,
+    "max_hp": 100.0,
+    "max_stamina": 100.0,
+    "max_money": 1000000.0,
+    "max_mental": 100.0,
+    "max_STR": 200.0,
+    "max_DEX": 200.0,
+    "max_INT": 200.0,
+    "d_day": 14.0,
+    "time": 800.0
+  },
+  "items": [
+    { "name": "AAA" },
+    { "name": "BBB" }
+  ]
+}

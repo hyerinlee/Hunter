@@ -1,0 +1,163 @@
+﻿{
+		"Move_Title" : {
+			"Data_ID" : 400000,
+			"Name" : "종류",
+			"Area" : -10000,
+			"Category" : "Title",
+			"Consume" : [
+				{
+					"consume_variable" : "money",
+					"consume_value" : -10000.0
+				},
+				{
+					"consume_variable" : "time",
+					"consume_value" : -10000.0
+				},
+				{
+					"consume_variable" : "stamina",
+					"consume_value" : -10000.0
+				}
+			],
+			"PlusInfo" : "위험도",
+			"Condition" : [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0
+				}
+			],
+			"Events" : [
+				{
+					"event_ID" : -10000,
+					"event_per" : -10000.0
+				}
+			]
+		},
+		"Move_0_walk" : {
+			"Data_ID" : 400001,
+			"Name" : "걷기",
+			"Area" : 0,
+			"Category" : "Choice",
+			"Consume" : [
+				{
+					"consume_variable" : "money",
+					"consume_value" : 0.0
+				},
+				{
+					"consume_variable" : "time",
+					"consume_value" : 300.0
+				},
+				{
+					"consume_variable" : "stamina",
+					"consume_value" : -30.0
+				}
+			],
+			"PlusInfo" : "위험",
+			"Condition" : [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0
+				}
+			],
+			"Events" : [
+				{
+					"event_ID" : 402000,
+					"event_per" : 30.0
+				},
+				{
+					"event_ID" : 401110,
+					"event_per" : 30.0
+				},
+				{
+					"event_ID" : 401100,
+					"event_per" : 40.0
+				}
+			]
+		},
+		"Move_0_bus" : {
+			"Data_ID" : 400002,
+			"Name" : "버스",
+			"Area" : 0,
+			"Category" : "Choice",
+			"Consume" : [
+				{
+					"consume_variable" : "money",
+					"consume_value" : -50.0
+				},
+				{
+					"consume_variable" : "time",
+					"consume_value" : 180.0
+				},
+				{
+					"consume_variable" : "stamina",
+					"consume_value" : -10.0
+				}
+			],
+			"PlusInfo" : "보통",
+			"Condition" : [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0
+				}
+			],
+			"Events" : [
+				{
+					"event_ID" : 402000,
+					"event_per" : 15.0
+				},
+				{
+					"event_ID" : 401210,
+					"event_per" : 20.0
+				},
+				{
+					"event_ID" : 401200,
+					"event_per" : 65.0
+				}
+			]
+		},
+		"Move_0_convoy" : {
+			"Data_ID" : 400003,
+			"Name" : "호송서비스",
+			"Area" : 0,
+			"Category" : "Choice",
+			"Consume" : [
+				{
+					"consume_variable" : "money",
+					"consume_value" : -500.0
+				},
+				{
+					"consume_variable" : "time",
+					"consume_value" : 240.0
+				},
+				{
+					"consume_variable" : "stamina",
+					"consume_value" : -5.0
+				}
+			],
+			"PlusInfo" : "안전",
+			"Condition" : [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0
+				}
+			],
+			"Events" : [
+				{
+					"event_ID" : 402000,
+					"event_per" : 50.0
+				},
+				{
+					"event_ID" : 401310,
+					"event_per" : 10.0
+				},
+				{
+					"event_ID" : 401300,
+					"event_per" : 85.0
+				}
+			]
+		}
+
+}

@@ -11,6 +11,11 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer sr;
     private Vector2 boxCastSize = new Vector2(0.4f, 0.05f);
     private float boxCastMaxDistance = 0.7f;
+    Animator anim;
+
+    public Transform attackPoint;
+    public float attackRange = 0.5f;
+    public LayerMask enemyLayers;
 
     public GameObject attackMsg;
 
@@ -19,6 +24,7 @@ public class PlayerController : MonoBehaviour
     {
         sr = GetComponent<SpriteRenderer>();
         attackMsg.SetActive(false);
+        anim = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -76,12 +82,22 @@ public class PlayerController : MonoBehaviour
         //공격 애니메이션 설정
         //아직 공격애니메이션 없어서 공격 애니메이션 대신 넣었음
         StartCoroutine(AttackCoroutine());
+        // Enemy.OnDamaged(10.0f);
     }
 
     IEnumerator AttackCoroutine()
     {
-        attackMsg.SetActive(true);
+        anim.SetBool("isAttack", true);
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            Debug.Log("처맞는넘" + enemy.name);
+            enemy.GetComponent<EnemyMove>().OnDamaged(10);
+        }
+            
+
         yield return new WaitForSeconds(0.1f);
-        attackMsg.SetActive(false);
+        anim.SetBool("isAttack", false);
     }
 }

@@ -6,15 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/00_Scenes/Scene.unity
-    guid: 1a95446c95e1ae64cb7ac55ce121a8d9
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Scenes/Scene1.unity
-    guid: 5ace3d16fa922524a89ce154193b07bd
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/00_Scenes/Scene2.unity
-    guid: 538af5ed94484d9418134a31d53a1bda
+    path: Assets/00_Scenes/2_MtJiriScene.unity
+    guid: da05f81a806c0824abb413002523057d
   m_configObjects: {}

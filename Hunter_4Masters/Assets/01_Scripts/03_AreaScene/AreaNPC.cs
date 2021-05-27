@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class AreaNPC : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private GameObject interact;
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        interact.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        
+        interact.SetActive(false);
     }
 }
