@@ -21,8 +21,8 @@ public class ResultPopup : MonoBehaviour
 
     private Dictionary<string, bool> changedValues = new Dictionary<string, bool>()
     {
-        {"stamina", false},
-        {"hp", false},
+        {"SP", false},
+        {"HP", false},
         {"money", false},
         {"time", false},
         {"dex", false},
@@ -32,19 +32,21 @@ public class ResultPopup : MonoBehaviour
 
     public void SetPopup(KeyValuePair<string, EventData>[] oea, Dictionary<string, float>[] ca, PlayerData beforePd, PlayerData afterPd)
     {
-        WhatAreChanged(oea, ca);
+        WhatAreChanged(oea, ca);    // 변경된 육성데이터 타입 체크
 
-        SetPrefabs();
+        SetPrefabs();   // 변경된 육성데이터타입을 prefabs에 string으로 저장
 
         this.beforePd = beforePd;
         this.afterPd = afterPd;
 
         StartCoroutine(SetGauge());
-        for(int i=0; i<prefabs.Count; i++)
+        for (int i = 0; i < prefabs.Count; i++)
         {
             // 임시 데이터
             PlayAnim(gauges[i], i);
         }
+
+        FosterManager.Instance.SetPlayerData(afterPd);
     }
 
     IEnumerator SetGauge()
@@ -62,10 +64,10 @@ public class ResultPopup : MonoBehaviour
 
     public void PlayAnim(GameObject obj, int i)
     {
-        float target = afterPd.foster_data[prefabs[i]];
-        float current = beforePd.foster_data[prefabs[i]];
+        float target = afterPd.GetCurPointOfAllType(prefabs[i]);
+        float current = beforePd.GetCurPointOfAllType(prefabs[i]);
 
-        if(itIsCount(obj))
+        if (itIsCount(obj))
         {
             StartCoroutine(PlayCount(obj, target, current));
         }
@@ -82,7 +84,7 @@ public class ResultPopup : MonoBehaviour
 
         temp = obj.transform.GetChild(0).gameObject;
         Image gaugeBar = temp.transform.Find("Gauge").GetComponent<Image>();
-        gaugeBar.fillAmount = current / beforePd.foster_data[prefabs[i]]; // max
+        gaugeBar.fillAmount = current / beforePd.GetCurPointOfAllType(prefabs[i]); // max
 
         yield return new WaitForSeconds(2);
 

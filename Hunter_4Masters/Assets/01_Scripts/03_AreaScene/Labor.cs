@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class Labor : MonoBehaviour
 {
-    [SerializeField] private GameObject interact;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        interact.SetActive(true);
+        UIManager_Area.Instance.ActiveInteraction(this.transform.position, "labor");
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        interact.SetActive(false);
+        UIManager_Area.Instance.HideInteraction();
     }
 }

@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     public Joystick joystick;
     public float moveSpeed;
     public float jumpForce;
+    private GameObject camera;
     private SpriteRenderer sr;
     private Vector2 boxCastSize = new Vector2(0.4f, 0.05f);
     private float boxCastMaxDistance = 0.7f;
@@ -22,6 +23,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        camera = transform.GetChild(0).gameObject;
         sr = GetComponent<SpriteRenderer>();
         attackMsg.SetActive(false);
         anim = GetComponent<Animator>();
@@ -30,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
+        camera.transform.position = new Vector3(Mathf.Clamp(transform.position.x, -6, 6), camera.transform.position.y, -10);
     }
 
     void OnDrawGizmos()

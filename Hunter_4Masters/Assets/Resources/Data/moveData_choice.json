@@ -14,7 +14,7 @@
 					"consume_value" : -10000.0
 				},
 				{
-					"consume_variable" : "stamina",
+					"consume_variable" : "SP",
 					"consume_value" : -10000.0
 				}
 			],
@@ -48,8 +48,8 @@
 					"consume_value" : 300.0
 				},
 				{
-					"consume_variable" : "stamina",
-					"consume_value" : -30.0
+					"consume_variable": "SP",
+					"consume_value": -30.0
 				}
 			],
 			"PlusInfo" : "위험",
@@ -90,8 +90,8 @@
 					"consume_value" : 180.0
 				},
 				{
-					"consume_variable" : "stamina",
-					"consume_value" : -10.0
+					"consume_variable": "SP",
+					"consume_value": -10.0
 				}
 			],
 			"PlusInfo" : "보통",
@@ -132,8 +132,8 @@
 					"consume_value" : 240.0
 				},
 				{
-					"consume_variable" : "stamina",
-					"consume_value" : -5.0
+					"consume_variable": "SP",
+					"consume_value": -5.0
 				}
 			],
 			"PlusInfo" : "안전",

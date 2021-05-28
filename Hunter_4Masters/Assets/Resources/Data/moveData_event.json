@@ -37,12 +37,12 @@
 			],
 			"Effect" : [
 				{
-					"effect_variable" : "stamina",
+					"effect_variable" : "SP",
 					"effect_min" : -5.0,
 					"effect_max" : -3.0
 				},
 				{
-					"effect_variable" : "hp",
+					"effect_variable" : "HP",
 					"effect_min" : -5.0,
 					"effect_max" : -1.0
 				}
@@ -56,20 +56,20 @@
 			"Mention" : "돌부리가 있었지만 피했다.",
 			"Condition" : [
 				{
-					"condition_variable" : "dex",
+					"condition_variable" : "DEX",
 					"condition_min" : 100.0,
 					"condition_max" : 9999.0,
-					"condition_per" : "dex * 0.1"
+					"condition_per" : "DEX * 0.1"
 				}
 			],
 			"Effect" : [
 				{
-					"effect_variable" : "dex",
+					"effect_variable" : "DEX",
 					"effect_min" : 1.0,
 					"effect_max" : 1.0
 				},
 				{
-					"effect_variable" : "int",
+					"effect_variable" : "INT",
 					"effect_max" : 1.0,
 					"effect_min" : 1.0
 				}
@@ -113,12 +113,12 @@
 			],
 			"Effect" : [
 				{
-					"effect_variable" : "stamina",
+					"effect_variable" : "SP",
 					"effect_min" : -5.0,
 					"effect_max" : -3.0
 				},
 				{
-					"effect_variable" : "hp",
+					"effect_variable" : "HP",
 					"effect_min" : -5.0,
 					"effect_max" : -1.0
 				}
@@ -132,20 +132,20 @@
 			"Mention" : "교통사고가 났지만 힘으로 견뎠다.",
 			"Condition" : [
 				{
-					"condition_variable": "str",
+					"condition_variable": "STR",
 					"condition_min": 300.0,
 					"condition_max": 9999.0,
-					"condition_per": "str * 0.1"
+					"condition_per": "STR * 0.1"
 				}
 			],
 			"Effect" : [
 				{
-					"effect_variable" : "stamina",
+					"effect_variable" : "SP",
 					"effect_min" : -15.0,
 					"effect_max" : -10.0
 				},
 				{
-					"effect_variable" : "hp",
+					"effect_variable" : "HP",
 					"effect_min" : -1.0,
 					"effect_max" : 0.0
 				}
@@ -189,7 +189,7 @@
 			],
 			"Effect" : [
 				{
-					"effect_variable" : "stamina",
+					"effect_variable" : "SP",
 					"effect_min" : -10.0,
 					"effect_max" : -5.0
 				},
@@ -208,7 +208,7 @@
 			"Mention" : "막혔던 길은 그냥 밀어버렸다.",
 			"Condition" : [
 				{
-					"condition_variable": "str",
+					"condition_variable": "STR",
 					"condition_value": 400.0,
 					"condition_max": 9999.0,
 					"condition_per": "20.0"
@@ -216,7 +216,7 @@
 			],
 			"Effect" : [
 				{
-					"effect_variable" : "stamina",
+					"effect_variable" : "SP",
 					"effect_min" : -5.0,
 					"effect_max" : -3.0
 				}
@@ -238,12 +238,12 @@
 			],
 			"Effect" : [
 				{
-					"effect_variable" : "stamina",
+					"effect_variable" : "SP",
 					"effect_min" : -20.0,
 					"effect_max" : -10.0
 				},
 				{
-					"effect_variable" : "hp",
+					"effect_variable" : "HP",
 					"effect_min" : -20.0,
 					"effect_max" : -10.0
 				},
@@ -262,20 +262,20 @@
 			"Mention" : "무장강도가 나타났지만 무찔렀다.",
 			"Condition" : [
 				{
-					"condition_variable": "str",
+					"condition_variable": "STR",
 					"condition_min": 200.0,
 					"condition_max": 9999.0,
-					"condition_per": "str * 0.01"
+					"condition_per": "STR * 0.01"
 				}
 			],
 			"Effect" : [
 				{
-					"effect_variable" : "stamina",
+					"effect_variable" : "SP",
 					"effect_min" : -17.0,
 					"effect_max" : -12.0
 				},
 				{
-					"effect_variable" : "hp",
+					"effect_variable" : "HP",
 					"effect_min" : -20.0,
 					"effect_max" : -15.0
 				}
@@ -289,15 +289,15 @@
 			"Mention" : "무장강도가 나타나서 짐을 버리고 일단 숨었다.",
 			"Condition" : [
 				{
-					"condition_variable": "dex",
+					"condition_variable": "DEX",
 					"condition_min": 200.0,
 					"condition_max": 9999.0,
-					"condition_per": "dex * 0.01"
+					"condition_per": "DEX * 0.01"
 				}
 			],
 			"Effect" : [
 				{
-					"effect_variable" : "stamina",
+					"effect_variable" : "SP",
 					"effect_min" : -10.0,
 					"effect_max" : -5.0
 				},
@@ -329,7 +329,7 @@
 			],
 			"Effect" : [
 				{
-					"effect_variable" : "hp",
+					"effect_variable" : "HP",
 					"effect_min" : -100.0,
 					"effect_max" : -50.0
 				},

@@ -2,11 +2,14 @@
   "foster_data": {
     "hp": 100.0,
     "stamina": 100.0,
-    "money": 400.0,
+    "money": 4000000.0,
     "mental": 40.0,
     "str": 50.0,
     "dex": 150.0,
     "int": 50.0,
+    "atk": 30.0,
+    "aps": 0.61,
+    "def": 0.0,
     "max_hp": 100.0,
     "max_stamina": 100.0,
     "max_money": 1000000.0,
@@ -18,7 +21,15 @@
     "time": 800.0
   },
   "items": [
-    { "name": "AAA" },
-    { "name": "BBB" }
+    {
+      "item_ID": 123456,
+      "item_num": 1,
+      "slot_index": 0
+    },
+    {
+      "item_ID": 123458,
+      "item_num": 2,
+      "slot_index": 2
+    }
   ]
 }

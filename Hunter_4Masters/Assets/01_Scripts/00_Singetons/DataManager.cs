@@ -8,6 +8,17 @@ using System.Runtime.CompilerServices;
 using System.Linq;
 using System.IO;
 
+// 상수 정의
+public static class Constants
+{
+    public const string Inven = "Inventory";
+    public const string Equip = "Equipment";
+    public const string consumable = "consumable";
+
+    public static readonly string[] equipType = { "weapon", "armor", "accessory" };
+    public static readonly string[] equipTxt = { "무기", "갑옷", "악세" };
+}
+
 #region Define Data Classes
 public class ActionData
 {
@@ -21,7 +32,7 @@ public class ChoiceData
     public string name;
     public int area;
     public string category;
-    public List<Consume> consume;  // List로 동적할당
+    public List<Consume> consume;
     public string plusInfo;
     public List<Condition> condition;
     public List<Event> events; // 'event'는 에러남
@@ -64,37 +75,58 @@ public class Effect
 
 public class ItemData
 {
+    public int data_ID;
     public string name;
+    public string type;
+    public List<Condition> condition;
+    public List<Effect> effect;
+
+    public string GetItemDescription()
+    {
+        string res = "요구 스탯:";
+        for(int i=0; i<condition.Count; i++)
+        {
+            if (i > 0) res += ",";
+            res += condition[i].condition_variable + " " + condition[i].condition_per;
+        }
+        res += "\n\n";
+        for(int i=0; i < effect.Count; i++)
+        {
+            res += effect[i].effect_variable + " " + effect[i].effect_min + "\n";
+        }
+        return res;
+    }
 }
 #endregion
 
 public class DataManager : Singleton<DataManager>
 {
     Dictionary<string, ActionData> actionDataDict = new Dictionary<string, ActionData>();    // moveData, laborData, ...
+    Dictionary<string, ItemData> itemDataDict = new Dictionary<string,ItemData>();
 
-    private void Start()
+    public override void Awake()
     {
+        base.Awake();
         LoadActionData("Move");
-
+        LoadItemData();
     }
 
     #region Load Json
     private void LoadActionData(string action)
     {
-        // 선택지, 이벤트 json 파일 분리되어있을 경우
         ActionData actionData = new ActionData();
         actionData.choiceDataDict = JsonConvert.DeserializeObject<Dictionary<string, ChoiceData>>(Resources.Load<TextAsset>($"Data/" + action + "Data_choice").text);
         actionData.eventDataDict = JsonConvert.DeserializeObject<Dictionary<string, EventData>>(Resources.Load<TextAsset>($"Data/" + action + "Data_event").text);
         actionDataDict.Add(action + "Data", actionData);
 
-        //actionDataDict[action + "Data"].choiceDataDict =
-        //   JsonConvert.DeserializeObject<Dictionary<string, ChoiceData>>(Resources.Load<TextAsset>($"Data/" + action + "Data_choice").text);
-        //actionDataDict[action + "Data"].eventDataDict =
-        //    JsonConvert.DeserializeObject<Dictionary<string, EventData>>(Resources.Load<TextAsset>($"Data/" + action + "Data_event").text);
-
-        // 행동 단위로 로드할 경우(이게 더 깔끔한 것 같긴 한데 'json에서의 key값'=='클래스에서의 변수명' 이어야 한다는점이 쪼꼼...)
+        // 행동 단위로 로드할 경우
         //ActionData.Add(action+"Data", JsonConvert.DeserializeObject<Action>(Resources.Load<TextAsset>($"Data/"+action+"Data").text));
 
+    }
+
+    private void LoadItemData()
+    {
+        itemDataDict = JsonConvert.DeserializeObject<Dictionary<string, ItemData>>(Resources.Load<TextAsset>($"Data/ItemData").text);
     }
     #endregion
 
@@ -118,29 +150,6 @@ public class DataManager : Singleton<DataManager>
 
         return choiceDataDict;
     }
-
-    //ex)             "00_move_w_accident"                     "Move"    "Move_0_walk"
-    //public Dictionary<string, EventData> GetEventData(string action, string option)
-    //{
-    //    Dictionary<string, EventData> optionEventsDict = new Dictionary<string, EventData>();
-
-    //    for (int i = 0; i < actionDataDict[action + "Data"].choiceDataDict[option].events.Count; i++)
-    //    {
-    //        KeyValuePair<string, EventData> pair = GetEventDataById(action, actionDataDict[action + "Data"].choiceDataDict[option].events[i].event_ID);
-    //        optionEventsDict.Add(pair.Key, pair.Value);
-    //    }
-
-    //    // ID말고 key값으로 찾을수도 있음(더 간단하지만, 딕셔너리형에서 리스트형으로 바뀔경우에는 사용 못함)
-    //    //foreach (KeyValuePair<string, EventData> pair in actionDataDict[action + "Data"].eventDataDict)
-    //    //{
-    //    //    if (pair.Key.Contains(action + "_" + option[0]))
-    //    //    {
-    //    //        optionEventsDict.Add(pair.Key, pair.Value);
-    //    //    }
-    //    //}
-
-    //    return optionEventsDict;
-    //}
 
     public KeyValuePair<string, EventData> GetEventDataById(string action, int id)
     {
@@ -169,18 +178,29 @@ public class DataManager : Singleton<DataManager>
         return secondaryEventData;
     }
 
+    public ItemData GetItemData(string name)
+    {
+        return itemDataDict[name];
+    }
+
     // ex) 780.0 -> 1:00 PM
     public string GetTimeByValue(int value)
     {
-        return (value >= 720) ?
-        (value / 60 - 12).ToString("D2") + ":" + (value % 60).ToString("D2") + " PM" :
-        (value / 60).ToString("D2") + ":" + (value % 60).ToString("D2") + " AM";
+        string curTime;
+        int t = value / 60 - 12 * (value / 720);
+        if (value % 720 < 60) t += 12;    // 12:00am~12:50am or 12:00pm~12:50pm
+        curTime = t.ToString("D2") + ":" + (value % 60).ToString("D2");
 
+        return (value >= 720) ?
+        curTime += " PM" :
+        curTime += " AM";
     }
 
-    // ex) 350.0 -> "6시간 50분" 근데이거 데이터매니저에 있을건 아닌거같은데...
+    // ex) 350.0 -> "+6시간 50분"
     public string GetEstimatedTimeByValue(float value)
     {
-        return (value % 60 == 0) ? value / 60 + "시간" : value / 60 + "시간 " + value % 60 + "분";
+        string estTime = "+" + value / 60 + "시간";
+        if (value % 60 != 0) estTime += " " + value % 60 + "분";
+        return estTime;
     }
 }

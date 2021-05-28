@@ -16,6 +16,7 @@ public class SelectionPopup : MonoBehaviour
     // 육성 UI
     [SerializeField] private Image spGauge;
     [SerializeField] private Text spTxt;
+    [SerializeField] private Text dayTxt;
     [SerializeField] private Text timeTxt;
     [SerializeField] private Text moneyTxt;
 
@@ -47,7 +48,6 @@ public class SelectionPopup : MonoBehaviour
     private KeyValuePair<string, EventData>[] occurEventArray = new KeyValuePair<string, EventData>[eventNum];
     private Dictionary<string, float>[] changesArray = new Dictionary<string, float>[eventNum];    // 변화량 합산할때도 사용
 
-    // 주의: Start()는 SetPopup()보다 늦게 동작.
     private void Awake()
     {
         simulationPopup = simulationPanel.GetComponent<SimulationPopup>();
@@ -76,10 +76,11 @@ public class SelectionPopup : MonoBehaviour
         actionInfo.text = actionInfoTempData[0];
 
         // 육성데이터(pd) UI 적용
-        spGauge.fillAmount = pd.foster_data["stamina"] / pd.foster_data["max_stamina"];
-        spTxt.text = pd.foster_data["stamina"].ToString() + "/" + pd.foster_data["max_stamina"].ToString();
-        timeTxt.text = DataManager.Instance.GetTimeByValue((int)pd.foster_data["time"]);
-        moneyTxt.text = pd.foster_data["money"].ToString() + "$";
+        spGauge.fillAmount = pd.Cons["SP"].cur_point / pd.Cons["SP"].max_point;
+        spTxt.text = pd.GetStateOutOfMax("SP");
+        dayTxt.text = GameManager.Instance.GetDDay();
+        timeTxt.text = GameManager.Instance.GetCurrentTimeByValue();
+        moneyTxt.text = pd.GetMoney();
 
         // 카테고리 데이터 UI 적용
         categories[0].text = title.name;
@@ -97,9 +98,9 @@ public class SelectionPopup : MonoBehaviour
             SetOptionUI(pair, index);
             index++;
         }
-        for (int i = cd.Count; i < options.Length; i++)
+        for(int i=0; i<cd.Count; i++)
         {
-            options[i].SetActive(false);
+            options[i].SetActive(true);
         }
 
     }
@@ -110,28 +111,24 @@ public class SelectionPopup : MonoBehaviour
         options[index].transform.GetChild(0).GetComponent<Text>().text = pair.Value.name;
         for (int i = 0; i < 3; i++)
         {
+            Text optionTxt = options[index].transform.GetChild(i + 1).GetComponent<Text>();
             // 돈과 시간만 형식이 지정되어있고 나머지는 단순 값 출력
             switch (categories[i + 1].text)
             {
                 case "money":
-                    options[index].transform.GetChild(i + 1).GetComponent<Text>().text = pair.Value.consume[i].consume_value.ToString() + "$";
+                    optionTxt.text = pair.Value.consume[i].consume_value.ToString() + "$";
                     break;
                 case "time":
-                    options[index].transform.GetChild(i + 1).GetComponent<Text>().text = DataManager.Instance.GetEstimatedTimeByValue(pair.Value.consume[i].consume_value);
+                    optionTxt.text = DataManager.Instance.GetEstimatedTimeByValue(pair.Value.consume[i].consume_value);
                     break;
                 default:
-                    options[index].transform.GetChild(i + 1).GetComponent<Text>().text = pair.Value.consume[i].consume_value.ToString();
+                    optionTxt.text = pair.Value.consume[i].consume_value.ToString();
                     break;
             }
         }
         options[index].transform.GetChild(4).GetComponent<Text>().text = pair.Value.plusInfo;
         options[index].GetComponent<Button>().onClick.AddListener(() => OptionClick(pair.Key));
-
-        // 불가능한 선택지 클릭불가 처리
-        if (!IsOptionAvailable(pair.Value))
-        {
-            options[index].GetComponent<Button>().interactable = false;
-        }
+        options[index].GetComponent<Button>().interactable = IsOptionAvailable(pair.Value);
     }
 
     // 육성데이터와 비교하여 선택가능한 선택지인지 확인
@@ -140,8 +137,11 @@ public class SelectionPopup : MonoBehaviour
         for (int i = 0; i < choiceData.consume.Count; i++)
         {
             string variable = choiceData.consume[i].consume_variable;
-            if (variable == "time" && pd.foster_data[variable] + choiceData.consume[i].consume_value >= 1440) return false;
-            if (pd.foster_data[variable] + choiceData.consume[i].consume_value < 0) return false;
+            if (variable == "time")
+            {
+                if (GameManager.Instance.curTimeVal + choiceData.consume[i].consume_value >= 1440) return false; // 실행 후 24시가 넘어간다면 선택불가
+            }
+            else if (pd.GetCurPointOfAllType(variable) + choiceData.consume[i].consume_value < 0) return false;
         }
 
         return true;
@@ -168,7 +168,6 @@ public class SelectionPopup : MonoBehaviour
         // 현재 육성데이터 수치와 선택지에 따라서 발생하게 될 이벤트(8개)를 가중치 랜덤값으로 결정하고
         // 해당 이벤트에서 발생할 특정요소의 변화량(랜덤) 결정(ex: 무장강도, hp -20)
 
-        Debug.Log("1차이벤트 가중치:");
         // 각 이벤트에 대한 가중치 계산 & 2차이벤트 저장
         float weightPer = 0;
         List<float> weightNum = new List<float>();
@@ -215,7 +214,6 @@ public class SelectionPopup : MonoBehaviour
     // 이벤트에서 발생하는 2차 이벤트 결정
     private KeyValuePair<string, EventData> MakeSecondaryOccurEvent(KeyValuePair<string, EventData> primaryData, List<KeyValuePair<string, EventData>> secondaryEventData)
     {
-        Debug.Log("\n2차이벤트 가중치:");
         // 각 이벤트에 대한 가중치 계산
         float weightPer = 0;
         List<float> weightNum = new List<float>();
@@ -253,20 +251,24 @@ public class SelectionPopup : MonoBehaviour
         {
             string variable = eventData.condition[i].condition_variable;
             // variable이 null이 아니고 조건 범위에 속하지 않으면 return false
-            if (variable != "null" && (pd.foster_data[variable] < eventData.condition[i].condition_min ||
-                pd.foster_data[variable] > eventData.condition[i].condition_max)) return false;
+            if (variable != "null" && (pd.GetCurPointOfAllType(variable) < eventData.condition[i].condition_min ||
+                pd.GetCurPointOfAllType(variable) > eventData.condition[i].condition_max)) return false;
         }
         return true;
     }
 
     private PlayerData GetAfterPd()
     {
-        PlayerData afterPd = pd.DeepCopy();
+        PlayerData afterPd = pd.Clone() as PlayerData;
 
         // 선택지로 인해 변화한 값 적용
         for (int i = 0; i < cd[selectedOption].consume.Count; i++)
         {
-            afterPd.foster_data[cd[selectedOption].consume[i].consume_variable] += cd[selectedOption].consume[i].consume_value;
+            if(cd[selectedOption].consume[i].consume_variable == "time")
+            {
+                GameManager.Instance.leftTimeVal -= (int)cd[selectedOption].consume[i].consume_value;
+            }
+            else afterPd.AddToCurPointOfAllType(cd[selectedOption].consume[i].consume_variable, cd[selectedOption].consume[i].consume_value);
         }
 
         // 이벤트로 인해 변화한 값 적용
@@ -276,8 +278,8 @@ public class SelectionPopup : MonoBehaviour
             {
                 if (pair.Key != "null")
                 {
-                    afterPd.foster_data[pair.Key] += pair.Value;
-                    if (afterPd.foster_data[pair.Key] < 0) afterPd.foster_data[pair.Key] = 0;
+                    afterPd.AddToCurPointOfAllType(pair.Key, pair.Value);
+                    if (afterPd.GetCurPointOfAllType(pair.Key) < 0) afterPd.AddToCurPointOfAllType(pair.Key, -afterPd.GetCurPointOfAllType(pair.Key));
                 }
             }
         }

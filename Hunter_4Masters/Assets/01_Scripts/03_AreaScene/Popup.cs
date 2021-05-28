@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Popup : MonoBehaviour
 {
     [SerializeField] private GameObject selectPanel;
     private SelectionPopup selectionPopup;
-
 
     void Start()
     {
@@ -20,7 +20,7 @@ public class Popup : MonoBehaviour
 
     public void DoAction(string action)
     {
-        // 시간 일시정지 구현예정
+        GameManager.Instance.Pause();
 
         selectPanel.SetActive(true);
         selectionPopup.SetPopup(action);
