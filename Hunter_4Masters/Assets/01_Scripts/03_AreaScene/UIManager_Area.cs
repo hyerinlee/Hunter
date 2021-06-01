@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class UIManager_Area : Singleton<UIManager_Area>
 {
@@ -11,7 +10,6 @@ public class UIManager_Area : Singleton<UIManager_Area>
     [SerializeField] private Popup popup;
     [SerializeField] public Text hp, sp, day, time, money;
     private PlayerData pd;
-    private EventTrigger.Entry entry;
 
     public override void Awake()
     {
@@ -21,8 +19,6 @@ public class UIManager_Area : Singleton<UIManager_Area>
     void Start()
     {
         pd = FosterManager.Instance.GetPlayerData();
-        entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.PointerClick;
     }
 
     private void Update()
@@ -46,19 +42,17 @@ public class UIManager_Area : Singleton<UIManager_Area>
     {
         interaction.SetActive(true);
         interaction.transform.position = pos + Vector2.up * 2;
-        interaction.GetComponent<SpriteRenderer>().sprite = Resources.Load("Interact-"+simulName, typeof(Sprite)) as Sprite;
+        interaction.GetComponent<Image>().sprite = Resources.Load("Interact-" + simulName, typeof(Sprite)) as Sprite;
         if (simulName == "NPC")
         {
-            entry.callback.AddListener((eventData) => { dialogBox.SetActive(true); });
+            interaction.GetComponent<Button>().onClick.AddListener(() => dialogBox.SetActive(true));
         }
-        else entry.callback.AddListener((eventData) => { popup.DoAction(simulName); });
-        interaction.GetComponent<EventTrigger>().triggers.Add(entry);
-        Debug.Log(interaction.GetComponent<EventTrigger>().triggers.Count);
+        else interaction.GetComponent<Button>().onClick.AddListener(() => popup.DoAction(simulName));
     }
 
     public void HideInteraction()
     {
-        interaction.GetComponent<EventTrigger>().triggers.Clear();
+        interaction.GetComponent<Button>().onClick.RemoveAllListeners();
         interaction.SetActive(false);
     }
 }
