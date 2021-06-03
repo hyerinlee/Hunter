@@ -7,13 +7,23 @@ using Newtonsoft.Json.Linq;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using System.IO;
+using System;
 
 // 상수 정의
-public static class Constants
+public static class Const
 {
-    public const string Inven = "Inventory";
-    public const string Equip = "Equipment";
-    public const string consumable = "consumable";
+    public const string hp = "HP";
+    public const string sp = "SP";
+    public const string will = "WILL";
+
+    public const string money = "MONEY";
+    public const string time = "TIME";
+
+    public const string inven = "Inven";
+    public const string equip = "Equipment";
+
+    public static readonly string[] defStats = { "STR", "DEX", "INT" };
+    public static readonly string[] batStats = { "ATK", "APS", "DEF" };
 
     public static readonly string[] equipType = { "weapon", "armor", "accessory" };
     public static readonly string[] equipTxt = { "무기", "갑옷", "악세" };
@@ -69,32 +79,75 @@ public class Event
 public class Effect
 {
     public string effect_variable;
-    public float effect_min;
-    public float effect_max;
+    public string effect_min;
+    public string effect_max;
+
+    public float GetMinValue()
+    {
+        return StringCalculator.Calculate(effect_min);
+    }
+    public float GetMaxValue()
+    {
+        return StringCalculator.Calculate(effect_max);
+    }
+}
+
+public class Equipment : ItemData
+{
+    public string rank;
+    public List<Condition> condition;
+    public int spEffectIndex;
+    public int skillIndex;
+
+    public override string GetItemDescription()
+    {
+        string description = "요구 스탯:";
+        for (int i = 0; i < condition.Count; i++)
+        {
+            if (i > 0) description += ",";
+            description += condition[i].condition_variable + " " + condition[i].condition_min + "~" + condition[i].condition_max;
+        }
+        description += "\n\n";
+        for (int i = 0; i < effect.Count; i++)
+        {
+            description += effect[i].effect_variable + " " + effect[i].effect_min + "\n";
+        }
+        return description;
+    }
+}
+
+public class Potion : ItemData
+{
+    public int max_capacity;
+
+    public override string GetItemDescription()
+    {
+        string description = "요구 스탯:";
+        description += "\n\n";
+        for (int i = 0; i < effect.Count; i++)
+        {
+            description += effect[i].effect_variable + " " + effect[i].effect_min + "\n";
+        }
+        return description;
+    }
 }
 
 public class ItemData
 {
     public int data_ID;
     public string name;
-    public string type;
-    public List<Condition> condition;
+    public int category;
+    public float price;
     public List<Effect> effect;
 
-    public string GetItemDescription()
+    public virtual string GetItemDescription()
     {
-        string res = "요구 스탯:";
-        for(int i=0; i<condition.Count; i++)
-        {
-            if (i > 0) res += ",";
-            res += condition[i].condition_variable + " " + condition[i].condition_per;
-        }
-        res += "\n\n";
+        string description = "요구 스탯:";
         for(int i=0; i < effect.Count; i++)
         {
-            res += effect[i].effect_variable + " " + effect[i].effect_min + "\n";
+            description += effect[i].effect_variable + " " + effect[i].effect_min + "\n";
         }
-        return res;
+        return description;
     }
 }
 #endregion
@@ -102,7 +155,8 @@ public class ItemData
 public class DataManager : Singleton<DataManager>
 {
     Dictionary<string, ActionData> actionDataDict = new Dictionary<string, ActionData>();    // moveData, laborData, ...
-    Dictionary<string, ItemData> itemDataDict = new Dictionary<string,ItemData>();
+    Dictionary<string, Equipment> equipmentDict = new Dictionary<string, Equipment>();
+    Dictionary<string, Potion> potionDict = new Dictionary<string, Potion>();
 
     public override void Awake()
     {
@@ -115,8 +169,12 @@ public class DataManager : Singleton<DataManager>
     private void LoadActionData(string action)
     {
         ActionData actionData = new ActionData();
-        actionData.choiceDataDict = JsonConvert.DeserializeObject<Dictionary<string, ChoiceData>>(Resources.Load<TextAsset>($"Data/" + action + "Data_choice").text);
-        actionData.eventDataDict = JsonConvert.DeserializeObject<Dictionary<string, EventData>>(Resources.Load<TextAsset>($"Data/" + action + "Data_event").text);
+
+        Dictionary<string, Dictionary<string, ChoiceData>> cdd = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, ChoiceData>>>(Resources.Load<TextAsset>($"Data/" + action + "Data_choice").text);
+        actionData.choiceDataDict = cdd.Values.ElementAt(0);
+        Dictionary<string, Dictionary<string, EventData>> edd = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, EventData>>>(Resources.Load<TextAsset>($"Data/" + action + "Data_event").text);
+        actionData.eventDataDict = edd.Values.ElementAt(0);
+
         actionDataDict.Add(action + "Data", actionData);
 
         // 행동 단위로 로드할 경우
@@ -126,7 +184,8 @@ public class DataManager : Singleton<DataManager>
 
     private void LoadItemData()
     {
-        itemDataDict = JsonConvert.DeserializeObject<Dictionary<string, ItemData>>(Resources.Load<TextAsset>($"Data/ItemData").text);
+        equipmentDict = JsonConvert.DeserializeObject<Dictionary<string, Equipment>>(Resources.Load<TextAsset>($"Data/equipment").text);
+        potionDict = JsonConvert.DeserializeObject<Dictionary<string, Potion>>(Resources.Load<TextAsset>($"Data/potion").text);
     }
     #endregion
 
@@ -180,7 +239,9 @@ public class DataManager : Singleton<DataManager>
 
     public ItemData GetItemData(string name)
     {
-        return itemDataDict[name];
+        if (equipmentDict.ContainsKey(name)) return equipmentDict[name];
+        else if (potionDict.ContainsKey(name)) return potionDict[name];
+        else throw new NullReferenceException();
     }
 
     // ex) 780.0 -> 1:00 PM

@@ -27,12 +27,12 @@ public class Slot : MonoBehaviour,
     {
         if (newPlayerItem != null && newPlayerItem.item_name != "none")
         {
-            if(slotType == Constants.Equip)
+            if(slotType == Const.equip)
             {
                 playerItem = new EquipItem(){
                     equip_index = ((EquipItem)newPlayerItem).equip_index,
                     item_name = newPlayerItem.item_name,
-                    item_each = newPlayerItem.item_each
+                    item_index = newPlayerItem.item_index
                 };
             }
             else
@@ -40,8 +40,9 @@ public class Slot : MonoBehaviour,
                 playerItem = new InvenItem()
                 {
                     inven_index = ((InvenItem)newPlayerItem).inven_index,
+                    item_each = ((InvenItem)newPlayerItem).item_each,
                     item_name = newPlayerItem.item_name,
-                    item_each = newPlayerItem.item_each
+                    item_index = newPlayerItem.item_index
                 };
             }
         }
@@ -53,15 +54,15 @@ public class Slot : MonoBehaviour,
 
         if (playerItem != null)
         {
-            if (slotType == Constants.Inven)    // 인벤슬롯일 때
+            if (slotType == Const.inven)    // 인벤슬롯일 때
             {
                 ((InvenItem)playerItem).inven_index = slotIndex;
                 // 소비 아이템일 경우 개수 표시
-                itemEach.SetActive(DataManager.Instance.GetItemData(playerItem.item_name).type == Constants.consumable);
-                itemEachTxt.text = playerItem.item_each.ToString();
+                itemEach.SetActive(DataManager.Instance.GetItemData(playerItem.item_name).GetType() == typeof(Potion));
+                itemEachTxt.text = ((InvenItem)playerItem).item_each.ToString();
 
             }
-            else if(slotType == Constants.Equip)    // 장비슬롯일 때
+            else if(slotType == Const.equip)    // 장비슬롯일 때
             {
 
             }
@@ -69,7 +70,7 @@ public class Slot : MonoBehaviour,
         }
         else
         {
-            if (slotType == Constants.Inven) color.a = 0f;
+            if (slotType == Const.inven) color.a = 0f;
         }
         itemImage.color = color;
     }
@@ -117,7 +118,7 @@ public class Slot : MonoBehaviour,
         {
             SelectedSlot.Instance.SetDragSlotImage(itemImage);
             SelectedSlot.Instance.SetDragSlotPos(eventData);
-            if (slotType == Constants.Equip) itemImage.sprite = defaultSprite;
+            if (slotType == Const.equip) itemImage.sprite = defaultSprite;
             else itemImage.enabled = false;
             itemEach.SetActive(false);
         }
@@ -142,7 +143,7 @@ public class Slot : MonoBehaviour,
         // 아이템이 교체되었을 경우
         if (afterPlayerItem != playerItem) {
             // 장비슬롯이라면 - 교체할 아이템이 null이면 해당 슬롯번호와 같은 인덱스의 장비 리셋 / 그렇지 않으면 교체할 아이템을 해당 슬롯번호의 장비인덱스에 대입.
-            if (slotType == Constants.Equip)
+            if (slotType == Const.equip)
             {
                 if (afterPlayerItem == null)
                 {
@@ -154,9 +155,9 @@ public class Slot : MonoBehaviour,
             {   // 인벤슬롯이라면
 
                 // 인벤토리 리스트에서 해당 슬롯 아이템을 제거
-                FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem, playerItem.item_each);
+                FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem, ((InvenItem)playerItem).item_each);
                 // 교체할 아이템이 null이 아니면 인벤토리 리스트에 교체할 아이템 추가
-                if (afterPlayerItem != null) FosterManager.Instance.GetPlayerData().AddInvenItemAt(slotIndex, afterPlayerItem.item_name, afterPlayerItem.item_each);
+                if (afterPlayerItem != null) FosterManager.Instance.GetPlayerData().AddInvenItemAt(slotIndex, afterPlayerItem.item_name);
             }
         }
         PlayerInfoPopup.Instance.setInfo();
@@ -183,10 +184,10 @@ public class Slot : MonoBehaviour,
     {
         PlayerItem afterPlayerItem = SelectedSlot.Instance.playerItem;
         if (afterPlayerItem == null) return;
-        if (slotType == Constants.Equip)
+        if (slotType == Const.equip)
         {   // 장비슬롯에 드롭했을 때
             
-            if (Constants.equipType[slotIndex] != DataManager.Instance.GetItemData(afterPlayerItem.item_name).type) return; // 장착불가한 아이템이면 리턴
+            if (slotIndex != DataManager.Instance.GetItemData(afterPlayerItem.item_name).category) return; // 장착불가한 아이템이면 리턴
             else
             {
                 // 장비 리스트에 교체할 아이템을 장착.
@@ -197,13 +198,24 @@ public class Slot : MonoBehaviour,
         {   // 인벤슬롯에 드롭했을 때
 
             // 교체할 아이템이 장비슬롯으로부터 가져왔고, 해당 슬롯에 아이템이 있으면서 장비로 장착 불가능하면 교체하지 않고 리턴
-            if (afterPlayerItem.GetType() == typeof(EquipItem) &&
-                playerItem != null && Constants.equipType[((EquipItem)afterPlayerItem).equip_index] != DataManager.Instance.GetItemData(playerItem.item_name).type) return;
+            if (afterPlayerItem.GetType() == typeof(EquipItem)) {
+                if(playerItem != null && ((EquipItem)afterPlayerItem).equip_index != DataManager.Instance.GetItemData(playerItem.item_name).category) return;
+                else
+                {
+                    // 인벤토리 리스트에서 해당 슬롯 아이템을 제거
+                    if (playerItem != null) FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem);
+                    // 인벤토리 리스트에 교체할 아이템 추가
+                    FosterManager.Instance.GetPlayerData().AddInvenItemAt(slotIndex, afterPlayerItem.item_name);
+                }
+            }
 
-            // 인벤토리 리스트에서 해당 슬롯 아이템을 제거
-            if(playerItem!=null) FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem, playerItem.item_each);
-            // 인벤토리 리스트에 교체할 아이템 추가
-            FosterManager.Instance.GetPlayerData().AddInvenItemAt(slotIndex, afterPlayerItem.item_name, afterPlayerItem.item_each);
+            else
+            {
+                // 인벤토리 리스트에서 해당 슬롯 아이템을 제거
+                if (playerItem != null) FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem, ((InvenItem)playerItem).item_each);
+                // 인벤토리 리스트에 교체할 아이템 추가
+                FosterManager.Instance.GetPlayerData().AddInvenItemAt(slotIndex, afterPlayerItem.item_name, ((InvenItem)afterPlayerItem).item_each);
+            }
 
         }
         // 해당 슬롯과 상대 슬롯의 invenItem 객체를 교환

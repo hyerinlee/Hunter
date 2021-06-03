@@ -26,14 +26,14 @@ public class PlayerInfoPopup : Singleton<PlayerInfoPopup>
         equipmentSlots = equipment.GetComponentsInChildren<Slot>();
         for(int i=0; i<equipmentSlots.Length; i++)
         {
-            equipmentSlots[i].slotType = Constants.Equip;
+            equipmentSlots[i].slotType = Const.equip;
             equipmentSlots[i].slotIndex = i;
             equipmentSlots[i].defaultSprite = equipmentSlots[i].transform.GetChild(0).GetComponent<Image>().sprite;
         }
         inventorySlots = inventory.GetComponentsInChildren<Slot>();
         for(int i = 0; i < inventorySlots.Length; i++)
         {
-            inventorySlots[i].slotType = Constants.Inven;
+            inventorySlots[i].slotType = Const.inven;
             inventorySlots[i].slotIndex = i;
         }
     }
@@ -55,11 +55,11 @@ public class PlayerInfoPopup : Singleton<PlayerInfoPopup>
 
         for(int i=0; i<3; i++)
         {
-            defStatsTxt[i].text = pd.GetStat(pd.Stats.Keys.ElementAt(i));
-            statesTxt[i].text = pd.Cons.Values.ElementAt(i).name +" " + pd.GetStateOutOfMax(pd.Cons.Keys.ElementAt(i));
+            defStatsTxt[i].text = pd.GetDefStat(pd.Stats.Keys.ElementAt(i));
+            statesTxt[i].text = pd.Cons.n_Cons.Values.ElementAt(i).name +" " + pd.GetStateOutOfMax(pd.Cons.n_Cons.Keys.ElementAt(i));
         }
 
-        battleStats.text = pd.GetBattleStat();
+        battleStats.text = pd.GetBatStat();
         money.text = pd.GetMoney();
 
         for (int i = 0; i < equipmentSlots.Length; i++)
@@ -70,9 +70,9 @@ public class PlayerInfoPopup : Singleton<PlayerInfoPopup>
         {
             inventorySlots[i].SetItem(null);
         }
-        for(int i=0; i < pd.Mon_Inven.Inventory.Count; i++)
+        for(int i=0; i < pd.Mon_Inven.Inven.Count; i++)
         {
-            inventorySlots[pd.Mon_Inven.Inventory[i].inven_index].SetItem(pd.Mon_Inven.Inventory[i]);
+            inventorySlots[pd.Mon_Inven.Inven[i].inven_index].SetItem(pd.Mon_Inven.Inven[i]);
         }
     }
 }

@@ -1,0 +1,72 @@
+﻿{
+	"Player\r\n" : {
+		"Stats" : {
+			"STR" : {
+				"name" : "근력",
+				"max_point" : 20.0,
+				"cur_point" : 10.0
+			},
+			"DEX" : {
+				"name" : "민첩",
+				"max_point" : 20.0,
+				"cur_point" : 10.0
+			},
+			"INT" : {
+				"name" : "지능",
+				"max_point" : 20.0,
+				"cur_point" : 10.0
+			},
+			"ATK" : {
+				"name" : "공",
+				"cur_point" : 0.0
+			},
+			"APS" : {
+				"name" : "공속",
+				"cur_point" : 0.0
+			},
+			"DEF" : {
+				"name" : "방",
+				"cur_point" : 0.0
+			}
+		},
+		"Cons" : {
+			"HP" : {
+				"name" : "체력",
+				"max_point" : 100.0,
+				"cur_point" : 100.0
+			},
+			"SP" : {
+				"name" : "스태미나",
+				"max_point" : 100.0,
+				"cur_point" : 100.0
+			},
+			"Will" : {
+				"name" : "정신상태",
+				"max_point" : 100.0,
+				"cur_point" : 100.0
+			}
+		},
+		"Mon_Inven": {
+			"Money": 20.0,
+			"Equipment": [
+				{
+					"equip_index": 0,
+					"item_name": "none",
+					"item_each": 0
+				},
+				{
+					"equip_index": 1,
+					"item_name": "none",
+					"item_each": 0
+				},
+				{
+					"equip_index": 2,
+					"item_name": "none",
+					"item_each": 0
+				}
+			],
+			"Inventory": [
+			]
+		}
+	}
+}

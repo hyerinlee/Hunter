@@ -29,10 +29,10 @@ public class UIManager_Area : Singleton<UIManager_Area>
     public void SetUI()
     {
         pd = FosterManager.Instance.GetPlayerData();
-        hpGauge.fillAmount = pd.Cons["HP"].cur_point / pd.Cons["HP"].max_point;
-        spGauge.fillAmount = pd.Cons["SP"].cur_point / pd.Cons["SP"].max_point;
-        hp.text = pd.GetStateOutOfMax("HP");
-        sp.text = pd.GetStateOutOfMax("SP");
+        hpGauge.fillAmount = pd.GetStatPercent(Const.hp);
+        spGauge.fillAmount = pd.GetStatPercent(Const.sp);
+        hp.text = pd.GetStateOutOfMax(Const.hp);
+        sp.text = pd.GetStateOutOfMax(Const.sp);
         money.text = pd.GetMoney();
         day.text = GameManager.Instance.GetDDay();
         time.text = GameManager.Instance.GetCurrentTimeByValue();

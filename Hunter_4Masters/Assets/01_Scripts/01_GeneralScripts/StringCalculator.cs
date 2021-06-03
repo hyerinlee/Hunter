@@ -73,7 +73,7 @@ public static class StringCalculator
             else // str, dex와 같은 문자열은 육성데이터에 대입하여 숫자로 변환 후 숫자 스택에 push
             {
                 PlayerData pd = FosterManager.Instance.GetPlayerData();
-                num.Push(pd.GetCurPointOfAllType(tok[i]));
+                num.Push(pd.GetCurPoint(tok[i]));
             }
         }
         while (op.Count != 0) calc();

@@ -1,0 +1,16 @@
+﻿{
+	"00_HP_Potion_S" : {
+		"Data_ID" : 130001,
+		"Name" : "소형 HP포션",
+		"Category" : 3,
+		"Price" : 50.0,
+		"Max_capacity" : 10,
+		"Effect" : [
+			{
+				"effect_variable" : "HP",
+				"effect_min" : "5",
+				"effect_max" : "10"
+			}
+		]
+	}
+}

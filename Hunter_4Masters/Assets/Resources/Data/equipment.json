@@ -1,0 +1,94 @@
+﻿{
+	"000_Sword": {
+		"Data_ID": 101001,
+		"Name": "검",
+		"Category": 0,
+		"Rank": "F",
+		"Price": 10.0,
+		"Condition": [
+			{
+				"condition_variable": "null",
+				"condition_min": -10000.0,
+				"condition_max": -10000.0
+			}
+		],
+		"StatEffect": [
+			{
+				"effect_variable": "ATK",
+				"effect_min": "3",
+				"effect_max": "7"
+			}
+		],
+		"SpecialEffectIndex": -10000,
+		"SkillIndex": -10000
+	},
+	"001_Axe": {
+		"Data_ID": 123456,
+		"Name": "손도끼",
+		"Category": 0,
+		"Rank": "F",
+		"Price": 10.0,
+		"Condition": [
+			{
+				"condition_variable": "STR",
+				"condition_min": 2.0,
+				"condition_max": 9999.0
+			}
+		],
+		"Effect": [
+			{
+				"effect_variable": "ATK",
+				"effect_min": "10",
+				"effect_max": "10"
+			}
+		]
+	},
+	"002_Cape": {
+		"Data_ID": 123459,
+		"Name": "빨간 망토",
+		"Category": 2,
+		"Rank": "F",
+		"Price": 10.0,
+		"Condition": [
+		],
+		"Effect": [
+			{
+				"effect_variable": "INT",
+				"effect_min": "5",
+				"effect_max": "5"
+			}
+		]
+	},
+	"003_BlueShoes": {
+		"Data_ID": 123459,
+		"Name": "파란 신발",
+		"Category": 2,
+		"Rank": "F",
+		"Price": 10.0,
+		"Condition": [
+		],
+		"Effect": [
+			{
+				"effect_variable": "DEX",
+				"effect_min": "10",
+				"effect_max": "10"
+			}
+		]
+	},
+	"004_StrongArmor": {
+		"Data_ID": 123460,
+		"Name": "짱 센 갑옷",
+		"Category": 1,
+		"Rank": "F",
+		"Price": 10.0,
+		"Condition": [
+		],
+		"Effect": [
+			{
+				"effect_variable": "DEX",
+				"effect_min": "10",
+				"effect_max": "10"
+			}
+		]
+	}
+}

@@ -76,8 +76,8 @@ public class SelectionPopup : MonoBehaviour
         actionInfo.text = actionInfoTempData[0];
 
         // 육성데이터(pd) UI 적용
-        spGauge.fillAmount = pd.Cons["SP"].cur_point / pd.Cons["SP"].max_point;
-        spTxt.text = pd.GetStateOutOfMax("SP");
+        spGauge.fillAmount = pd.GetStatPercent(Const.sp);
+        spTxt.text = pd.GetStateOutOfMax(Const.sp);
         dayTxt.text = GameManager.Instance.GetDDay();
         timeTxt.text = GameManager.Instance.GetCurrentTimeByValue();
         moneyTxt.text = pd.GetMoney();
@@ -115,10 +115,10 @@ public class SelectionPopup : MonoBehaviour
             // 돈과 시간만 형식이 지정되어있고 나머지는 단순 값 출력
             switch (categories[i + 1].text)
             {
-                case "money":
+                case Const.money:
                     optionTxt.text = pair.Value.consume[i].consume_value.ToString() + "$";
                     break;
-                case "time":
+                case Const.time:
                     optionTxt.text = DataManager.Instance.GetEstimatedTimeByValue(pair.Value.consume[i].consume_value);
                     break;
                 default:
@@ -137,11 +137,11 @@ public class SelectionPopup : MonoBehaviour
         for (int i = 0; i < choiceData.consume.Count; i++)
         {
             string variable = choiceData.consume[i].consume_variable;
-            if (variable == "time")
+            if (variable == Const.time)
             {
                 if (GameManager.Instance.curTimeVal + choiceData.consume[i].consume_value >= 1440) return false; // 실행 후 24시가 넘어간다면 선택불가
             }
-            else if (pd.GetCurPointOfAllType(variable) + choiceData.consume[i].consume_value < 0) return false;
+            else if (pd.GetCurPoint(variable) + choiceData.consume[i].consume_value < 0) return false;
         }
 
         return true;
@@ -198,15 +198,15 @@ public class SelectionPopup : MonoBehaviour
 
             occurEventArray[i] = MakeSecondaryOccurEvent(DataManager.Instance.GetEventDataById(executedAction, cd[selectedOption].events[randomIndex].event_ID), secondaryEventData[randomIndex]);
 
+
             // 해당 이벤트에서 발생할 특정요소의 변화량(랜덤) 결정(ex: 무장강도, hp -20)
             Dictionary<string, float> changes = new Dictionary<string, float>();
             for (int j = 0; j < occurEventArray[i].Value.effect.Count; j++)
             {
-                int changeAmount = (int)(Random.Range(occurEventArray[i].Value.effect[j].effect_min, occurEventArray[i].Value.effect[j].effect_max));
-
+                int changeAmount = (int)(Random.Range(occurEventArray[i].Value.effect[j].GetMinValue(), occurEventArray[i].Value.effect[j].GetMaxValue()));
                 changes.Add(occurEventArray[i].Value.effect[j].effect_variable, changeAmount);
-                changesArray[i] = changes;
             }
+            changesArray[i] = changes;
 
         }
     }
@@ -251,24 +251,24 @@ public class SelectionPopup : MonoBehaviour
         {
             string variable = eventData.condition[i].condition_variable;
             // variable이 null이 아니고 조건 범위에 속하지 않으면 return false
-            if (variable != "null" && (pd.GetCurPointOfAllType(variable) < eventData.condition[i].condition_min ||
-                pd.GetCurPointOfAllType(variable) > eventData.condition[i].condition_max)) return false;
+            if (variable != "null" && (pd.GetCurPoint(variable) < eventData.condition[i].condition_min ||
+                pd.GetCurPoint(variable) > eventData.condition[i].condition_max)) return false;
         }
         return true;
     }
 
     private PlayerData GetAfterPd()
     {
-        PlayerData afterPd = pd.Clone() as PlayerData;
+        PlayerData afterPd = (PlayerData)pd.Clone();
 
         // 선택지로 인해 변화한 값 적용
         for (int i = 0; i < cd[selectedOption].consume.Count; i++)
         {
-            if(cd[selectedOption].consume[i].consume_variable == "time")
+            if(cd[selectedOption].consume[i].consume_variable == Const.time)
             {
                 GameManager.Instance.leftTimeVal -= (int)cd[selectedOption].consume[i].consume_value;
             }
-            else afterPd.AddToCurPointOfAllType(cd[selectedOption].consume[i].consume_variable, cd[selectedOption].consume[i].consume_value);
+            else afterPd.AddToCurPoint(cd[selectedOption].consume[i].consume_variable, cd[selectedOption].consume[i].consume_value);
         }
 
         // 이벤트로 인해 변화한 값 적용
@@ -278,8 +278,8 @@ public class SelectionPopup : MonoBehaviour
             {
                 if (pair.Key != "null")
                 {
-                    afterPd.AddToCurPointOfAllType(pair.Key, pair.Value);
-                    if (afterPd.GetCurPointOfAllType(pair.Key) < 0) afterPd.AddToCurPointOfAllType(pair.Key, -afterPd.GetCurPointOfAllType(pair.Key));
+                    afterPd.AddToCurPoint(pair.Key, pair.Value);
+                    if (afterPd.GetCurPoint(pair.Key) < 0) afterPd.AddToCurPoint(pair.Key, -afterPd.GetCurPoint(pair.Key));
                 }
             }
         }

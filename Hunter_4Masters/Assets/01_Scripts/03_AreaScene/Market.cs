@@ -15,10 +15,10 @@ public class Market : MonoBehaviour
         PlayerData pd = FosterManager.Instance.GetPlayerData();
         pd.Mon_Inven.Money -= 3;
 
-        pd.AddInvenItem("axe", 1);
-        pd.AddInvenItem("potionhp", 3);
-        pd.AddInvenItem("strongArmor", 1);
-        pd.AddInvenItem("cape", 1);
-        pd.AddInvenItem("blueshoes", 1);
+        pd.AddInvenItem("001_Axe", 1);
+        pd.AddInvenItem("00_HP_Potion_S", 3);
+        pd.AddInvenItem("004_StrongArmor", 1);
+        pd.AddInvenItem("002_Cape", 1);
+        pd.AddInvenItem("003_BlueShoes", 1);
     }
 }

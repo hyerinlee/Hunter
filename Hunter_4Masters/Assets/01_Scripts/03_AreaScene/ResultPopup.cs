@@ -21,13 +21,13 @@ public class ResultPopup : MonoBehaviour
 
     private Dictionary<string, bool> changedValues = new Dictionary<string, bool>()
     {
-        {"SP", false},
-        {"HP", false},
-        {"money", false},
-        {"time", false},
-        {"dex", false},
-        {"str", false},
-        {"int", false}
+        {Const.sp, false},
+        {Const.hp, false},
+        {Const.money, false},
+        {Const.time, false},
+        {Const.defStats[0], false},
+        {Const.defStats[1], false},
+        {Const.defStats[2], false}
     };
 
     public void SetPopup(KeyValuePair<string, EventData>[] oea, Dictionary<string, float>[] ca, PlayerData beforePd, PlayerData afterPd)
@@ -64,8 +64,8 @@ public class ResultPopup : MonoBehaviour
 
     public void PlayAnim(GameObject obj, int i)
     {
-        float target = afterPd.GetCurPointOfAllType(prefabs[i]);
-        float current = beforePd.GetCurPointOfAllType(prefabs[i]);
+        float target = afterPd.GetCurPoint(prefabs[i]);
+        float current = beforePd.GetCurPoint(prefabs[i]);
 
         if (itIsCount(obj))
         {
@@ -84,7 +84,7 @@ public class ResultPopup : MonoBehaviour
 
         temp = obj.transform.GetChild(0).gameObject;
         Image gaugeBar = temp.transform.Find("Gauge").GetComponent<Image>();
-        gaugeBar.fillAmount = current / beforePd.GetCurPointOfAllType(prefabs[i]); // max
+        gaugeBar.fillAmount = current / beforePd.GetCurPoint(prefabs[i]); // max
 
         yield return new WaitForSeconds(2);
 
@@ -152,7 +152,7 @@ public class ResultPopup : MonoBehaviour
 
     private bool itIsCount(GameObject obj)
     {
-        if(obj.transform.GetChild(0).gameObject.name == "time(Clone)" || obj.transform.GetChild(0).gameObject.name == "money(Clone)") return true;
+        if(obj.transform.GetChild(0).gameObject.name == Const.time+"(Clone)" || obj.transform.GetChild(0).gameObject.name == Const.money+ "(Clone)") return true;
         else return false;
     }
 
@@ -195,6 +195,7 @@ public class ResultPopup : MonoBehaviour
         ResetWhatAreChanged();
         RemoveGaugesChild();
         ResetPrefabList();
+        GameManager.Instance.Resume();
     }
 
     private void ResetWhatAreChanged()

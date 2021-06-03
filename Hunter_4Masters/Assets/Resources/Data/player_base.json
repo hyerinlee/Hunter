@@ -17,55 +17,77 @@
 				"cur_point" : 10.0
 			},
 			"ATK" : {
-				"name" : "공",
+				"name" : "공격력",
 				"cur_point" : 0.0
 			},
 			"APS" : {
-				"name" : "공속",
+				"name" : "공격속도",
 				"cur_point" : 0.0
 			},
 			"DEF" : {
-				"name" : "방",
+				"name" : "방어력",
 				"cur_point" : 0.0
 			}
 		},
 		"Cons" : {
-			"HP" : {
-				"name" : "체력",
-				"max_point" : 100.0,
-				"cur_point" : 100.0
+			"n_Cons" : {
+				"HP" : {
+					"name" : "체력",
+					"max_point" : 100.0,
+					"cur_point" : 100.0
+				},
+				"SP" : {
+					"name" : "스태미나",
+					"max_point" : 100.0,
+					"cur_point" : 100.0
+				},
+				"WILL" : {
+					"name" : "정신상태",
+					"max_point" : 100.0,
+					"cur_point" : 100.0
+				}
 			},
-			"SP" : {
-				"name" : "스태미나",
-				"max_point" : 100.0,
-				"cur_point" : 100.0
-			},
-			"Will" : {
-				"name" : "정신상태",
-				"max_point" : 100.0,
-				"cur_point" : 100.0
-			}
+			"ETC" : [
+				{
+					"name" : "poor",
+					"index" : 300001
+				},
+				{
+					"name" : "frustration",
+					"index" : 300003
+				},
+				{
+					"name" : "malnutrition",
+					"index" : 300000
+				}
+			]
 		},
-		"Mon_Inven": {
-			"Money": 20.0,
-			"Equipment": [
+		"Mon_Inven" : {
+			"MONEY" : 20.0,
+			"Equipment" : [
 				{
-					"equip_index": 0,
-					"item_name": "none",
-					"item_each": 0
+					"equip_index" : 0,
+					"item_name" : "none",
+					"item_index" : 0
 				},
 				{
-					"equip_index": 1,
-					"item_name": "none",
-					"item_each": 0
+					"equip_index" : 1,
+					"item_name" : "none",
+					"item_index" : 0
 				},
 				{
-					"equip_index": 2,
-					"item_name": "none",
-					"item_each": 0
+					"equip_index" : 2,
+					"item_name" : "none",
+					"item_index" : 0
 				}
 			],
-			"Inventory": [
+			"Inven" : [
+				{
+					"inven_index" : 0,
+					"item_index" : 0,
+					"item_name" : "none",
+					"item_each" : 0
+				}
 			]
 		}
 	}

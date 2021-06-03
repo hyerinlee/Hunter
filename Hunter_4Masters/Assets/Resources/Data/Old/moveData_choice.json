@@ -1,5 +1,4 @@
 ﻿{
-	"moveData_choice" : {
 		"Move_Title" : {
 			"Data_ID" : 400000,
 			"Name" : "종류",
@@ -7,11 +6,11 @@
 			"Category" : "Title",
 			"Consume" : [
 				{
-					"consume_variable" : "MONEY",
+					"consume_variable" : "money",
 					"consume_value" : -10000.0
 				},
 				{
-					"consume_variable" : "TIME",
+					"consume_variable" : "time",
 					"consume_value" : -10000.0
 				},
 				{
@@ -22,9 +21,9 @@
 			"PlusInfo" : "위험도",
 			"Condition" : [
 				{
-					"condition_variable" : "null",
-					"condition_min" : -10000.0,
-					"condition_max" : -10000.0
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0
 				}
 			],
 			"Events" : [
@@ -41,24 +40,24 @@
 			"Category" : "Choice",
 			"Consume" : [
 				{
-					"consume_variable" : "MONEY",
+					"consume_variable" : "money",
 					"consume_value" : 0.0
 				},
 				{
-					"consume_variable" : "TIME",
+					"consume_variable" : "time",
 					"consume_value" : 300.0
 				},
 				{
-					"consume_variable" : "SP",
-					"consume_value" : -30.0
+					"consume_variable": "SP",
+					"consume_value": -30.0
 				}
 			],
 			"PlusInfo" : "위험",
 			"Condition" : [
 				{
-					"condition_variable" : "null",
-					"condition_mix" : -10000.0,
-					"condition_max" : -10000.0
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0
 				}
 			],
 			"Events" : [
@@ -72,7 +71,7 @@
 				},
 				{
 					"event_ID" : 401100,
-					"event_per" : 60.0
+					"event_per" : 40.0
 				}
 			]
 		},
@@ -83,24 +82,24 @@
 			"Category" : "Choice",
 			"Consume" : [
 				{
-					"consume_variable" : "MONEY",
+					"consume_variable" : "money",
 					"consume_value" : -50.0
 				},
 				{
-					"consume_variable" : "TIME",
+					"consume_variable" : "time",
 					"consume_value" : 180.0
 				},
 				{
-					"consume_variable" : "SP",
-					"consume_value" : -10.0
+					"consume_variable": "SP",
+					"consume_value": -10.0
 				}
 			],
 			"PlusInfo" : "보통",
 			"Condition" : [
 				{
-					"condition_variable" : "null",
-					"condition_min" : -10000.0,
-					"condition_max" : -10000.0
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0
 				}
 			],
 			"Events" : [
@@ -125,24 +124,24 @@
 			"Category" : "Choice",
 			"Consume" : [
 				{
-					"consume_variable" : "MONEY",
+					"consume_variable" : "money",
 					"consume_value" : -500.0
 				},
 				{
-					"consume_variable" : "TIME",
+					"consume_variable" : "time",
 					"consume_value" : 240.0
 				},
 				{
-					"consume_variable" : "SP",
-					"consume_value" : -5.0
+					"consume_variable": "SP",
+					"consume_value": -5.0
 				}
 			],
 			"PlusInfo" : "안전",
 			"Condition" : [
 				{
-					"condition_variable" : "null",
-					"condition_min" : -10000.0,
-					"condition_max" : -10000.0
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0
 				}
 			],
 			"Events" : [
@@ -160,5 +159,5 @@
 				}
 			]
 		}
-	}
+
 }
