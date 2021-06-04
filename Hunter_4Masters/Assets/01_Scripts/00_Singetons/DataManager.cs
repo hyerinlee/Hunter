@@ -157,6 +157,12 @@ public class DataManager : Singleton<DataManager>
     Dictionary<string, ActionData> actionDataDict = new Dictionary<string, ActionData>();    // moveData, laborData, ...
     Dictionary<string, Equipment> equipmentDict = new Dictionary<string, Equipment>();
     Dictionary<string, Potion> potionDict = new Dictionary<string, Potion>();
+    Dictionary<int, string> detailMsg = new Dictionary<int, string>()
+        {
+            {300001, "[빈곤] \n 돈이 없다... \n 근력 * 125% \n 민첩 * 125% \n 재화 획득량 * 125%"},
+            {300003, "[좌절] \n 하...이번 생은 망했어 \n 모든 증가 스탯 * 50% \n 모든 감소 스탯 * 200%"},
+            {300000, "[영양실조] \n 공격속도 * 50% \n 의지 * 75%"}
+        };
 
     public override void Awake()
     {
@@ -263,5 +269,11 @@ public class DataManager : Singleton<DataManager>
         string estTime = "+" + value / 60 + "시간";
         if (value % 60 != 0) estTime += " " + value % 60 + "분";
         return estTime;
+    }
+
+    // 임시
+    public string GetEtcDetail(int index)
+    {
+        return detailMsg[index];
     }
 }

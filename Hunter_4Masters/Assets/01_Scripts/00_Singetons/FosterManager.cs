@@ -252,8 +252,8 @@ public class Con : ICloneable
 
 public class ConsEtc : ICloneable
 {
-    string name;
-    int index;
+    public string name;
+    public int index;
 
     public object Clone()
     {
