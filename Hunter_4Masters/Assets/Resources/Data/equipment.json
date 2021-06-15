@@ -12,7 +12,7 @@
 				"condition_max": -10000.0
 			}
 		],
-		"StatEffect": [
+		"Effect": [
 			{
 				"effect_variable": "ATK",
 				"effect_min": "3",
@@ -41,7 +41,9 @@
 				"effect_min": "10",
 				"effect_max": "10"
 			}
-		]
+		],
+		"SpecialEffectIndex": -10000,
+		"SkillIndex": -10000
 	},
 	"002_Cape": {
 		"Data_ID": 123459,
@@ -57,7 +59,9 @@
 				"effect_min": "5",
 				"effect_max": "5"
 			}
-		]
+		],
+		"SpecialEffectIndex": -10000,
+		"SkillIndex": -10000
 	},
 	"003_BlueShoes": {
 		"Data_ID": 123459,
@@ -73,7 +77,9 @@
 				"effect_min": "10",
 				"effect_max": "10"
 			}
-		]
+		],
+		"SpecialEffectIndex": -10000,
+		"SkillIndex": -10000
 	},
 	"004_StrongArmor": {
 		"Data_ID": 123460,
@@ -89,6 +95,8 @@
 				"effect_min": "10",
 				"effect_max": "10"
 			}
-		]
+		],
+		"SpecialEffectIndex": -10000,
+		"SkillIndex": -10000
 	}
 }

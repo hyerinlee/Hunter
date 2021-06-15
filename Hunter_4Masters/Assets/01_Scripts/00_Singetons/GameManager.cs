@@ -6,7 +6,7 @@ public class GameManager : Singleton<GameManager>
 {
     public int leftTimeVal = 43200;   // 60(분)*24(시간)*30(일)
     public int d_day, curTimeVal;
-    float timeScale = 5f;
+    float timeScale = 60f;
     int gameTimeScale = 10; // 실제시간 timeScale 초마다 인게임 gameTimeScale 분씩 지남
     float delay = 0.0f;
     IEnumerator timeCoroutine;

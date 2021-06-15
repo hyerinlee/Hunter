@@ -161,6 +161,7 @@ public class Slot : MonoBehaviour,
             }
         }
         PlayerInfoPopup.Instance.setInfo();
+        UIManager_Area.Instance.SetSkills();
         itemImage.enabled = true;
         //if(playerItem != null && playerItem.item_name!="none") itemEach.SetActive(DataManager.Instance.GetItemData(playerItem.item_name).type == "consumable");
         SelectedSlot.Instance.ResetDragSlot();

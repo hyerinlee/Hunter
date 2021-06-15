@@ -7,10 +7,11 @@ using System.Linq;
 public class UIManager_Area : Singleton<UIManager_Area>
 {
     [SerializeField] private Image hpGauge, spGauge;
-    [SerializeField] private GameObject interaction, dialogBox, etcPanel, etcDetail;
+    [SerializeField] private GameObject interaction, dialogBox, etcPanel, etcDetail, skillPanel;
     [SerializeField] private Popup popup;
     [SerializeField] public Text hp, sp, day, time, money;
     private List<GameObject> etcList = new List<GameObject>();
+    private List<GameObject> skillBtnList = new List<GameObject>();
     private PlayerData pd;
     private List<ConsEtc> etc = new List<ConsEtc>();
 
@@ -19,6 +20,10 @@ public class UIManager_Area : Singleton<UIManager_Area>
         for (int i = 0; i < etcPanel.transform.childCount; i++)
         {
             etcList.Add(etcPanel.transform.GetChild(i).gameObject);
+        }
+        for (int i = 0; i < skillPanel.transform.childCount - 2; i++)
+        {
+            skillBtnList.Add(skillPanel.transform.GetChild(i).gameObject);
         }
     }
 
@@ -63,11 +68,35 @@ public class UIManager_Area : Singleton<UIManager_Area>
         if (etc.Count==0 || etc.Intersect(pd.Cons.ETC).Count()!=etc.Count) SetEtcUI();
     }
 
+    public void SetSkills()
+    {
+        for(int i=0; i<skillBtnList.Count; i++)
+        {
+            Image skillImg = skillBtnList[i].transform.GetChild(0).GetComponent<Image>();
+            if (pd.Mon_Inven.Equipment[i].item_index != 0)
+            {
+                // set skill sprite
+                skillImg.sprite = Resources.Load("Items/" + pd.Mon_Inven.Equipment[i].item_name, typeof(Sprite)) as Sprite;
+                skillImg.enabled = true;
+                // skill onclick addlistener
+                int skillIndex = i;
+                skillBtnList[i].GetComponent<Button>().onClick.RemoveAllListeners();
+                skillBtnList[i].GetComponent<Button>().onClick.AddListener(() => { Debug.Log("스킬 사용함:" + pd.Mon_Inven.Equipment[skillIndex].item_name); });
+            }
+            else
+            {
+                skillImg.enabled = false;
+                skillBtnList[i].GetComponent<Button>().onClick.RemoveAllListeners();
+            }
+        }
+    }
+
     public void ActiveInteraction(Vector2 pos, string simulName)
     {
         interaction.SetActive(true);
         interaction.transform.position = pos + Vector2.up * 2;
         interaction.GetComponent<Image>().sprite = Resources.Load("Interact-" + simulName, typeof(Sprite)) as Sprite;
+        interaction.GetComponent<Button>().onClick.RemoveAllListeners();
         if (simulName == "NPC")
         {
             interaction.GetComponent<Button>().onClick.AddListener(() => dialogBox.SetActive(true));
