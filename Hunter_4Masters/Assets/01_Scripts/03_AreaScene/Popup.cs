@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Popup : MonoBehaviour
 {
-    [SerializeField] private GameObject selectPanel;
+    [SerializeField] private GameObject selectPanel, shopPanel;
     private SelectionPopup selectionPopup;
 
     void Start()
@@ -22,7 +22,14 @@ public class Popup : MonoBehaviour
     {
         GameManager.Instance.Pause();
 
-        selectPanel.SetActive(true);
-        selectionPopup.SetPopup(action);
+        if (action == "shop")
+        {
+            shopPanel.SetActive(true);
+        }
+        else
+        {
+            selectPanel.SetActive(true);
+            selectionPopup.SetPopup(action);
+        }
     }
 }

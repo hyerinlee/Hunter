@@ -26,7 +26,7 @@ public static class Const
     public static readonly string[] batStats = { "ATK", "APS", "DEF" };
 
     public static readonly string[] equipType = { "weapon", "armor", "accessory" };
-    public static readonly string[] equipTxt = { "무기", "갑옷", "악세" };
+    public static readonly string[] itemCategory = { "장비-무기", "장비-갑옷", "장비-악세", "포션" };
 }
 
 #region Define Data Classes
@@ -101,13 +101,14 @@ public class Equipment : ItemData
 
     public override string GetItemDescription()
     {
-        string description = "요구 스탯:";
+        string description = base.GetItemDescription();
+        description += "\n등급: "+rank+"\n조건: \n";
         for (int i = 0; i < condition.Count; i++)
         {
             if (i > 0) description += ",";
             description += condition[i].condition_variable + " " + condition[i].condition_min + "~" + condition[i].condition_max;
         }
-        description += "\n\n";
+        description += "\n효과: \n";
         for (int i = 0; i < effect.Count; i++)
         {
             description += effect[i].effect_variable + " " + effect[i].effect_min + "\n";
@@ -122,12 +123,8 @@ public class Potion : ItemData
 
     public override string GetItemDescription()
     {
-        string description = "요구 스탯:";
-        description += "\n\n";
-        for (int i = 0; i < effect.Count; i++)
-        {
-            description += effect[i].effect_variable + " " + effect[i].effect_min + "\n";
-        }
+        string description = base.GetItemDescription();
+        description += "";
         return description;
     }
 }
@@ -142,11 +139,7 @@ public class ItemData
 
     public virtual string GetItemDescription()
     {
-        string description = "요구 스탯:";
-        for(int i=0; i < effect.Count; i++)
-        {
-            description += effect[i].effect_variable + " " + effect[i].effect_min + "\n";
-        }
+        string description = "<size=30>"+ name +"</size>" + "\n" + "<color=#85a763>" + Const.itemCategory[category] + "</color>\n";
         return description;
     }
 }
@@ -248,6 +241,11 @@ public class DataManager : Singleton<DataManager>
         if (equipmentDict.ContainsKey(name)) return equipmentDict[name];
         else if (potionDict.ContainsKey(name)) return potionDict[name];
         else throw new NullReferenceException();
+    }
+
+    public Dictionary<string, Equipment> GetAllEquipments()
+    {
+        return equipmentDict;
     }
 
     // ex) 780.0 -> 1:00 PM
