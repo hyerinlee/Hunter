@@ -11,6 +11,7 @@ public class PlayerInfoPopup : Singleton<PlayerInfoPopup>
 {
     [SerializeField] private Text battleStats, money;
     [SerializeField] private GameObject equipment, inventory, defaultStats, states;
+    [SerializeField] private EtcStates etcPanel;
     private Slot[] equipmentSlots, inventorySlots;
     private Text[] defStatsTxt = new Text[3];
     private Text[] statesTxt = new Text[3];
@@ -74,5 +75,7 @@ public class PlayerInfoPopup : Singleton<PlayerInfoPopup>
         {
             inventorySlots[pd.Mon_Inven.Inven[i].inven_index].SetItem(pd.Mon_Inven.Inven[i]);
         }
+
+        etcPanel.SetEtcUI();
     }
 }
