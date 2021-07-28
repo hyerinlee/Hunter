@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bf7c34a0dc4e6348bea04faa70406ee, type: 3}
+  m_Name: Armor
+  m_EditorClassIdentifier: 
+  m_Labels:
+  - m_Name: Body
+    m_Hash: 2073732236
+    m_CategoryList:
+    - m_Name: 005
+      m_Hash: 1390399058
+      m_Sprite: {fileID: 5805808412459034429, guid: 3db7efd902a3e0d4aa5ddbbda46d1f8f,
+        type: 3}
+    - m_Name: 000
+      m_Hash: 582302429
+      m_Sprite: {fileID: 0}
+    - m_Name: 001
+      m_Hash: 1437731403
+      m_Sprite: {fileID: 7952013460320622836, guid: a8d201b10a7ebe24a9fd201a05ed81d8,
+        type: 3}
+  - m_Name: LArm
+    m_Hash: -1345005057
+    m_CategoryList:
+    - m_Name: 005
+      m_Hash: 1390399058
+      m_Sprite: {fileID: 2031957744830413003, guid: 3db7efd902a3e0d4aa5ddbbda46d1f8f,
+        type: 3}
+    - m_Name: 000
+      m_Hash: 582302429
+      m_Sprite: {fileID: 0}
+    - m_Name: 001
+      m_Hash: 1437731403
+      m_Sprite: {fileID: -4962532505056950152, guid: a8d201b10a7ebe24a9fd201a05ed81d8,
+        type: 3}
+  - m_Name: RArm
+    m_Hash: 521337171
+    m_CategoryList:
+    - m_Name: 005
+      m_Hash: 1390399058
+      m_Sprite: {fileID: -8937631840840749821, guid: 3db7efd902a3e0d4aa5ddbbda46d1f8f,
+        type: 3}
+    - m_Name: 000
+      m_Hash: 582302429
+      m_Sprite: {fileID: 0}
+    - m_Name: 001
+      m_Hash: 1437731403
+      m_Sprite: {fileID: 4459951686083284100, guid: a8d201b10a7ebe24a9fd201a05ed81d8,
+        type: 3}

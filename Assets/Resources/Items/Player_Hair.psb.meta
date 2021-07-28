@@ -1,0 +1,270 @@
+fileFormatVersion: 2
+guid: eee34e9c8cbf0184f87dbe21fe7c82f0
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: b2a9591990af98743ba3ff7cf1000886, type: 3}
+  textureImporterSettings:
+    alphaSource: 1
+    mipMapMode: 0
+    enableMipMap: 1
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+    convertToNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    isReadable: 0
+    streamingMipmaps: 1
+    streamingMipmapsPriority: 0
+    nPOTScale: 1
+    sRGBTexture: 1
+    spriteMode: 2
+    spriteExtrude: 1
+    spriteMeshType: 1
+    alignment: 0
+    spritePivot: {x: 0.5, y: 0.5}
+    spritePixelsToUnits: 100
+    spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+    spriteGenerateFallbackPhysicsShape: 0
+    generateCubemap: 6
+    cubemapConvolution: 0
+    seamlessCubemap: 0
+    alphaIsTransparency: 1
+    spriteTessellationDetail: -1
+    textureType: 8
+    textureShape: 1
+    singleChannelComponent: 0
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+    normalMap: 0
+    textureFormat: 0
+    maxTextureSize: 0
+    lightmap: 0
+    compressionQuality: 0
+    linearTexture: 0
+    grayScaleToAlpha: 0
+    rGBM: 0
+    cubemapConvolutionSteps: 0
+    cubemapConvolutionExponent: 0
+    maxTextureSizeSet: 0
+    compressionQualitySet: 0
+    textureFormatSet: 0
+    applyGammaDecoding: 0
+  spriteImportData:
+  - name: 
+    originalName: 
+    pivot: {x: 0, y: 0}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    spriteID: 
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 0, y: 0}
+  mosaicSpriteImportData: []
+  rigSpriteImportData:
+  - name: Mark
+    originalName: 
+    pivot: {x: 0.55276585, y: 0.052394677}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 23
+      width: 13
+      height: 40
+    spriteID: f9b163dc1c1cc1b46bffd1fbda191683
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: -19, y: -41}
+  - name: Sprout
+    originalName: 
+    pivot: {x: 0.48094562, y: 0.080802836}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 24
+      height: 18
+    spriteID: 70d6456d04f7c61428200af7270aff7d
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: -84, y: -76}
+  - name: Flower
+    originalName: 
+    pivot: {x: 0.72865355, y: 0.20898776}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 74
+      y: 4
+      width: 13
+      height: 11
+    spriteID: a985c6644f6e79f459b74ac196faa50e
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: -19, y: -18}
+  - name: Hat
+    originalName: 
+    pivot: {x: 0.5533525, y: 0.35300875}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 36
+      y: 4
+      width: 30
+      height: 14
+    spriteID: 88b975a38510d8d4785d80e12b261897
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 18, y: -17}
+  platformSettings: []
+  mosaicLayers: 1
+  documentPivot: {x: 0, y: 0}
+  documentAlignment: 7
+  importHiddenLayers: 0
+  importedTextureWidth: 128
+  importedTextureHeight: 128
+  documentSize: {x: 128, y: 128}
+  paperDollMode: 0
+  keepDupilcateSpriteName: 0
+  spriteCategoryList:
+    categories: []
+  textureActualWidth: 128
+  textureActualHeight: 128
+  spritePackingTag: 
+  resliceFromLayer: 0
+  characterMode: 1
+  mosaicPSDLayers: []
+  rigPSDLayers:
+  - name: Mark
+    spriteName: Mark
+    isGroup: 0
+    parentIndex: -1
+    spriteID: f9b163dc1c1cc1b46bffd1fbda191683
+    layerID: 8
+    mosaicPosition: {x: 4, y: 30}
+  - name: Sprout
+    spriteName: Sprout
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 70d6456d04f7c61428200af7270aff7d
+    layerID: 6
+    mosaicPosition: {x: 4, y: 4}
+  - name: Flower
+    spriteName: Flower
+    isGroup: 0
+    parentIndex: -1
+    spriteID: a985c6644f6e79f459b74ac196faa50e
+    layerID: 5
+    mosaicPosition: {x: 74, y: 4}
+  - name: Hat
+    spriteName: Hat
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 88b975a38510d8d4785d80e12b261897
+    layerID: 4
+    mosaicPosition: {x: 36, y: 4}
+  characterData:
+    bones: []
+    parts:
+    - spritePosition:
+        x: 23
+        y: 64
+        width: 13
+        height: 40
+      spriteId: f9b163dc1c1cc1b46bffd1fbda191683
+      bones: 
+      parentGroup: 0
+      order: 0
+    - spritePosition:
+        x: 88
+        y: 80
+        width: 24
+        height: 18
+      spriteId: 70d6456d04f7c61428200af7270aff7d
+      bones: 
+      parentGroup: 0
+      order: 0
+    - spritePosition:
+        x: 93
+        y: 22
+        width: 13
+        height: 11
+      spriteId: a985c6644f6e79f459b74ac196faa50e
+      bones: 
+      parentGroup: 0
+      order: 0
+    - spritePosition:
+        x: 18
+        y: 21
+        width: 30
+        height: 14
+      spriteId: 88b975a38510d8d4785d80e12b261897
+      bones: 
+      parentGroup: 0
+      order: 0
+    dimension: {x: 0, y: 0}
+    characterGroups: []
+  generateGOHierarchy: 0
+  textureAssetName: Player_Hair Texture
+  prefabAssetName: Player_Hair Prefab
+  spriteLibAssetName: Player_Hair Sprite Lib
+  secondarySpriteTextures: []
