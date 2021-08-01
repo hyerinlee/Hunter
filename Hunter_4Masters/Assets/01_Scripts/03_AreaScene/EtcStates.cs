@@ -7,22 +7,23 @@ using System.Linq;
 public class EtcStates : MonoBehaviour
 {
     private PlayerData pd;
-    private GameObject[] etcs = new GameObject[3];
-    private Image[] etcImgs = new Image[3];
-    private Button[] etcBtns = new Button[3];
+    private GameObject[] etcs = new GameObject[Const.etcSize];
+    private Image[] etcImgs = new Image[Const.etcSize];
+    private Button[] etcBtns = new Button[Const.etcSize];
     private GameObject etcDetail;
 
     private List<ConsEtc> etc = new List<ConsEtc>();
 
     private void Awake()
     {
-        for (int i = 0; i < transform.GetChild(0).childCount; i++)
+        for (int i = 0; i < Const.etcSize; i++)
         {
             etcs[i] = transform.GetChild(0).GetChild(i).gameObject;
             etcImgs[i] = etcs[i].transform.GetChild(0).GetComponent<Image>();
             etcBtns[i] = etcs[i].GetComponent<Button>();
         }
         etcDetail = transform.GetChild(1).gameObject;
+        SetEtcUI();
     }
 
     public void SetEtcUI()
@@ -31,7 +32,7 @@ public class EtcStates : MonoBehaviour
         if (etc.Count != 0 && etc.Intersect(pd.Cons.ETC).Count() == etc.Count) return;
 
         pd = FosterManager.Instance.GetPlayerData();
-        for (int i = 0; i < etcs.Length; i++)
+        for (int i = 0; i < Const.etcSize; i++)
         {
             etcBtns[i].onClick.RemoveAllListeners();
             etcs[i].SetActive(false);

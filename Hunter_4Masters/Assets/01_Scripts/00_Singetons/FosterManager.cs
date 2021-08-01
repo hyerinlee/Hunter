@@ -35,6 +35,7 @@ public class PlayerData : ICloneable
         {
             Cons.n_Cons[key].cur_point += value;
         }
+        else if (key == Const.time) GameManager.Instance.tempSpendTime += (int)value;
         else if (key == Const.money) Mon_Inven.Money += value;
         else Debug.LogError(key + "에 해당하는 플레이어 데이터가 존재하지 않음");
     }
@@ -49,9 +50,17 @@ public class PlayerData : ICloneable
         {
             return Cons.n_Cons[key].cur_point;
         }
+        else if (key == Const.time) return GameManager.Instance.leftTimeVal;
         else if (key == Const.money) return Mon_Inven.Money;
         else Debug.LogError(key + "에 해당하는 플레이어 데이터가 존재하지 않음");
         return 0;
+    }
+
+    public float GetStatMax(string key)
+    {
+        if (Stats.ContainsKey(key)) return Stats[key].max_point;
+        else if (Cons.n_Cons.ContainsKey(key)) return Cons.n_Cons[key].max_point;
+        else throw new NullReferenceException();
     }
 
     public float GetStatPercent(string key)
@@ -64,10 +73,10 @@ public class PlayerData : ICloneable
     public string GetDefStat(string key)
     {
         float effectValue=0;
-        for(int i=0; i < Mon_Inven.Equipment.Count; i++)
+        for(int i=0; i < Const.equipNum; i++)
         {
             if (Mon_Inven.Equipment[i].item_name == "none") continue;
-            Equipment itemData = (Equipment)DataManager.Instance.GetItemData(Mon_Inven.Equipment[i].item_name);
+            Equipment itemData = (Equipment)DataManager.Instance.GetItemData(Mon_Inven.Equipment[i]);
             for (int j=0; j<itemData.effect.Count; j++)
             {
                 if (itemData.effect[j].effect_variable == key) effectValue += itemData.effect[j].GetMinValue();
@@ -98,74 +107,76 @@ public class PlayerData : ICloneable
 
     public string GetMoney()
     {
-        return string.Format("{0:#,##0}", Mon_Inven.Money) + "$";
+        return StatConverter.GetMoney(Mon_Inven.Money);
     }
 
-    public void AddInvenItem(string item)   // 장비아이템 인벤토리에 추가 시 호출
+    public PlayerItem FindItemWithIndex(int slotIndex)
     {
-        Mon_Inven.Inven = Mon_Inven.Inven.OrderBy(x => x.inven_index).ToList();
-        int firstEmptyIndex = 0;
-        for (int i = 0; i < Mon_Inven.Inven.Count; i++)
+        for(int i=0; i<Mon_Inven.Inven.Count; i++)
         {
-            if (firstEmptyIndex == Mon_Inven.Inven[i].inven_index) firstEmptyIndex++;
+            if (Mon_Inven.Inven[i].inven_index == slotIndex) return Mon_Inven.Inven[i];
         }
-
-        Mon_Inven.Inven.Add(new InvenItem()
-        {
-            inven_index = firstEmptyIndex,
-            item_index = DataManager.Instance.GetItemData(item).data_ID,
-            item_name = item
-        });
+        return null;
     }
 
-    public void AddInvenItem(string item, int itemEach)   // 소비아이템 인벤토리에 추가 시 호출
+    // 아이템 인벤토리에 추가 시 호출(ItemData로)
+    public void AddInvenItem(ItemData item, int index = -1, int itemEach = -1)
     {
-        Mon_Inven.Inven = Mon_Inven.Inven.OrderBy(x=>x.inven_index).ToList();
-        int firstEmptyIndex = 0;
-        int index = -1;
-        for(int i=0; i < Mon_Inven.Inven.Count; i++)
-        {
-            if(Mon_Inven.Inven[i].item_name == item) index = i; // 이미 있는 아이템인지 체크
-            if (firstEmptyIndex == Mon_Inven.Inven[i].inven_index) firstEmptyIndex++;
+        if (item == null || itemEach == 0) return;
 
+        if (index == -1)    // 사용자 지정 인덱스가 아닐 경우 적절한 인덱스 탐색
+        {
+            Mon_Inven.Inven = Mon_Inven.Inven.OrderBy(x => x.inven_index).ToList();
+
+            if (itemEach == -1)
+            {   // 장비아이템일 때
+                index++;
+
+                for (int i = 0; i < Mon_Inven.Inven.Count; i++)
+                {
+                    if (index == Mon_Inven.Inven[i].inven_index) index++;   // 리스트 인덱스와 인벤 인덱스가 불일치하는 구간이 가장 처음 비는 인덱스
+                }
+            }
+            else
+            {   // 포션아이템일 때
+                int firstEmptyIndex = 0;
+                for (int i = 0; i < Mon_Inven.Inven.Count; i++)
+                {
+                    if (Mon_Inven.Inven[i].item_index == item.data_ID) index = i; // 이미 있는 아이템인지 체크
+                    if (firstEmptyIndex == Mon_Inven.Inven[i].inven_index) firstEmptyIndex++;
+
+                }
+
+                if (index != -1)
+                {
+                    Mon_Inven.Inven[index].item_each += itemEach;
+                    return;
+                }
+                else index = firstEmptyIndex;
+            }
         }
 
-        if (index != -1)
-        {
-            Mon_Inven.Inven[index].item_each += itemEach;
-        }
-        else Mon_Inven.Inven.Add(new InvenItem()
-        {
-            inven_index = firstEmptyIndex,
-            item_index = DataManager.Instance.GetItemData(item).data_ID,
-            item_name = item,
-            item_each = itemEach
-        });
-    }
-
-    public void AddInvenItemAt(int index, string item)   // 장비아이템 인벤토리의 특정 인덱스에 추가 시 호출
-    {
         Mon_Inven.Inven.Add(new InvenItem()
         {
             inven_index = index,
-            item_index = DataManager.Instance.GetItemData(item).data_ID,
-            item_name = item
+            item_index = item.data_ID,
+            item_name = DataManager.Instance.GetKey(item)
         });
+
+        if (itemEach > 0) FindItemWithIndex(index).item_each = itemEach; // 포션아이템일 경우 개수 추가
     }
 
-    public void AddInvenItemAt(int index, string item, int itemEach)   // 소비아이템 인벤토리의 특정 인덱스에 추가 시 호출
+    // 아이템 인벤토리에 추가 시 호출(PlayerItem으로)
+    public void AddInvenItem(PlayerItem item, int index = -1, int itemEach = -1)
     {
-        Mon_Inven.Inven.Add(new InvenItem()
-        {
-            inven_index = index,
-            item_index = DataManager.Instance.GetItemData(item).data_ID,
-            item_name = item,
-            item_each = itemEach
-        });
+        if (item == null || itemEach == 0) return;
+        AddInvenItem(DataManager.Instance.GetItemData(item), index, itemEach);
     }
+
 
     public void RemoveInvenItem(PlayerItem item)
     {
+        if (item == null) return;
         for (int i = 0; i < Mon_Inven.Inven.Count; i++)
         {
             if (((InvenItem)item).inven_index == Mon_Inven.Inven[i].inven_index)
@@ -177,7 +188,8 @@ public class PlayerData : ICloneable
 
     public void RemoveInvenItem(PlayerItem item, int itemEach)
     {
-        for(int i=0; i < Mon_Inven.Inven.Count; i++)
+        if (item == null) return;
+        for (int i=0; i < Mon_Inven.Inven.Count; i++)
         {
             if(((InvenItem)item).inven_index == Mon_Inven.Inven[i].inven_index)
             {
@@ -187,27 +199,66 @@ public class PlayerData : ICloneable
         }
     }
 
-    public void SetEquipItem(int index, string item)
+    public void SetEquipItem(int index, PlayerItem item)
     {
-        if (Mon_Inven.Equipment[index].item_name != "none") ResetEquipItem(index);
-        ItemData itemData = DataManager.Instance.GetItemData(item);
-        for(int i=0; i<itemData.effect.Count; i++)
+        ResetEquipItem(index);
+        if (item != null)
         {
-            AddToCurPoint(itemData.effect[i].effect_variable, itemData.effect[i].GetMinValue());
+            ItemData itemData = DataManager.Instance.GetItemData(item);
+            for (int i = 0; i < itemData.effect.Count; i++)
+            {
+                AddToCurPoint(itemData.effect[i].effect_variable, itemData.effect[i].GetMinValue());
+            }
+            Mon_Inven.Equipment[index].item_name = item.item_name;
+            Mon_Inven.Equipment[index].item_index = item.item_index;
+            if (itemData.category==3) Mon_Inven.Equipment[index].item_each = item.item_each;
         }
-        Mon_Inven.Equipment[index].item_name = item;
-        Mon_Inven.Equipment[index].item_index = DataManager.Instance.GetItemData(item).data_ID;
     }
 
+    // 기존 장비의 장착을 해제하고, 장착 효과를 없앰
     public void ResetEquipItem(int index)
     {
-        ItemData itemData = DataManager.Instance.GetItemData(Mon_Inven.Equipment[index].item_name);
-        for (int i = 0; i < itemData.effect.Count; i++)
+        if (Mon_Inven.Equipment[index].item_name != Const.defStr)   // 해당 인덱스에 아이템이 저장되어 있는 경우
         {
-            AddToCurPoint(itemData.effect[i].effect_variable, -itemData.effect[i].GetMinValue());
+            ItemData itemData = DataManager.Instance.GetItemData(Mon_Inven.Equipment[index]);
+            for (int i = 0; i < itemData.effect.Count; i++)
+            {
+                AddToCurPoint(itemData.effect[i].effect_variable, -itemData.effect[i].GetMinValue());
+            }
+            Mon_Inven.Equipment[index].item_name = "none";
+            Mon_Inven.Equipment[index].item_index = 0;
         }
-        Mon_Inven.Equipment[index].item_name = "none";
-        Mon_Inven.Equipment[index].item_index = 0;
+    }
+
+    //public void RemoveEquipItem(EquipItem item)
+    //{
+    //    Mon_Inven.Equipment.RemoveAt(item.equip_index);
+    //}
+
+    public void RemoveEquipItem(EquipItem item, int itemEach)
+    {
+        if (Mon_Inven.Equipment[item.equip_index].item_each == itemEach) ResetEquipItem(item.equip_index);
+        else Mon_Inven.Equipment[item.equip_index].item_each -= itemEach;
+    }
+
+    // (장비/인벤 공통) 동일 포션을 병합: item 개수를 itemEach만큼 더하고 남는 개수를 리턴
+    public int AddPotion(ref PlayerItem item, int itemEach)
+    {
+        int surplus = item.item_each + itemEach - ((Potion)DataManager.Instance.GetItemData(item)).max_capacity;
+
+        item.item_each = Mathf.Clamp(item.item_each + itemEach, 0, ((Potion)DataManager.Instance.GetItemData(item)).max_capacity);
+
+        return (surplus > 0) ? surplus : 0;
+    }
+
+    public void UsePotion(EquipItem item)
+    {
+        // item_each 하나 감소시키는데, 만약 감소후 0이면 버튼이미지랑 갯수오브젝트 setactive false 해야됨.
+        RemoveEquipItem(item, 1);
+        for (int i = 0; i < DataManager.Instance.GetItemData(item).effect.Count; i++)
+        {
+
+        }
     }
 }
 
@@ -299,6 +350,7 @@ public class EquipItem : PlayerItem, ICloneable
         return new EquipItem
         {
             equip_index = this.equip_index,
+            item_each = this.item_each,
             item_name = this.item_name,
             item_index = this.item_index
         };
@@ -308,7 +360,6 @@ public class EquipItem : PlayerItem, ICloneable
 public class InvenItem : PlayerItem, ICloneable
 {
     public int inven_index;
-    public int item_each;
 
     public object Clone()
     {
@@ -325,7 +376,7 @@ public class InvenItem : PlayerItem, ICloneable
 public class PlayerItem
 {
     public string item_name;
-    //public int item_each;
+    public int item_each;
     public int item_index;
 }
 #endregion

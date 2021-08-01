@@ -8,141 +8,139 @@ using UnityEngine.UI;
 
 public class ResultPopup : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject[] gauges = new GameObject[4];
-
-    // 프리팹
-    private List<string> prefabs = new List<string>();
+    private Dictionary<string, GameObject> Stats;
 
     private PlayerData beforePd, afterPd;
 
-    private GameObject temp;
     private float duration = 1.0f; // 카운팅에 걸리는 시간 설정.
 
-    private Dictionary<string, bool> changedValues = new Dictionary<string, bool>()
+    private void Awake()
     {
-        {Const.sp, false},
-        {Const.hp, false},
-        {Const.money, false},
-        {Const.time, false},
-        {Const.defStats[0], false},
-        {Const.defStats[1], false},
-        {Const.defStats[2], false}
-    };
+        Stats = new Dictionary<string, GameObject>();
+        Transform statPanel = transform.GetChild(0).GetChild(0);
+        for (int i = 0; i < statPanel.childCount; i++)
+        {
+            Stats.Add(statPanel.GetChild(i).name, statPanel.GetChild(i).gameObject);
+        }
+    }
 
     public void SetPopup(KeyValuePair<string, EventData>[] oea, Dictionary<string, float>[] ca, PlayerData beforePd, PlayerData afterPd)
     {
-        WhatAreChanged(oea, ca);    // 변경된 육성데이터 타입 체크
-
-        SetPrefabs();   // 변경된 육성데이터타입을 prefabs에 string으로 저장
-
         this.beforePd = beforePd;
         this.afterPd = afterPd;
 
-        StartCoroutine(SetGauge());
-        for (int i = 0; i < prefabs.Count; i++)
+        for (int i = 0; i < oea.Length; i++)
         {
-            // 임시 데이터
-            PlayAnim(gauges[i], i);
+            foreach (var pair in ca[i])
+            {
+                Debug.Log(i + "번째 딕셔너리 변경 항목 출력 : " + pair.Key);
+                SetStatValue(pair.Key);
+            }
         }
 
         FosterManager.Instance.SetPlayerData(afterPd);
     }
 
-    IEnumerator SetGauge()
+    // 하나의 스탯게이지를 세팅.(이전의 PlayAnim)
+    void SetStatValue(string statName)
     {
-        for(int i=0; i<prefabs.Count; i++)
+        if (!Stats.ContainsKey(statName)) return;
+
+        Stats[statName].SetActive(true);
+
+        float target = afterPd.GetCurPoint(statName);
+        float current = beforePd.GetCurPoint(statName);
+
+        Text deltaTxt = Stats[statName].transform.Find("Delta").GetComponent<Text>();
+
+        if (statName == Const.time)
         {
-            temp = (GameObject)Instantiate(Resources.Load("Stats/" + prefabs[i]));
-            temp.transform.SetParent(gauges[i].transform);
-            temp.transform.localScale = new Vector3(1, 1, 1);
-            temp.transform.localPosition = new Vector3(90, 0, 0); //왜 90을 더해줘야 하는걸까 ... ??
+            target = current + GameManager.Instance.tempSpendTime;
+            StartCoroutine(NumCoroutine(statName, target, current));
+            deltaTxt.text = StatConverter.GetEstimatedTime(current - target);
         }
-
-        yield return null;
-    }
-
-    public void PlayAnim(GameObject obj, int i)
-    {
-        float target = afterPd.GetCurPoint(prefabs[i]);
-        float current = beforePd.GetCurPoint(prefabs[i]);
-
-        if (itIsCount(obj))
+        else if (statName == Const.money)
         {
-            StartCoroutine(PlayCount(obj, target, current));
+            StartCoroutine(NumCoroutine(statName, target, current));
+            deltaTxt.text = StatConverter.GetMoney(target - current);
         }
         else
         {
-            StartCoroutine(PlayGauge(obj, target, current, i));
+            StartCoroutine(GaugeCoroutine(statName, target, current));
+            deltaTxt.text = (target - current).ToString();
         }
 
-        SetDelta(obj, target-current);
     }
 
-    IEnumerator PlayGauge(GameObject obj, float target, float current, int i)
+    // 게이지 형식 스탯 출력
+    IEnumerator GaugeCoroutine(string statName, float target, float current)
     {
-
-        temp = obj.transform.GetChild(0).gameObject;
-        Image gaugeBar = temp.transform.Find("Gauge").GetComponent<Image>();
-        gaugeBar.fillAmount = current / beforePd.GetCurPoint(prefabs[i]); // max
+        Image gaugeBar = Stats[statName].transform.Find("Gauge").GetComponent<Image>();
+        //gaugeBar.fillAmount = current / beforePd.GetCurPoint(prefabs[i]); // max
+        gaugeBar.fillAmount = beforePd.GetStatPercent(statName);
 
         yield return new WaitForSeconds(2);
 
-        if(target - current < 0)
-        {
-            float curFillAmount = gaugeBar.fillAmount;
+        if (target <= current)
+        {   // 감소한 경우
 
             float offset = (current - target) / duration;
-            float max = current;
-            current = target;
-            while (current < max)
+            while (target < current)
             {
-                current += offset * Time.deltaTime;
-                gaugeBar.fillAmount = (target / current) - (1 - curFillAmount);
+                current -= offset * Time.deltaTime;
+                //gaugeBar.fillAmount = (target / current) - (1 - curFillAmount); 
+                gaugeBar.fillAmount = current / beforePd.GetStatMax(statName);
                 yield return null;
             }
         }
         else
-        {
-            float curFillAmount = target / 100;
+        {   // 증가한 경우
+            //float curFillAmount = target / 100;
 
             float offset = (target - current) / duration;
             while (current < target)
             {
                 current += offset * Time.deltaTime;
-                gaugeBar.fillAmount = (current / target) - (1 - curFillAmount);
+                //gaugeBar.fillAmount = (current / target) - (1 - curFillAmount);
+                gaugeBar.fillAmount = current / beforePd.GetStatMax(statName);
                 yield return null;
             }
         }
     }
 
-    IEnumerator PlayCount(GameObject obj, float target, float current)
+    // 숫자 형식 스탯 출력(현재는 재화,시간만 해당)
+    IEnumerator NumCoroutine(string statName, float target, float current)
     {
-        temp = obj.transform.GetChild(0).gameObject;
-        Text textBox = temp.transform.Find("Gauge").GetComponent<Text>();
+        //temp = Stats[str].transform.GetChild(0).gameObject;
+        Text textBox = Stats[statName].transform.Find("Gauge").GetComponent<Text>();
         textBox.text = current.ToString();
+
+        if (statName == Const.time) textBox.text = StatConverter.GetBasicTime((int)(1440 - current % 1440) % 1440);
+        else if (statName == Const.money) textBox.text = StatConverter.GetMoney(current);
 
         yield return new WaitForSeconds(2);
 
-        if(target - current < 0)
+        if (target <= current)
         {
             float offset = (current - target) / duration;
             while (current >= target)
             {
                 current -= offset * Time.deltaTime;
-                if(current < target) {current = target;}
+                if (current < target) { current = target; }
                 int tmp = (int)current;
                 textBox.text = tmp.ToString();
+                if(statName==Const.time) textBox.text = StatConverter.GetBasicTime((int)(1440 - current % 1440) % 1440);
+                else if (statName == Const.money) textBox.text = StatConverter.GetMoney(current);
                 yield return null;
             }
         }
         else
-        {
+        {   // 주의 - 시간은 증가하는(뒤로 가는) 경우가 없음.
             float offset = (target - current) / duration;
             while (current <= target)
             {
                 current += offset * Time.deltaTime;
-                if(current > target) {current = target;}
+                if (current > target) { current = target; }
                 int tmp = (int)current;
                 textBox.text = tmp.ToString();
                 yield return null;
@@ -150,79 +148,13 @@ public class ResultPopup : MonoBehaviour
         }
     }
 
-    private bool itIsCount(GameObject obj)
+    private void Exit()
     {
-        if(obj.transform.GetChild(0).gameObject.name == Const.time+"(Clone)" || obj.transform.GetChild(0).gameObject.name == Const.money+ "(Clone)") return true;
-        else return false;
-    }
-
-    private void SetDelta(GameObject obj, float delta)
-    {
-        temp = obj.transform.GetChild(0).gameObject;
-        Text txt = temp.transform.Find("Delta").GetComponent<Text>();
-        int del = (int)delta;
-        txt.text = delta.ToString();
-    }
-
-    private void WhatAreChanged(KeyValuePair<string, EventData>[] oea, Dictionary<string, float>[] ca)
-    {
-        for(int i=0; i<oea.Length; i++)
+        foreach(GameObject obj in Stats.Values)
         {
-            foreach(var values in ca[i].Keys)
-            {
-                Debug.Log(i + "번째 딕셔너리 변경 항목 출력 : " + values);
-                if(changedValues.ContainsKey(values))
-                {
-                    changedValues[values] = true;
-                }
-            }
+            obj.SetActive(false);
         }
-    }
 
-    private void SetPrefabs() // use changedValues dictionary
-    {
-        foreach(var key in changedValues.Keys)
-        {
-            if(changedValues[key])
-            {
-                prefabs.Add(key);
-            }
-        }
-    }
-
-    public void Exit()
-    {
-        ResetWhatAreChanged();
-        RemoveGaugesChild();
-        ResetPrefabList();
         GameManager.Instance.Resume();
-    }
-
-    private void ResetWhatAreChanged()
-    {
-        List<string> keyList = new List<string>(changedValues.Keys);
-
-        foreach (var key in keyList)
-        {
-            changedValues[key] = false;
-        }
-
-        Debug.Log("불린 초기화");
-    }
-
-    private void ResetPrefabList()
-    {
-        this.prefabs.Clear();
-        Debug.Log("프리팹 초기화");
-    }
-
-    private void RemoveGaugesChild()
-    {
-         for(int i=0; i<prefabs.Count; i++)
-        {
-            Destroy(gauges[i].transform.GetChild(0).gameObject);
-        }
-
-        Debug.Log("오브젝트 초기화");
     }
 }

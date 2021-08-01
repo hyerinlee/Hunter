@@ -36,7 +36,7 @@ public class SimulationPopup : MonoBehaviour
             int cnt = 0;
             foreach (KeyValuePair<string, float> pair in ca[i])
             {
-                if (pair.Key == "null") continue;
+                if (pair.Key == Const.defStr2) continue;
                 else if (cnt > 0) changeMention += ", ";
                 changeMention += pair.Key + " " + string.Format("{0:+0;-0}", pair.Value);
                 cnt++;

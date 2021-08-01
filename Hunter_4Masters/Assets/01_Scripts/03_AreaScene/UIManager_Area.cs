@@ -7,18 +7,29 @@ using System.Linq;
 public class UIManager_Area : Singleton<UIManager_Area>
 {
     [SerializeField] private Image hpGauge, spGauge;
-    [SerializeField] private GameObject interaction, dialogBox, skillPanel;
+    [SerializeField] private GameObject interaction, dialogBox, skillPotionPanel;
+    [SerializeField] private GameObject[] potionEachs = new GameObject[2];
     [SerializeField] private EtcStates etcPanel;
     [SerializeField] private Popup popup;
     [SerializeField] public Text hp, sp, day, time, money;
-    private List<GameObject> skillBtnList = new List<GameObject>();
+    private GameObject[] skillPotionBtns = new GameObject[5];
+    private Image[] skillPotionBtnImgs = new Image[5];
+    private Text[] potioneachTxts = new Text[2];
+    private Button interactBtn;
     private PlayerData pd;
 
     public override void Awake()
     {
-        for (int i = 0; i < skillPanel.transform.childCount - 2; i++)
+        interactBtn = interaction.GetComponent<Button>();
+        for(int i=0; i<Const.equipNum+Const.potionNum; i++)
         {
-            skillBtnList.Add(skillPanel.transform.GetChild(i).gameObject);
+            skillPotionBtns[i] = skillPotionPanel.transform.GetChild(i).gameObject;
+            skillPotionBtnImgs[i] = skillPotionBtns[i].transform.GetChild(0).GetComponent<Image>();
+            if (i >= Const.equipNum)
+            {
+                potionEachs[i-Const.equipNum] = skillPotionBtns[i].transform.GetChild(1).gameObject;
+                potioneachTxts[i - Const.equipNum] = potionEachs[i - Const.equipNum].transform.GetChild(0).GetComponent<Text>();
+            }
         }
     }
 
@@ -47,43 +58,62 @@ public class UIManager_Area : Singleton<UIManager_Area>
 
     public void SetSkills()
     {
-        for(int i=0; i<skillBtnList.Count; i++)
+        for (int i = 0; i < potionEachs.Length; i++) potionEachs[i].SetActive(false);
+        for(int i=0; i<skillPotionBtns.Length; i++)
         {
-            Image skillImg = skillBtnList[i].transform.GetChild(0).GetComponent<Image>();
             if (pd.Mon_Inven.Equipment[i].item_index != 0)
             {
-                // set skill sprite
-                skillImg.sprite = Resources.Load("Items/" + pd.Mon_Inven.Equipment[i].item_name, typeof(Sprite)) as Sprite;
-                skillImg.enabled = true;
-                // skill onclick addlistener
-                int skillIndex = i;
-                skillBtnList[i].GetComponent<Button>().onClick.RemoveAllListeners();
-                skillBtnList[i].GetComponent<Button>().onClick.AddListener(() => { Debug.Log("스킬 사용함:" + pd.Mon_Inven.Equipment[skillIndex].item_name); });
+                // set sprite
+                skillPotionBtnImgs[i].sprite = DataManager.Instance.GetSprite("Items", pd.Mon_Inven.Equipment[i].item_name);
+                skillPotionBtnImgs[i].enabled = true;
+
+                // onclick addlistener
+                int index = i;
+                skillPotionBtns[i].GetComponent<Button>().onClick.RemoveAllListeners();
+
+                if (i < Const.equipNum)
+                {
+                    // skill
+                    skillPotionBtns[i].GetComponent<Button>().onClick.AddListener(() => { Debug.Log("스킬 사용함:" + pd.Mon_Inven.Equipment[index].item_name); });
+                }
+                else
+                {
+                    potionEachs[i - Const.equipNum].SetActive(true);
+                    potioneachTxts[i - Const.equipNum].text = FosterManager.Instance.GetPlayerData().Mon_Inven.Equipment[index].item_each.ToString();
+
+                    // potion
+                    skillPotionBtns[i].GetComponent<Button>().onClick.AddListener(() => 
+                    {
+                        Debug.Log("포션 1개 사용함");
+                        FosterManager.Instance.GetPlayerData().UsePotion(FosterManager.Instance.GetPlayerData().Mon_Inven.Equipment[Const.equipNum+i]);
+                        SetSkills();
+                    });
+                }
             }
             else
             {
-                skillImg.enabled = false;
-                skillBtnList[i].GetComponent<Button>().onClick.RemoveAllListeners();
+                skillPotionBtnImgs[i].enabled = false;
+                skillPotionBtns[i].GetComponent<Button>().onClick.RemoveAllListeners();
             }
         }
     }
 
     public void ActiveInteraction(Vector2 pos, string simulName)
     {
-        interaction.SetActive(true);
         interaction.transform.position = pos + Vector2.up * 2;
-        interaction.GetComponent<Image>().sprite = Resources.Load("Interact-" + simulName, typeof(Sprite)) as Sprite;
-        interaction.GetComponent<Button>().onClick.RemoveAllListeners();
+        interaction.GetComponent<Image>().sprite = DataManager.Instance.GetSprite("", "Interact-" + simulName);
+        interactBtn.onClick.RemoveAllListeners();
         if (simulName == "NPC")
         {
-            interaction.GetComponent<Button>().onClick.AddListener(() => dialogBox.SetActive(true));
+            interactBtn.onClick.AddListener(() => dialogBox.SetActive(true));
         }
-        else interaction.GetComponent<Button>().onClick.AddListener(() => popup.DoAction(simulName));
+        else interactBtn.onClick.AddListener(() => popup.DoAction(simulName));
+        interaction.SetActive(true);
     }
 
     public void HideInteraction()
     {
-        interaction.GetComponent<Button>().onClick.RemoveAllListeners();
+        interactBtn.onClick.RemoveAllListeners();
         interaction.SetActive(false);
     }
 

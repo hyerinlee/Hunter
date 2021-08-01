@@ -13,16 +13,24 @@ public class SelectedSlot : Singleton<SelectedSlot>
     [SerializeField] private GameObject equipErrorMsg;
 
     public PlayerItem playerItem;    // 드래그 or 정보확인 대상 아이템
-    private Text itemInfoTxt;
+    private ItemInfo info;
+    public Image touchPanel;
 
     public Vector2 dragOffset = new Vector2(0, 0);
-    public Vector2 InfoOffset = new Vector2(-200,200);
+    private Vector2 InfoOffset = new Vector2(-200,-200);
     private Vector2 inputDir;   // 터치 좌표
 
     private void Start()
     {
-        itemInfoTxt = itemInfo.transform.GetChild(0).GetComponent<Text>();
+        touchPanel = GetComponent<Image>();
+        info = itemInfo.GetComponent<ItemInfo>();
     }
+
+    //private void OnMouseDown()
+    //{
+    //    itemInfo.SetActive(false);
+    //    touchPanel.enabled = false;
+    //}
 
     public void SetSelectedItem(PlayerItem playerItem)
     {
@@ -45,7 +53,8 @@ public class SelectedSlot : Singleton<SelectedSlot>
         itemInfo.SetActive(activeState);
         if(activeState && playerItem != null)
         {
-            itemInfoTxt.text = DataManager.Instance.GetItemData(playerItem.item_name).GetItemDescription();
+            info.SetItemInfo(DataManager.Instance.GetItemData(playerItem));
+            //itemInfoTxt.text = DataManager.Instance.GetItemData(playerItem.item_name).GetItemDescription();
         }
     }
 

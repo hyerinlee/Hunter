@@ -1,0 +1,345 @@
+﻿{
+	"trainingData_event": {
+		"00_training_self": {
+			"Data_ID": 401100,
+			"Name": "00_training_self",
+			"Category": "choice_event",
+			"Pre_ID": 400002,
+			"Mention": "집중이 잘 된다.",
+			"Condition": [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0,
+					"condition_per": "null"
+				}
+			],
+			"Effect": [
+			]
+		},
+		"00_training_s_accident": {
+			"Data_ID": 401110,
+			"Name": "00_training_s_accident",
+			"Category": "choice_event",
+			"Pre_ID": 400001,
+			"Mention": "집중이 잘 안 된다...",
+			"Condition": [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0,
+					"condition_per": "null"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "SP",
+					"effect_min": "-5.0",
+					"effect_max": "-3.0"
+				},
+				{
+					"effect_variable": "HP",
+					"effect_min": "-5.0",
+					"effect_max": "-1.0"
+				}
+			]
+		},
+		"00_training_s_accident_2": {
+			"Data_ID": 401111,
+			"Name": "00_training_s_accident_2",
+			"Category": "event_event",
+			"Pre_ID": 401110,
+			"Mention": "집중이 잘 안 됐지만 어쩌구",
+			"Condition": [
+				{
+					"condition_variable": "DEX",
+					"condition_min": 100.0,
+					"condition_max": 10000.0,
+					"condition_per": "20.0"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "DEX",
+					"effect_min": "1.0",
+					"effect_max": "1.0"
+				},
+				{
+					"effect_variable": "INT",
+					"effect_max": "1.0",
+					"effect_min": "1.0"
+				}
+			]
+		},
+		"00_training_warrior": {
+			"Data_ID": 401200,
+			"Name": "00_training_warrior",
+			"Category": "choice_event",
+			"Pre_ID": 400002,
+			"Mention": "훈련_전사반",
+			"Condition": [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0,
+					"condition_per": "null"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "null",
+					"effect_min": "null",
+					"effect_max": "null"
+				}
+			]
+		},
+		"00_training_w_accident": {
+			"Data_ID": 401210,
+			"Name": "00_training_w_accident",
+			"Category": "choice_event",
+			"Pre_ID": 400002,
+			"Mention": "훈련_전사반_이벤트",
+			"Condition": [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0,
+					"condition_per": "null"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "SP",
+					"effect_min": "-5.0",
+					"effect_max": "-3.0"
+				},
+				{
+					"effect_variable": "HP",
+					"effect_min": "-5.0",
+					"effect_max": "-1.0"
+				}
+			]
+		},
+		"00_training_w_accident_2": {
+			"Data_ID": 401211,
+			"Name": "00_training_w_accident_2",
+			"Category": "event_event",
+			"Pre_ID": 401200,
+			"Mention": "훈련_전사반_이벤트_2",
+			"Condition": [
+				{
+					"condition_variable": "STR",
+					"condition_min": 300.0,
+					"condition_max": 10000.0,
+					"condition_per": "15.0"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "SP",
+					"effect_min": "-15.0",
+					"effect_max": "-10.0"
+				},
+				{
+					"effect_variable": "HP",
+					"effect_min": "-1.0",
+					"effect_max": "0.0"
+				}
+			]
+		},
+		"00_training_warriortutor": {
+			"Data_ID": 401300,
+			"Name": "00_training_warriortutor",
+			"Category": "choice_event",
+			"Pre_ID": 400003,
+			"Mention": "확실히 돈을 쓴 보람이 있다.",
+			"Condition": [
+				{
+					"condition_variable": "null",
+					"condition_con": -10000.0,
+					"condition_value": -10000.0,
+					"condition_per": "null"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "null",
+					"effect_min": "null",
+					"effect_max": "null"
+				}
+			]
+		},
+		"00_training_wt_accident": {
+			"Data_ID": 401310,
+			"Name": "00_training_wt_accident",
+			"Category": "choice_event",
+			"Pre_ID": 400003,
+			"Mention": "선생님께 꾸중을 들었다.",
+			"Condition": [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0,
+					"condition_per": "null"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "SP",
+					"effect_min": "-10.0",
+					"effect_max": "-5.0"
+				},
+				{
+					"effect_variable": "TIME",
+					"effect_min": "-30.0",
+					"effect_max": "-20.0"
+				}
+			]
+		},
+		"00_training_wt_accident_2": {
+			"Data_ID": 401311,
+			"Name": "00_training_wt_accident_2",
+			"Category": "choice_event",
+			"Pre_ID": 401310,
+			"Mention": "선생님께 꾸중을 듣고 더 열심히 했다.",
+			"Condition": [
+				{
+					"condition_variable": "STR",
+					"condition_min": 400.0,
+					"condition_max": 10000.0,
+					"condition_per": "20.0"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "SP",
+					"effect_min": "-5.0",
+					"effect_max": "-3.0"
+				}
+			]
+		},
+		"00_training_goofoff": {
+			"Data_ID": 402000,
+			"Name": "00_training_goofoff",
+			"Category": "choice_event",
+			"Pre_ID": 400001,
+			"Mention": "그냥 놀았다.",
+			"Condition": [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0,
+					"condition_per": "null"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "SP",
+					"effect_min": "-20.0",
+					"effect_max": "-10.0"
+				},
+				{
+					"effect_variable": "HP",
+					"effect_min": "-20.0",
+					"effect_max": "-10.0"
+				},
+				{
+					"effect_variable": "MONEY",
+					"effect_min": "-35.0",
+					"effect_max": "-25.0"
+				}
+			]
+		},
+		"00_training_goofoff_2": {
+			"Data_ID": 402010,
+			"Name": "00_training_goofoff_2",
+			"Category": "event_event",
+			"Pre_ID": 402000,
+			"Mention": "훈련_농땡이_이벤트2",
+			"Condition": [
+				{
+					"condition_variable": "STR",
+					"condition_con": 200.0,
+					"condition_max": 10000.0,
+					"condition_per": "2.0"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "SP",
+					"effect_min": "-17.0",
+					"effect_max": "-12.0"
+				},
+				{
+					"effect_variable": "HP",
+					"effect_min": "-20.0",
+					"effect_max": "-15.0"
+				}
+			]
+		},
+		"00_training_goofoff_3": {
+			"Data_ID": 402020,
+			"Name": "00_training_goofoff_3",
+			"Category": "event_event",
+			"Pre_ID": 402000,
+			"Mention": "훈련_농땡이_이벤트3",
+			"Condition": [
+				{
+					"condition_variable": "DEX",
+					"condition_min": 200.0,
+					"condition_max": 10000.0,
+					"condition_per": "2.0"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "SP",
+					"effect_min": "-10.0",
+					"effect_max": "-5.0"
+				},
+				{
+					"effect_variable": "MONEY",
+					"effect_min": "-40.0",
+					"effect_max": "-30.0"
+				},
+				{
+					"effect_variable": "ran_item",
+					"effect_min": "-2.0",
+					"effect_max": "-1.0"
+				}
+			]
+		},
+		"00_training_goofoff_4": {
+			"Data_ID": 402030,
+			"Name": "00_training_goofoff_4\r\n",
+			"Category": "event_event",
+			"Pre_ID": 402000,
+			"Mention": "훈련_농땡이_이벤트4",
+			"Condition": [
+				{
+					"condition_variable": "null",
+					"condition_min": -10000.0,
+					"condition_max": -10000.0,
+					"condition_per": "0.5"
+				}
+			],
+			"Effect": [
+				{
+					"effect_variable": "HP",
+					"effect_min": "-100.0",
+					"effect_max": "-50.0"
+				},
+				{
+					"effect_variable": "MONEY",
+					"effect_min": "-100.0",
+					"effect_max": "-50.0"
+				},
+				{
+					"effect_variable": "ran_item",
+					"effect_min": "-20.0",
+					"effect_max": "-20.0"
+				}
+			]
+		}
+	}
+}

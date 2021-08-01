@@ -3,7 +3,7 @@
 		"Data_ID" : 130001,
 		"Name" : "소형 HP포션",
 		"Category" : 3,
-		"Price" : 50.0,
+		"Price" : 5.0,
 		"Max_capacity" : 10,
 		"Effect" : [
 			{

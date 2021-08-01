@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class Training : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        UIManager_Area.Instance.ActiveInteraction(this.transform.position, "Training");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        
+        UIManager_Area.Instance.HideInteraction();
     }
 }

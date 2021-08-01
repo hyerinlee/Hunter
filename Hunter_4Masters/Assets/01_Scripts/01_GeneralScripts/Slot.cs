@@ -14,37 +14,28 @@ public class Slot : MonoBehaviour,
     public string slotType;
     public int slotIndex;
     public PlayerItem playerItem;
+    public delegate void SDelegate(int a);
+    public SDelegate selectDel;
 
     [SerializeField] private GameObject itemEach;
     [SerializeField] private Text itemEachTxt;
     public Image itemImage;
     public Sprite defaultSprite;
 
+    private bool shopSlot = false;
     private bool isPressed = false;
     private float pressTime = 0;
 
+    public void isShopSlot(bool flag)
+    {
+        shopSlot = flag;
+    }
+
     public void SetItem(PlayerItem newPlayerItem)
     {
-        if (newPlayerItem != null && newPlayerItem.item_name != "none")
+        if (newPlayerItem != null && newPlayerItem.item_name != Const.defStr)
         {
-            if(slotType == Const.equip)
-            {
-                playerItem = new EquipItem(){
-                    equip_index = ((EquipItem)newPlayerItem).equip_index,
-                    item_name = newPlayerItem.item_name,
-                    item_index = newPlayerItem.item_index
-                };
-            }
-            else
-            {
-                playerItem = new InvenItem()
-                {
-                    inven_index = ((InvenItem)newPlayerItem).inven_index,
-                    item_each = ((InvenItem)newPlayerItem).item_each,
-                    item_name = newPlayerItem.item_name,
-                    item_index = newPlayerItem.item_index
-                };
-            }
+            playerItem = newPlayerItem;
         }
         else playerItem = null;
         itemImage.sprite = defaultSprite;
@@ -57,16 +48,20 @@ public class Slot : MonoBehaviour,
             if (slotType == Const.inven)    // 인벤슬롯일 때
             {
                 ((InvenItem)playerItem).inven_index = slotIndex;
-                // 소비 아이템일 경우 개수 표시
-                itemEach.SetActive(DataManager.Instance.GetItemData(playerItem.item_name).GetType() == typeof(Potion));
-                itemEachTxt.text = ((InvenItem)playerItem).item_each.ToString();
+
 
             }
             else if(slotType == Const.equip)    // 장비슬롯일 때
             {
 
             }
-            itemImage.sprite = Resources.Load("Items/" + playerItem.item_name, typeof(Sprite)) as Sprite;
+            // 소비 아이템일 경우 개수 표시
+            if(DataManager.Instance.GetItemData(playerItem).GetType() == typeof(Potion))
+            {
+                itemEach.SetActive(true);
+                itemEachTxt.text = playerItem.item_each.ToString();
+            }
+            itemImage.sprite = DataManager.Instance.GetSprite("Items",playerItem.item_name);
         }
         else
         {
@@ -78,6 +73,7 @@ public class Slot : MonoBehaviour,
     // 눌렀을 때
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (shopSlot) return;
         isPressed = true;
         SelectedSlot.Instance.SetSelectedItem(playerItem);
         StartCoroutine(PressCoroutine(eventData));
@@ -92,14 +88,15 @@ public class Slot : MonoBehaviour,
             if (pressTime > 0.5f && this.playerItem != null)
             {
                 SelectedSlot.Instance.SetActiveItemInfo(true);
+                //SelectedSlot.Instance.touchPanel.enabled = true;
                 SelectedSlot.Instance.SetItemInfoPos(eventData);
             }
             pressTime += Time.deltaTime;
             yield return null;
         }
         pressTime = 0;
-        SelectedSlot.Instance.SetActiveItemInfo(false);
-        yield return null;
+        //SelectedSlot.Instance.SetActiveItemInfo(false);
+        //yield return null;
     }
 
     // 같은 위치에서 눌렀다 뗐을 때
@@ -108,27 +105,36 @@ public class Slot : MonoBehaviour,
         isPressed = false;
         // 해당 슬롯에 소비아이템이 있을 경우 사용 팝업 띄우기
         //Debug.Log("OnPointerClick");
+        
+        // 상점 인벤슬롯인 경우 상세정보 띄우기
+        if (shopSlot)
+        {
+            selectDel(slotIndex+3);
+        }
     }
 
     // 드래그 시작 시
     public void OnBeginDrag(PointerEventData eventData)
     {
-        isPressed = false;
-        if (playerItem != null)
+        if (!shopSlot)
         {
-            SelectedSlot.Instance.SetDragSlotImage(itemImage);
-            SelectedSlot.Instance.SetDragSlotPos(eventData);
-            if (slotType == Const.equip) itemImage.sprite = defaultSprite;
-            else itemImage.enabled = false;
-            itemEach.SetActive(false);
+            isPressed = false;
+            if (playerItem != null)
+            {
+                SelectedSlot.Instance.SetDragSlotImage(itemImage);
+                SelectedSlot.Instance.SetDragSlotPos(eventData);
+                if (slotType == Const.equip) itemImage.sprite = defaultSprite;
+                else itemImage.enabled = false;
+                itemEach.SetActive(false);
+            }
+            //Debug.Log("OnBeginDrag");
         }
-        //Debug.Log("OnBeginDrag");
     }
 
     // 드래그 중인 동안
     public void OnDrag(PointerEventData eventData)
     {
-        if (playerItem != null)
+        if (!shopSlot && playerItem != null)
         {
             SelectedSlot.Instance.SetDragSlotPos(eventData);
         }
@@ -138,26 +144,25 @@ public class Slot : MonoBehaviour,
     // 드래그 끝났을 때
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (shopSlot) return;
         PlayerItem afterPlayerItem = SelectedSlot.Instance.playerItem;
 
         // 아이템이 교체되었을 경우
         if (afterPlayerItem != playerItem) {
-            // 장비슬롯이라면 - 교체할 아이템이 null이면 해당 슬롯번호와 같은 인덱스의 장비 리셋 / 그렇지 않으면 교체할 아이템을 해당 슬롯번호의 장비인덱스에 대입.
+            // 장비슬롯이라면 - 교체할 아이템을 해당 슬롯번호의 장비인덱스에 대입.(null이면 리셋만)
             if (slotType == Const.equip)
             {
-                if (afterPlayerItem == null)
-                {
-                    FosterManager.Instance.GetPlayerData().ResetEquipItem(slotIndex);
-                }
-                else FosterManager.Instance.GetPlayerData().SetEquipItem(slotIndex, afterPlayerItem.item_name);
+                FosterManager.Instance.GetPlayerData().SetEquipItem(slotIndex, afterPlayerItem);
             }
             else
             {   // 인벤슬롯이라면
 
                 // 인벤토리 리스트에서 해당 슬롯 아이템을 제거
-                FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem, ((InvenItem)playerItem).item_each);
-                // 교체할 아이템이 null이 아니면 인벤토리 리스트에 교체할 아이템 추가
-                if (afterPlayerItem != null) FosterManager.Instance.GetPlayerData().AddInvenItemAt(slotIndex, afterPlayerItem.item_name);
+                FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem);
+                // 인벤토리 리스트에 교체할 아이템 추가
+                if (afterPlayerItem!=null && DataManager.Instance.GetItemData(afterPlayerItem).category>2)
+                    FosterManager.Instance.GetPlayerData().AddInvenItem(afterPlayerItem, slotIndex, afterPlayerItem.item_each);
+                else FosterManager.Instance.GetPlayerData().AddInvenItem(afterPlayerItem, slotIndex);
             }
         }
         PlayerInfoPopup.Instance.setInfo();
@@ -183,45 +188,79 @@ public class Slot : MonoBehaviour,
     // 이 슬롯에 드롭되었을 때
     public void OnDrop(PointerEventData eventData)
     {
-        PlayerItem afterPlayerItem = SelectedSlot.Instance.playerItem;
-        if (afterPlayerItem == null) return;
+        if (shopSlot) return;
+        PlayerItem beforePlayerItem = SelectedSlot.Instance.playerItem;
+        if (beforePlayerItem == null) return;
+
         if (slotType == Const.equip)
         {   // 장비슬롯에 드롭했을 때
-            
-            if (slotIndex != DataManager.Instance.GetItemData(afterPlayerItem.item_name).category) return; // 장착불가한 아이템이면 리턴
+
+            // 장착불가한 아이템이면 리턴
+            if (Const.equipType[slotIndex] != Const.equipType[DataManager.Instance.GetItemData(beforePlayerItem).category]) return;
             else
             {
-                // 장비 리스트에 교체할 아이템을 장착.
-                FosterManager.Instance.GetPlayerData().SetEquipItem(slotIndex, afterPlayerItem.item_name);
+                // 장비 리스트의 이 슬롯 아이템과 같으면 병합하고, 그렇지 않으면 장비 리스트에 교체할 아이템을 장착
+                PlayerItem equipItem = FosterManager.Instance.GetPlayerData().Mon_Inven.Equipment[slotIndex];
+                if (!MergePotion(ref equipItem, beforePlayerItem))
+                {
+                    FosterManager.Instance.GetPlayerData().SetEquipItem(slotIndex, beforePlayerItem);
+                }
+
             }
         }
         else
         {   // 인벤슬롯에 드롭했을 때
 
-            // 교체할 아이템이 장비슬롯으로부터 가져왔고, 해당 슬롯에 아이템이 있으면서 장비로 장착 불가능하면 교체하지 않고 리턴
-            if (afterPlayerItem.GetType() == typeof(EquipItem)) {
-                if(playerItem != null && ((EquipItem)afterPlayerItem).equip_index != DataManager.Instance.GetItemData(playerItem.item_name).category) return;
+            // 교체할 아이템이 (현재 장착된)장비템이고
+            if (beforePlayerItem.GetType() == typeof(EquipItem)) {
+                // 이 슬롯의 아이템이 null이 아니면서 장비로 장착 불가능하면 교체하지 않고 리턴
+                if (playerItem != null &&
+                    Const.equipType[((EquipItem)beforePlayerItem).equip_index] != Const.equipType[DataManager.Instance.GetItemData(playerItem).category]) return;
                 else
                 {
-                    // 인벤토리 리스트에서 해당 슬롯 아이템을 제거
-                    if (playerItem != null) FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem);
-                    // 인벤토리 리스트에 교체할 아이템 추가
-                    FosterManager.Instance.GetPlayerData().AddInvenItemAt(slotIndex, afterPlayerItem.item_name);
+                    // 인벤토리 리스트의 이 슬롯 아이템과 같으면 병합하고, 그렇지 않으면 이 슬롯 아이템을 제거하고 인벤토리 리스트에 교체할 아이템 추가
+                    PlayerItem invenItem = FosterManager.Instance.GetPlayerData().FindItemWithIndex(slotIndex);
+                    if (!MergePotion(ref invenItem, beforePlayerItem))
+                    {
+                        FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem);
+                        if (((EquipItem)beforePlayerItem).equip_index > 2)
+                            FosterManager.Instance.GetPlayerData().AddInvenItem(beforePlayerItem, slotIndex, beforePlayerItem.item_each);
+                        else FosterManager.Instance.GetPlayerData().AddInvenItem(beforePlayerItem, slotIndex);
+                    }
                 }
             }
-
             else
             {
-                // 인벤토리 리스트에서 해당 슬롯 아이템을 제거
-                if (playerItem != null) FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem, ((InvenItem)playerItem).item_each);
-                // 인벤토리 리스트에 교체할 아이템 추가
-                FosterManager.Instance.GetPlayerData().AddInvenItemAt(slotIndex, afterPlayerItem.item_name, ((InvenItem)afterPlayerItem).item_each);
+                PlayerItem invenItem = FosterManager.Instance.GetPlayerData().FindItemWithIndex(slotIndex);
+                if (!MergePotion(ref invenItem, beforePlayerItem))
+                {
+                    if(playerItem!=null) FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem, playerItem.item_each);
+                    FosterManager.Instance.GetPlayerData().AddInvenItem(beforePlayerItem, slotIndex, beforePlayerItem.item_each);
+                }
+
             }
 
         }
+
         // 해당 슬롯과 상대 슬롯의 invenItem 객체를 교환
         SelectedSlot.Instance.SetSelectedItem(playerItem);
 
         //Debug.Log("OnDrop");
+    }
+
+    // 동일한 포션 아이템일 경우 병합(나머지는 이 슬롯에 있던 아이템 개수로 갱신)
+    private bool MergePotion(ref PlayerItem item, PlayerItem addItem)
+    {
+        if (playerItem==null || playerItem.item_index != addItem.item_index || DataManager.Instance.GetItemData(playerItem).category != 3) return false;
+        else
+        {
+            int surplus = FosterManager.Instance.GetPlayerData().AddPotion(ref item, addItem.item_each);
+            if (surplus > 0)
+            {
+                playerItem.item_each = surplus;
+            }
+            else playerItem = null;
+            return true;
+        }
     }
 }

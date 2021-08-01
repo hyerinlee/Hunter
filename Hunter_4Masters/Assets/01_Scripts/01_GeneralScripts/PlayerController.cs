@@ -25,7 +25,6 @@ public class PlayerController : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         attackMsg.SetActive(false);
         anim = GetComponent<Animator>();
-
     }
 
     private void FixedUpdate()
@@ -61,6 +60,7 @@ public class PlayerController : MonoBehaviour
         // 이동방향에 맞춰 플레이어 스프라이트 뒤집기(정지상태 제외)
         if (offset != Vector3.zero)
         {
+            // skeleton - stomach.y 180도 반전(rotation) 필요
             sr.flipX = !(offset.x < 0);
         }
 

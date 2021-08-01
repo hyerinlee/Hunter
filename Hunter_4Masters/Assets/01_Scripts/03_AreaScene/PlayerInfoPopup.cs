@@ -10,9 +10,9 @@ using System.Linq;
 public class PlayerInfoPopup : Singleton<PlayerInfoPopup>
 {
     [SerializeField] private Text battleStats, money;
-    [SerializeField] private GameObject equipment, inventory, defaultStats, states;
+    [SerializeField] private GameObject equipment, equipPotion, inventory, defaultStats, states;
     [SerializeField] private EtcStates etcPanel;
-    private Slot[] equipmentSlots, inventorySlots;
+    private Slot[] equipmentSlots, potionSlots, inventorySlots;
     private Text[] defStatsTxt = new Text[3];
     private Text[] statesTxt = new Text[3];
     private PlayerData pd;
@@ -24,7 +24,12 @@ public class PlayerInfoPopup : Singleton<PlayerInfoPopup>
             defStatsTxt[i] = defaultStats.transform.GetChild(i).GetComponent<Text>();
             statesTxt[i] = states.transform.GetChild(i).GetComponent<Text>();
         }
-        equipmentSlots = equipment.GetComponentsInChildren<Slot>();
+
+        var tempList = new List<Slot>();
+        tempList.AddRange(equipment.GetComponentsInChildren<Slot>());
+        tempList.AddRange(equipPotion.GetComponentsInChildren<Slot>());
+        equipmentSlots = tempList.ToArray();
+
         for(int i=0; i<equipmentSlots.Length; i++)
         {
             equipmentSlots[i].slotType = Const.equip;

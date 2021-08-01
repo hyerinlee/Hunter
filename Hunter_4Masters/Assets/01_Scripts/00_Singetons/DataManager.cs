@@ -12,6 +12,15 @@ using System;
 // 상수 정의
 public static class Const
 {
+    public const int etcSize = 10;
+    public const int minDef = -10000;
+    public const int maxDef = 9999;
+    public const int equipNum = 3;
+    public const int potionNum = 2;
+
+    public const string defStr = "none";
+    public const string defStr2 = "null";  // 통일해야 될듯
+
     public const string hp = "HP";
     public const string sp = "SP";
     public const string will = "WILL";
@@ -25,7 +34,7 @@ public static class Const
     public static readonly string[] defStats = { "STR", "DEX", "INT" };
     public static readonly string[] batStats = { "ATK", "APS", "DEF" };
 
-    public static readonly string[] equipType = { "weapon", "armor", "accessory" };
+    public static readonly string[] equipType = { "weapon", "armor", "accessory", "potion", "potion" };
     public static readonly string[] itemCategory = { "장비-무기", "장비-갑옷", "장비-악세", "포션" };
 }
 
@@ -94,39 +103,14 @@ public class Effect
 
 public class Equipment : ItemData
 {
-    public string rank;
     public List<Condition> condition;
     public int spEffectIndex;
     public int skillIndex;
-
-    public override string GetItemDescription()
-    {
-        string description = base.GetItemDescription();
-        description += "\n등급: "+rank+"\n조건: \n";
-        for (int i = 0; i < condition.Count; i++)
-        {
-            if (i > 0) description += ",";
-            description += condition[i].condition_variable + " " + condition[i].condition_min + "~" + condition[i].condition_max;
-        }
-        description += "\n효과: \n";
-        for (int i = 0; i < effect.Count; i++)
-        {
-            description += effect[i].effect_variable + " " + effect[i].effect_min + "\n";
-        }
-        return description;
-    }
 }
 
 public class Potion : ItemData
 {
     public int max_capacity;
-
-    public override string GetItemDescription()
-    {
-        string description = base.GetItemDescription();
-        description += "";
-        return description;
-    }
 }
 
 public class ItemData
@@ -134,12 +118,13 @@ public class ItemData
     public int data_ID;
     public string name;
     public int category;
+    public string rank;
     public float price;
     public List<Effect> effect;
 
-    public virtual string GetItemDescription()
+    public string GetItemName()
     {
-        string description = "<size=30>"+ name +"</size>" + "\n" + "<color=#85a763>" + Const.itemCategory[category] + "</color>\n";
+        string description = "<size=30>" + name + "</size>" + "\n" + "<color=#85a763>" + Const.itemCategory[category] + "</color>\n";
         return description;
     }
 }
@@ -161,6 +146,7 @@ public class DataManager : Singleton<DataManager>
     {
         base.Awake();
         LoadActionData("Move");
+        LoadActionData("Training");
         LoadItemData();
     }
 
@@ -236,6 +222,28 @@ public class DataManager : Singleton<DataManager>
         return secondaryEventData;
     }
 
+    public string GetKey(ItemData id)
+    {
+        foreach(KeyValuePair<string, Equipment> pair in equipmentDict)
+        {
+            if (pair.Value == id) return pair.Key;
+        }
+
+        foreach (KeyValuePair<string, Potion> pair in potionDict)
+        {
+            if (pair.Value == id) return pair.Key;
+        }
+
+        throw new NullReferenceException();
+    }
+
+    public ItemData GetItemData(PlayerItem item)
+    {
+        if (equipmentDict.ContainsKey(item.item_name)) return equipmentDict[item.item_name];
+        else if (potionDict.ContainsKey(item.item_name)) return potionDict[item.item_name];
+        else throw new NullReferenceException();
+    }
+
     public ItemData GetItemData(string name)
     {
         if (equipmentDict.ContainsKey(name)) return equipmentDict[name];
@@ -248,30 +256,21 @@ public class DataManager : Singleton<DataManager>
         return equipmentDict;
     }
 
-    // ex) 780.0 -> 1:00 PM
-    public string GetTimeByValue(int value)
+    public Dictionary<string, Potion> GetAllPotions()
     {
-        string curTime;
-        int t = value / 60 - 12 * (value / 720);
-        if (value % 720 < 60) t += 12;    // 12:00am~12:50am or 12:00pm~12:50pm
-        curTime = t.ToString("D2") + ":" + (value % 60).ToString("D2");
-
-        return (value >= 720) ?
-        curTime += " PM" :
-        curTime += " AM";
-    }
-
-    // ex) 350.0 -> "+6시간 50분"
-    public string GetEstimatedTimeByValue(float value)
-    {
-        string estTime = "+" + value / 60 + "시간";
-        if (value % 60 != 0) estTime += " " + value % 60 + "분";
-        return estTime;
+        return potionDict;
     }
 
     // 임시
     public string GetEtcDetail(int index)
     {
         return detailMsg[index];
+    }
+
+    // ResourceManager 구현 후 교체 예정
+    public Sprite GetSprite(string folder, string name)
+    {
+        if(folder=="") return Resources.Load(name, typeof(Sprite)) as Sprite;
+        else return Resources.Load(folder + "/" + name, typeof(Sprite)) as Sprite;
     }
 }

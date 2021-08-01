@@ -90,17 +90,21 @@ public class SelectionPopup : MonoBehaviour
         }
         categories[4].text = title.plusInfo;
 
+        // 선택지 리셋
+        for (int i=0; i<options.Length; i++)
+        {
+            options[i].GetComponent<Button>().onClick.RemoveAllListeners();
+            options[i].SetActive(false);
+        }
+
         // 선택지박스 스크롤높이 & 선택지 데이터 UI 적용
         optionGroupRT.offsetMin = new Vector2(optionGroupRT.offsetMin.x, ((scrollViewHeight/optionBtnHeight) - cd.Count) * optionBtnHeight);
         int index = 0;
         foreach (KeyValuePair<string, ChoiceData> pair in cd)
         {
             SetOptionUI(pair, index);
+            options[index].SetActive(true);
             index++;
-        }
-        for(int i=0; i<cd.Count; i++)
-        {
-            options[i].SetActive(true);
         }
 
     }
@@ -116,10 +120,10 @@ public class SelectionPopup : MonoBehaviour
             switch (categories[i + 1].text)
             {
                 case Const.money:
-                    optionTxt.text = pair.Value.consume[i].consume_value.ToString() + "$";
+                    optionTxt.text = StatConverter.GetMoney(pair.Value.consume[i].consume_value);
                     break;
                 case Const.time:
-                    optionTxt.text = DataManager.Instance.GetEstimatedTimeByValue(pair.Value.consume[i].consume_value);
+                    optionTxt.text = StatConverter.GetEstimatedTime(pair.Value.consume[i].consume_value);
                     break;
                 default:
                     optionTxt.text = pair.Value.consume[i].consume_value.ToString();
@@ -154,12 +158,6 @@ public class SelectionPopup : MonoBehaviour
         this.gameObject.SetActive(false);
         simulationPanel.SetActive(true);
         simulationPopup.Simulate(occurEventArray, changesArray, pd, GetAfterPd());
-        // 선택지 리셋
-        for(int i=0; i<cd[option].events.Count; i++)
-        {
-            options[i].GetComponent<Button>().onClick.RemoveAllListeners();
-            options[i].SetActive(false);
-        }
     }
 
     private void MakeOccurEvents()
@@ -264,9 +262,10 @@ public class SelectionPopup : MonoBehaviour
         // 선택지로 인해 변화한 값 적용
         for (int i = 0; i < cd[selectedOption].consume.Count; i++)
         {
+            // AddToCurPoint에서 처리가능하나 현재 선택지 데이터의 시간소모가 양수인 관계로 여기서 처리해줌.
             if(cd[selectedOption].consume[i].consume_variable == Const.time)
             {
-                GameManager.Instance.leftTimeVal -= (int)cd[selectedOption].consume[i].consume_value;
+                GameManager.Instance.tempSpendTime -= (int)cd[selectedOption].consume[i].consume_value;
             }
             else afterPd.AddToCurPoint(cd[selectedOption].consume[i].consume_variable, cd[selectedOption].consume[i].consume_value);
         }
@@ -276,7 +275,7 @@ public class SelectionPopup : MonoBehaviour
         {
             foreach (KeyValuePair<string, float> pair in changesArray[i])
             {
-                if (pair.Key != "null")
+                if (pair.Key != Const.defStr2)
                 {
                     afterPd.AddToCurPoint(pair.Key, pair.Value);
                     if (afterPd.GetCurPoint(pair.Key) < 0) afterPd.AddToCurPoint(pair.Key, -afterPd.GetCurPoint(pair.Key));

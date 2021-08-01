@@ -49,7 +49,7 @@
 		"Data_ID": 123459,
 		"Name": "빨간 망토",
 		"Category": 2,
-		"Rank": "F",
+		"Rank": "S",
 		"Price": 10.0,
 		"Condition": [
 		],
@@ -67,7 +67,7 @@
 		"Data_ID": 123459,
 		"Name": "파란 신발",
 		"Category": 2,
-		"Rank": "F",
+		"Rank": "A",
 		"Price": 10.0,
 		"Condition": [
 		],
