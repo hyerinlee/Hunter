@@ -8,13 +8,10 @@ assignees: ''
 ---
 
 ## 🐞 Bug
-버그에 대해 설명해주세요.
+현재는 어떻게 작동하는지 (버그에 대해) 설명해주세요.
 
 ## 😄 Expected behavior
 어떻게 작동되어야 하는지 설명해주세요.
-
-## 😰 Current behavior
-현재는 어떻게 작동하는지 설명해주세요.
 
 ## 🔎 To Reproduce
 버그 발견 경로를 설명해주세요.
