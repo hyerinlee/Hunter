@@ -84,8 +84,7 @@ public class UIManager_Area : Singleton<UIManager_Area>
                     // potion
                     skillPotionBtns[i].GetComponent<Button>().onClick.AddListener(() => 
                     {
-                        Debug.Log("포션 1개 사용함");
-                        FosterManager.Instance.GetPlayerData().UsePotion(FosterManager.Instance.GetPlayerData().Mon_Inven.Equipment[Const.equipNum+i]);
+                        FosterManager.Instance.GetPlayerData().UsePotion(index);
                         SetSkills();
                     });
                 }

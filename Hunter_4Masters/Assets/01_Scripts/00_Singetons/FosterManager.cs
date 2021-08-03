@@ -251,14 +251,9 @@ public class PlayerData : ICloneable
         return (surplus > 0) ? surplus : 0;
     }
 
-    public void UsePotion(EquipItem item)
+    public void UsePotion(int index)
     {
-        // item_each 하나 감소시키는데, 만약 감소후 0이면 버튼이미지랑 갯수오브젝트 setactive false 해야됨.
-        RemoveEquipItem(item, 1);
-        for (int i = 0; i < DataManager.Instance.GetItemData(item).effect.Count; i++)
-        {
-
-        }
+        RemoveEquipItem(Mon_Inven.Equipment[index], 1);
     }
 }
 
