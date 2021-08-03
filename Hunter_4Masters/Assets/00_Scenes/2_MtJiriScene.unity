@@ -190,7 +190,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 1504783258}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -3768,12 +3768,12 @@ PrefabInstance:
     - target: {fileID: 6595249456375360454, guid: 4b3b3167aad24b74d9be076c48a60891,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.00005054474
+      value: -0.000052928925
       objectReference: {fileID: 0}
     - target: {fileID: 6595249456375360454, guid: 4b3b3167aad24b74d9be076c48a60891,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.8392916
+      value: 1.8388629
       objectReference: {fileID: 0}
     - target: {fileID: 7203420485240278150, guid: 4b3b3167aad24b74d9be076c48a60891,
         type: 3}
@@ -5524,6 +5524,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6763239124715823602, guid: e54274e216c180040ac026a988c5eeba,
     type: 3}
   m_PrefabInstance: {fileID: 5538734739826040562}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &1504783258 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 845952586643153049, guid: 4b3b3167aad24b74d9be076c48a60891,
+    type: 3}
+  m_PrefabInstance: {fileID: 1018287973}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1505906327
 GameObject:
@@ -19007,6 +19013,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9088361158796433916, guid: e54274e216c180040ac026a988c5eeba,
+        type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 1504783258}
     - target: {fileID: 9098997566988821676, guid: e54274e216c180040ac026a988c5eeba,
         type: 3}
       propertyPath: m_AnchorMax.y
