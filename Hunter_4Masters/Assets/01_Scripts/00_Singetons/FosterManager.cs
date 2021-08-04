@@ -128,42 +128,51 @@ public class PlayerData : ICloneable
         {
             Mon_Inven.Inven = Mon_Inven.Inven.OrderBy(x => x.inven_index).ToList();
 
-            if (itemEach == -1)
-            {   // 장비아이템일 때
-                index++;
-
+            // 포션아이템이면 이미 있는 아이템인지(+ 최대 개수보다 작은지) 체크
+            if (itemEach != -1)
+            {
                 for (int i = 0; i < Mon_Inven.Inven.Count; i++)
                 {
-                    if (index == Mon_Inven.Inven[i].inven_index) index++;   // 리스트 인덱스와 인벤 인덱스가 불일치하는 구간이 가장 처음 비는 인덱스
+                    if (Mon_Inven.Inven[i].item_index == item.data_ID &&
+                        Mon_Inven.Inven[i].item_each < ((Potion)DataManager.Instance.GetItemData(Mon_Inven.Inven[i])).max_capacity)
+                    {
+                        index = i;
+                    }
                 }
+
+            }
+
+            if (index != -1)
+            {
+                // 이미 있는 포션아이템이라면
+                FindItemWithIndex(index).item_each += itemEach;
             }
             else
-            {   // 포션아이템일 때
-                int firstEmptyIndex = 0;
-                for (int i = 0; i < Mon_Inven.Inven.Count; i++)
-                {
-                    if (Mon_Inven.Inven[i].item_index == item.data_ID) index = i; // 이미 있는 아이템인지 체크
-                    if (firstEmptyIndex == Mon_Inven.Inven[i].inven_index) firstEmptyIndex++;
+            {   // 장비아이템이거나 동일 포션아이템이라면
+                index = GetFirstEmptyIndex();
 
-                }
-
-                if (index != -1)
+                Mon_Inven.Inven.Add(new InvenItem()
                 {
-                    Mon_Inven.Inven[index].item_each += itemEach;
-                    return;
-                }
-                else index = firstEmptyIndex;
+                    inven_index = index,
+                    item_index = item.data_ID,
+                    item_name = DataManager.Instance.GetKey(item)
+                });
+
+                // 포션아이템이라면 개수데이터 추가
+                if(itemEach != -1) FindItemWithIndex(index).item_each = itemEach;
             }
         }
+    }
 
-        Mon_Inven.Inven.Add(new InvenItem()
+    private int GetFirstEmptyIndex()
+    {
+        int index = 0;
+
+        for (int i = 0; i < Mon_Inven.Inven.Count; i++)
         {
-            inven_index = index,
-            item_index = item.data_ID,
-            item_name = DataManager.Instance.GetKey(item)
-        });
-
-        if (itemEach > 0) FindItemWithIndex(index).item_each = itemEach; // 포션아이템일 경우 개수 추가
+            if (index == Mon_Inven.Inven[i].inven_index) index++;   // 리스트 인덱스와 인벤 인덱스가 불일치하는 구간이 가장 처음 비는 인덱스
+        }
+        return index;
     }
 
     // 아이템 인벤토리에 추가 시 호출(PlayerItem으로)
