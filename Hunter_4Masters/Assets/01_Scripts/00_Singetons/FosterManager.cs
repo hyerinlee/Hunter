@@ -146,22 +146,25 @@ public class PlayerData : ICloneable
             {
                 // 이미 있는 포션아이템이라면
                 FindItemWithIndex(index).item_each += itemEach;
+                return;
             }
             else
             {   // 장비아이템이거나 동일 포션아이템이라면
                 index = GetFirstEmptyIndex();
 
-                Mon_Inven.Inven.Add(new InvenItem()
-                {
-                    inven_index = index,
-                    item_index = item.data_ID,
-                    item_name = DataManager.Instance.GetKey(item)
-                });
-
-                // 포션아이템이라면 개수데이터 추가
-                if(itemEach != -1) FindItemWithIndex(index).item_each = itemEach;
             }
         }
+
+        Mon_Inven.Inven.Add(new InvenItem()
+        {
+            inven_index = index,
+            item_index = item.data_ID,
+            item_name = DataManager.Instance.GetKey(item)
+        });
+
+        // 포션아이템이라면 개수데이터 추가
+        if (itemEach != -1) FindItemWithIndex(index).item_each = itemEach;
+
     }
 
     private int GetFirstEmptyIndex()
@@ -349,15 +352,18 @@ public class EquipItem : PlayerItem, ICloneable
 {
     public int equip_index;
 
-    public object Clone()
+    public EquipItem()
     {
-        return new EquipItem
-        {
-            equip_index = this.equip_index,
-            item_each = this.item_each,
-            item_name = this.item_name,
-            item_index = this.item_index
-        };
+    }
+
+    protected EquipItem(EquipItem that) : base(that)
+    {
+        this.equip_index = that.equip_index;
+    }
+
+    public override object Clone()
+    {
+        return new EquipItem(this);
     }
 }
 
@@ -365,23 +371,42 @@ public class InvenItem : PlayerItem, ICloneable
 {
     public int inven_index;
 
-    public object Clone()
+    public InvenItem()
     {
-        return new InvenItem
-        {
-            inven_index = this.inven_index,
-            item_each = this.item_each,
-            item_name = this.item_name,
-            item_index = this.item_index
-        };
+    }
+
+    protected InvenItem(InvenItem that) : base(that)
+    {
+        this.inven_index = that.inven_index;
+    }
+
+    public override object Clone()
+    {
+        return new InvenItem(this);
     }
 }
 
-public class PlayerItem
+public class PlayerItem : ICloneable
 {
     public string item_name;
     public int item_each;
     public int item_index;
+
+    public PlayerItem()
+    {
+    }
+
+    protected PlayerItem(PlayerItem that)
+    {
+        this.item_name = that.item_name;
+        this.item_each = that.item_each;
+        this.item_index = that.item_index;
+    }
+
+    public virtual object Clone()
+    {
+        return new PlayerItem(this);
+    }
 }
 #endregion
 

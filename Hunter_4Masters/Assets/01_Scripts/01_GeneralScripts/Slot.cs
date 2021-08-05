@@ -35,7 +35,7 @@ public class Slot : MonoBehaviour,
     {
         if (newPlayerItem != null && newPlayerItem.item_name != Const.defStr)
         {
-            playerItem = newPlayerItem;
+            playerItem = newPlayerItem.Clone() as PlayerItem;
         }
         else playerItem = null;
         itemImage.sprite = defaultSprite;
@@ -200,8 +200,12 @@ public class Slot : MonoBehaviour,
             else
             {
                 // 장비 리스트의 이 슬롯 아이템과 같으면 병합하고, 그렇지 않으면 장비 리스트에 교체할 아이템을 장착
-                PlayerItem equipItem = FosterManager.Instance.GetPlayerData().Mon_Inven.Equipment[slotIndex];
-                if (!MergePotion(ref equipItem, beforePlayerItem))
+                PlayerItem equipItem = FosterManager.Instance.GetPlayerData().Mon_Inven.Equipment[slotIndex].Clone() as PlayerItem;
+                if (MergePotion(ref equipItem, beforePlayerItem))
+                {
+                    FosterManager.Instance.GetPlayerData().SetEquipItem(slotIndex, equipItem);
+                }
+                else
                 {
                     FosterManager.Instance.GetPlayerData().SetEquipItem(slotIndex, beforePlayerItem);
                 }
