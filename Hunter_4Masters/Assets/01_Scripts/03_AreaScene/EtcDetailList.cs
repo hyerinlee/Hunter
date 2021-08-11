@@ -30,7 +30,7 @@ public class EtcDetailList : MonoBehaviour,
         }
 
         parent = this.transform.parent.gameObject;
-        scrollContent = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<RectTransform>();
+        scrollContent = transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
     }
 
     public void OnPointerDown(PointerEventData eventData)
