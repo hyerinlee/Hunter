@@ -56,6 +56,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectPanel: {fileID: 5538734740398650680}
   shopPanel: {fileID: 8640755897285319572}
+  infoPanel: {fileID: 6763239124715823602}
 --- !u!1 &227308633433975518
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,6 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b81d721f3d0e5e469d5c58e53bbb473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMainUI: 0
 --- !u!1 &724503619478278585
 GameObject:
   m_ObjectHideFlags: 0
