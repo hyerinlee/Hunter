@@ -14,7 +14,6 @@ public class Testing : MonoBehaviour
 {
     private Grid grid;
 
-    public Tile brick;
     public Tile ground;
     public GameObject spawner;
 
@@ -23,15 +22,10 @@ public class Testing : MonoBehaviour
     Dictionary<string, string[]> mapJson = new Dictionary<string, string[]>();
 
     private int num = 0;
-    private string[] stages = {"01_stage", "02_stage"};
+    private string[] stages = {"01_stage", "02_stage", "03_stage"};
 
     public void LoadMap()
     {
-        // grid = new Grid(10, 10, 1f, new Vector3(0, 0));
-        // new Grid(10, 10, 1f, new Vector3(0, -10));
-        // new Grid(10, 10, 1f, new Vector3(-10, 0));
-        // new Grid(10, 10, 1f, new Vector3(-10, -10));
-
         mapJson = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(Resources.Load<TextAsset>($"Data/Test").text);
         string[] stage = mapJson[stages[num]];
 
