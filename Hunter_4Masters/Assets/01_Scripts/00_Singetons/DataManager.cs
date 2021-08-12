@@ -12,7 +12,7 @@ using System;
 // 상수 정의
 public static class Const
 {
-    public const int etcSize = 10;
+    public const int etcMaxSize = 10;
     public const int minDef = -10000;
     public const int maxDef = 9999;
     public const int equipNum = 3;
