@@ -13,15 +13,8 @@ public class SelectionPopup : MonoBehaviour
     [SerializeField] private Image actionImg;
     [SerializeField] private Text actionInfo;
 
-    // 육성 UI
-    [SerializeField] private Image spGauge;
-    [SerializeField] private Text spTxt;
-    [SerializeField] private Text dayTxt;
-    [SerializeField] private Text timeTxt;
-    [SerializeField] private Text moneyTxt;
-
     // 카테고리 및 선택지 UI
-    [SerializeField] private Text[] categories = new Text[5];
+    //[SerializeField] private Text[] categories = new Text[5];
     [SerializeField] private GameObject scrollView;
     private GameObject optionGroup;
     private GameObject[] options = new GameObject[10];
@@ -29,12 +22,6 @@ public class SelectionPopup : MonoBehaviour
     private float scrollViewHeight;
     private float optionBtnHeight;
 
-
-    public Sprite[] actionImgTempData = new Sprite[2];
-    private string[] actionInfoTempData = { "평화로운 산골마을에 위치한 지리산은 가는 길은 그다지 평화롭지 않을 수도 있습니다.",
-                                        "헌터협회 사무보조 인력 모집 중\n\n" +
-                                        "근무시간: 시간협의\n" +
-                                        "제출서류: 이력서" };
     private PlayerData pd;
     private ChoiceData title;
     private Dictionary<string, ChoiceData> cd;
@@ -70,26 +57,6 @@ public class SelectionPopup : MonoBehaviour
         title = DataManager.Instance.GetChoiceTitle(action);
         cd = DataManager.Instance.GetChoiceData(action, 0);  //일단 areaCode 0으로 넣음
 
-
-        // 행동이미지와 행동설명데이터 UI에 적용 (데이터 만들면 변경예정)
-        actionImg.sprite = actionImgTempData[0];
-        actionInfo.text = actionInfoTempData[0];
-
-        // 육성데이터(pd) UI 적용
-        spGauge.fillAmount = pd.GetStatPercent(Const.sp);
-        spTxt.text = pd.GetStateOutOfMax(Const.sp);
-        dayTxt.text = GameManager.Instance.GetDDay();
-        timeTxt.text = GameManager.Instance.GetCurrentTimeByValue();
-        moneyTxt.text = pd.GetMoney();
-
-        // 카테고리 데이터 UI 적용
-        categories[0].text = title.name;
-        for (int i = 0; i < 3; i++)
-        {
-            categories[i + 1].text = title.consume[i].consume_variable;
-        }
-        categories[4].text = title.plusInfo;
-
         // 선택지 리셋
         for (int i=0; i<options.Length; i++)
         {
@@ -117,7 +84,7 @@ public class SelectionPopup : MonoBehaviour
         {
             Text optionTxt = options[index].transform.GetChild(i + 1).GetComponent<Text>();
             // 돈과 시간만 형식이 지정되어있고 나머지는 단순 값 출력
-            switch (categories[i + 1].text)
+            switch (title.consume[i].consume_variable)
             {
                 case Const.money:
                     optionTxt.text = StatConverter.GetMoney(pair.Value.consume[i].consume_value);
