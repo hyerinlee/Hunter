@@ -251,6 +251,22 @@ public class DataManager : Singleton<DataManager>
         else throw new NullReferenceException();
     }
 
+    public string GetConditionRange(Condition con)
+    {
+        bool hasMinLimit = Mathf.Abs(con.condition_min - Const.minDef) > 0.0001f;
+        bool hasMaxLimit = Mathf.Abs(con.condition_max - Const.maxDef) > 0.0001f;
+        string str = "";
+
+        if (hasMinLimit || hasMaxLimit)
+        {
+            str += con.condition_variable + " ";
+            if (hasMinLimit) str += con.condition_min + " 이상 ";
+            if (hasMaxLimit) str += con.condition_max + " 이하";
+        }
+
+        return str;
+    }
+
     public Dictionary<string, Equipment> GetAllEquipments()
     {
         return equipmentDict;
