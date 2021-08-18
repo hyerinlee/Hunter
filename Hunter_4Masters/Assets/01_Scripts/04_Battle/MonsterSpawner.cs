@@ -14,6 +14,9 @@ public class MonsterSpawner : MonoBehaviour
     public Dictionary<string, Monster> monsterDict;
     public Monster monsterData;
     
+    private int count = 0;
+    private int max = 3;
+    
     void Awake()
     {
         LoadMonsterData();

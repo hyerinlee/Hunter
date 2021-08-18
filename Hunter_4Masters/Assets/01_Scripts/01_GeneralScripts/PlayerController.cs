@@ -80,10 +80,15 @@ public class PlayerController : MonoBehaviour
 
     public void Attack()
     {
-        //공격 애니메이션 설정
-        //아직 공격애니메이션 없어서 공격 애니메이션 대신 넣었음
-        StartCoroutine(AttackCoroutine());
-        // Enemy.OnDamaged(10.0f);
+        Debug.Log("공격!");
+        anim.SetTrigger("isAttack");
+
+        // Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+        // foreach (Collider2D enemy in hitEnemies)
+        // {
+        //     Debug.Log("처맞는넘" + enemy.name);
+        //     //enemy.GetComponent<Slime>().OnDamaged(10);
+        // }
     }
 
     IEnumerator AttackCoroutine()
@@ -96,7 +101,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("처맞는넘" + enemy.name);
             enemy.GetComponent<EnemyMove>().OnDamaged(10);
         }
-            
+
 
         yield return new WaitForSeconds(0.1f);
         anim.SetBool("isAttack", false);
