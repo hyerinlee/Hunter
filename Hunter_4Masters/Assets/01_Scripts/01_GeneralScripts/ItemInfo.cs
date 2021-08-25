@@ -11,7 +11,7 @@ public class ItemInfo : MonoBehaviour
 
     public void SetItemInfo(ItemData id)
     {
-        itemImg.sprite = DataManager.Instance.GetSprite("Items", DataManager.Instance.GetKey(id));
+        itemImg.sprite = DataManager.Instance.GetSprite("Items", DataManager.Instance.GetItemKey(id));
         rankImg.sprite = DataManager.Instance.GetSprite("icons", "rank_" + id.rank);
 
         itemNameTxt.text = id.name + "\n" + Const.itemCategory[id.category];
