@@ -17,7 +17,6 @@ public class Talk : MonoBehaviour
     [SerializeField]
     Text uiText;
 
-
     enum State
     {
         NotInitialized,
@@ -25,20 +24,28 @@ public class Talk : MonoBehaviour
         PlayingSkipping,
         Completed,
     }
-
-    IEnumerator Start()
+    
+    void OnEnable()
     {
-        state = State.Playing;
-        for (int i = 0; i < text.Count; i += 1)
-        {
-            yield return PlayLine(text[i]);
-        }
-        state = State.Completed;
+        StartCoroutine(Play());
     }
 
-    IEnumerator PlayLine(string text)
+    IEnumerator Play()
     {
-        for (int i = 0; i < text.Length + 1; i += 1)
+        state = State.Playing;
+        for (int i = 0; i < text.Count; i++)
+        {
+            yield return Print(text[i]);
+        }
+        state = State.Completed;
+
+        uiText.text = "";
+        uiText.transform.parent.gameObject.SetActive(false);
+    }
+
+    IEnumerator Print(string text)
+    {
+        for (int i = 0; i < text.Length + 1; i++)
         {
             yield return new WaitForSeconds(0.1f);
             if (state == State.PlayingSkipping)
@@ -50,36 +57,13 @@ public class Talk : MonoBehaviour
             uiText.text = text.Substring(0, i);
         }
         
-        yield return new WaitForSeconds(0.5f);
-
-        for (int i = 0; i < 25; i += 1)
-        {
+        while(state != State.PlayingSkipping)
             yield return new WaitForSeconds(0.1f);
-            if (state == State.PlayingSkipping)
-            {
-                state = State.Playing;
-                break;
-            }
-        }
+        state = State.Playing;
     }
 
     public void Skip()
     {
-        Debug.Log(state);
-        if(state == State.Completed)
-        {
-            Debug.Log("종료");
-            uiText.transform.parent.gameObject.SetActive(false);
-        }
-
         state = State.PlayingSkipping;
-    }
-
-    public IEnumerator WaitForComplete()
-    {
-        while (state != State.Completed)
-        {
-            yield return null;
-        }
     }
 }
