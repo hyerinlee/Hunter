@@ -1,0 +1,46 @@
+﻿{
+	"Request_1": {
+		"Data_ID": 400000,
+		"Name": "오거 촌락 정찰",
+		"Rank": "A",
+		"Detail": "오거 촌락 정찰하기...",
+		"Map": 3,
+		"Additional_Quest": 333333,
+		"Clear_Condition": 2,
+		"Clear_Target": -10000,
+		"Clear_Amount": -10000,
+		"Reward_MONEY": 1000,
+		"Reward_Item": [
+		]
+	},
+	"Request_2": {
+		"Data_ID": 400001,
+		"Name": "스켈레톤 20마리 토벌",
+		"Rank": "F",
+		"Detail": "묘지에 등장하는 스켈레톤 20마리 토벌하기",
+		"Map": 2,
+		"Additional_Quest": 333334,
+		"Clear_Condition": 0,
+		"Clear_Target": 555555,
+		"Clear_Amount": 20,
+		"Reward_MONEY": 1000,
+		"Reward_Item": [
+		]
+	},
+	"Request_3": {
+		"Data_ID": 400002,
+		"Name": "마정석 3개 파괴",
+		"Rank": "S",
+		"Detail": "연구실 던전에 몬스터를 광폭화하는 마정석이 출몰했다. 몬스터들이 던전 외부로 탈출하기 전에 마정석을 파괴하여 몬스터를 진정시켜야 한다.",
+		"Map": 4,
+		"Additional_Quest": 333335,
+		"Clear_Condition": 1,
+		"Clear_Target": 555556,
+		"Clear_Amount": 3,
+		"Reward_MONEY": 1000,
+		"Reward_Item": [
+			123456,
+			123460
+		]
+	}
+}
