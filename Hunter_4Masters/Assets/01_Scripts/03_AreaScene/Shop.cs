@@ -118,7 +118,7 @@ public class Shop : MonoBehaviour
                 itemBtns[i].interactable = false;
                 itemImgs[i].color = new Color(0.5f, 0.5f, 0.5f);
             }
-            itemImgs[i].sprite = DataManager.Instance.GetSprite("Items", DataManager.Instance.GetKey(itemDatas[i]));
+            itemImgs[i].sprite = DataManager.Instance.GetSprite("Items", DataManager.Instance.GetItemKey(itemDatas[i]));
             sellItemNames[i].text = itemDatas[i].name;
             sellItemPrices[i].text = string.Format("{0:#,##0}", itemDatas[i].price.ToString());
         }

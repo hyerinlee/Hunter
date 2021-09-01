@@ -17,6 +17,7 @@ public static class Const
     public const int maxDef = 9999;
     public const int equipNum = 3;
     public const int potionNum = 2;
+    public const int requestNum = 3;
 
     public const string defStr = "none";
     public const string defStr2 = "null";  // 통일해야 될듯
@@ -36,13 +37,42 @@ public static class Const
 
     public static readonly string[] equipType = { "weapon", "armor", "accessory", "potion", "potion" };
     public static readonly string[] itemCategory = { "장비-무기", "장비-갑옷", "장비-악세", "포션" };
+
+    public static readonly string[] area = { "지리산", "세종", "서울" };
+    public static readonly string[] requestMap = { "숲", "동굴", "묘지", "오거 촌락", "연구실", "용암지대" };
+    public static readonly string[] requestType = { "토벌","파괴","정찰" };
+    public static readonly Color[] reqMapColor = { 
+        new Color(0.6f,0.8f,0.4f), 
+        Color.black,
+        new Color(0.2f, 0.2f, 0.5f),
+        new Color(0.3f, 0.4f, 0.2f), 
+        new Color(0.6f,0.5f,0.8f),
+        Color.red };
+
 }
+
+public enum CostType { SP, TIME, }
 
 #region Define Data Classes
 public class ActionData
 {
     public Dictionary<string, ChoiceData> choiceDataDict;  // Title, walk, bus, convoy,...
     public Dictionary<string, EventData> eventDataDict;    // 
+}
+
+public class Request
+{
+    public int data_ID;
+    public string name;
+    public string rank;
+    public string detail;
+    public int map;
+    public int additional_quest;
+    public int clear_condition;
+    public int clear_target;
+    public int clear_amount;
+    public int reward_money;
+    public int[] reward_item;
 }
 
 public class ChoiceData
@@ -133,6 +163,7 @@ public class ItemData
 public class DataManager : Singleton<DataManager>
 {
     Dictionary<string, ActionData> actionDataDict = new Dictionary<string, ActionData>();    // moveData, laborData, ...
+    Dictionary<string, Request> requestDict = new Dictionary<string, Request>();
     Dictionary<string, Equipment> equipmentDict = new Dictionary<string, Equipment>();
     Dictionary<string, Potion> potionDict = new Dictionary<string, Potion>();
     Dictionary<int, string> detailMsg = new Dictionary<int, string>()
@@ -142,12 +173,19 @@ public class DataManager : Singleton<DataManager>
             {300000, "[영양실조] \n 공격속도 * 50% \n 의지 * 75%"}
         };
 
+    private int[,] requestCost = new int[2, Const.requestMap.Length];   // 의뢰 소모량(스태미나, 시간)
+
+    private string[,] curRequest = new string[Const.area.Length, Const.requestNum];   // *0번째(지리산)는 데이터 없음
+
     public override void Awake()
     {
         base.Awake();
         LoadActionData("Move");
         LoadActionData("Training");
+        LoadRequestData();
         LoadItemData();
+
+        InitRequestCost();
     }
 
     #region Load Json
@@ -167,12 +205,68 @@ public class DataManager : Singleton<DataManager>
 
     }
 
+    private void LoadRequestData()
+    {
+        requestDict = JsonConvert.DeserializeObject<Dictionary<string, Request>>(Resources.Load<TextAsset>($"Data/request").text);
+    }
+
     private void LoadItemData()
     {
         equipmentDict = JsonConvert.DeserializeObject<Dictionary<string, Equipment>>(Resources.Load<TextAsset>($"Data/equipment").text);
         potionDict = JsonConvert.DeserializeObject<Dictionary<string, Potion>>(Resources.Load<TextAsset>($"Data/potion").text);
     }
     #endregion
+
+    // 의뢰 수행 소모량 설정
+    private void InitRequestCost()
+    {
+        requestCost[0, 0] = 20;
+        requestCost[0, 1] = 30;
+
+        requestCost[1, 0] = 60;
+        requestCost[1, 1] = 120;
+
+        for (int i = 2; i < Const.requestMap.Length; i++)
+        {
+            requestCost[0, i] = requestCost[0, i - 1] + requestCost[0, i - 2];
+            requestCost[1, i] = requestCost[1, i - 1] + requestCost[1, i - 2];
+        }
+    }
+
+    // 정해진 시각에 플레이어 등급에 따라 의뢰수주 목록 갱신
+    public void SetCurRequest()
+    {
+        int index = 0;
+
+        // 데이터 추가 시 확률 적용 예정
+        for(int i=0; i<Const.area.Length; i++)
+        {
+            index = 0;
+            foreach (KeyValuePair<string, Request> pair in requestDict)
+            {
+                curRequest[i, index++] = pair.Key;
+            }
+        }
+    }
+
+    // 현재 등록된 의뢰 목록 반환
+    public string[] GetCurRequest()
+    {
+        SetCurRequest();
+        // 테스트용으로 무조건 1번째(세종) 반환. GameManager.Instance.GetAreaCode()로 변경 예정
+        string[] result = { curRequest[1,0], curRequest[1,1],curRequest[1,2] };
+        return result;
+    }
+
+    public Request GetRequest(string key)
+    {
+        return requestDict[key];
+    }
+
+    public int GetRequestCost(CostType cost, int index)
+    {
+        return requestCost[(int)cost, index];
+    }
 
     public ChoiceData GetChoiceTitle(string action)
     {
@@ -222,7 +316,7 @@ public class DataManager : Singleton<DataManager>
         return secondaryEventData;
     }
 
-    public string GetKey(ItemData id)
+    public string GetItemKey(ItemData id)
     {
         foreach(KeyValuePair<string, Equipment> pair in equipmentDict)
         {
@@ -232,6 +326,21 @@ public class DataManager : Singleton<DataManager>
         foreach (KeyValuePair<string, Potion> pair in potionDict)
         {
             if (pair.Value == id) return pair.Key;
+        }
+
+        throw new NullReferenceException();
+    }
+
+    public string GetItemKey(int index)
+    {
+        foreach (KeyValuePair<string, Equipment> pair in equipmentDict)
+        {
+            if (pair.Value.data_ID == index) return pair.Key;
+        }
+
+        foreach (KeyValuePair<string, Potion> pair in potionDict)
+        {
+            if (pair.Value.data_ID == index) return pair.Key;
         }
 
         throw new NullReferenceException();
@@ -249,6 +358,21 @@ public class DataManager : Singleton<DataManager>
         if (equipmentDict.ContainsKey(name)) return equipmentDict[name];
         else if (potionDict.ContainsKey(name)) return potionDict[name];
         else throw new NullReferenceException();
+    }
+
+    public ItemData GetItemData(int index)
+    {
+        foreach (KeyValuePair<string, Equipment> pair in equipmentDict)
+        {
+            if (pair.Value.data_ID == index) return pair.Value;
+        }
+
+        foreach (KeyValuePair<string, Potion> pair in potionDict)
+        {
+            if (pair.Value.data_ID == index) return pair.Value;
+        }
+
+        throw new NullReferenceException();
     }
 
     public string GetConditionRange(Condition con)

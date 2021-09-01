@@ -159,7 +159,7 @@ public class PlayerData : ICloneable
         {
             inven_index = index,
             item_index = item.data_ID,
-            item_name = DataManager.Instance.GetKey(item)
+            item_name = DataManager.Instance.GetItemKey(item)
         });
 
         // 포션아이템이라면 개수데이터 추가
