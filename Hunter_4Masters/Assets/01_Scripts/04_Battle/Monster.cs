@@ -95,19 +95,30 @@ public class Monster : MonoBehaviour
         Invoke("ChangeDirection", nextChangingTime);
     }
 
-    public void OnTriggerEnter2D(Collider2D col)
+    public void Damaged(int damaged)
     {
-        Debug.Log("공격!");
+        Debug.Log(name + "공격당함!");
         if(!canvas)
             MakeHpBar();
-            
-        if(col.CompareTag("Player"))
-        {
-            hp -= 1;
-            if(hp < 0)
-                Die();
-        }
+        hp -= 1;
+        if(hp < 0)
+            Die();
+
     }
+
+    // public void OnTriggerEnter2D(Collider2D col)
+    // {
+    //     Debug.Log("공격!");
+    //     if(!canvas)
+    //         MakeHpBar();
+            
+    //     if(col.CompareTag("Player"))
+    //     {
+    //         hp -= 1;
+    //         if(hp < 0)
+    //             Die();
+    //     }
+    // }
 
     public void Die()
     {
