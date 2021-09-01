@@ -267,6 +267,14 @@ public class PlayerData : ICloneable
     {
         RemoveEquipItem(Mon_Inven.Equipment[index], 1);
     }
+
+
+
+    // 플레이어에게 옷 입히기
+    public void SetArmor()
+    {
+        Debug.Log("옷입히기");
+    }
 }
 
 public class Stat : ICloneable
