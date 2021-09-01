@@ -10,7 +10,7 @@ using UnityEngine.Tilemaps;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-public class Testing : MonoBehaviour
+public class MapLoader : MonoBehaviour
 {
     private Grid grid;
 
@@ -26,7 +26,7 @@ public class Testing : MonoBehaviour
 
     public void LoadMap()
     {
-        mapJson = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(Resources.Load<TextAsset>($"Data/Test").text);
+        mapJson = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(Resources.Load<TextAsset>($"Data/mapData").text);
         string[] stage = mapJson[stages[num]];
 
         string[,] data = new string[stage.Length, stage[0].Length];
@@ -56,7 +56,15 @@ public class Testing : MonoBehaviour
                 }
                 else if(data[i, j].Equals("S"))
                 {
+                    tileMap.SetTile(new Vector3Int(j, 0-i, 0), null);
                     Instantiate(spawner, new Vector3Int(j+1, 0-i, 0), Quaternion.identity);
+                }
+                else if(data[i, j].Equals("P"))
+                {
+                    tileMap.SetTile(new Vector3Int(j, 0-i, 0), null);
+                    
+                    GameObject player = GameObject.Find("Player");
+                    player.transform.position = new Vector3(j+1, 0-i, 0);
                 }
             }
         }

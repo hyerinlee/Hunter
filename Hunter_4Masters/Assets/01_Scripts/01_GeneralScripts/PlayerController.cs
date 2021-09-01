@@ -80,15 +80,8 @@ public class PlayerController : MonoBehaviour
 
     public void Attack()
     {
-        Debug.Log("공격!");
+        //Debug.Log("공격!");
         anim.SetTrigger("isAttack");
-
-        // Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
-        // foreach (Collider2D enemy in hitEnemies)
-        // {
-        //     Debug.Log("처맞는넘" + enemy.name);
-        //     //enemy.GetComponent<Slime>().OnDamaged(10);
-        // }
     }
 
     IEnumerator AttackCoroutine()

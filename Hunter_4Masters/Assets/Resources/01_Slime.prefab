@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 887602747663377548}
   - component: {fileID: 887602747663377549}
   - component: {fileID: 2303751690245628874}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: slime
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -161,10 +161,15 @@ MonoBehaviour:
   def: 1
   spd: 1
   moveLimit: 0
+  rigid: {fileID: 0}
+  sr: {fileID: 0}
+  anim: {fileID: 0}
+  nextMove: 0
+  nowHbBar: {fileID: 0}
+  maxHp: 0
   prfHpBar: {fileID: 7167573142002526192, guid: 0738503199536474991fdaf61fe13875,
     type: 3}
   canvas: {fileID: 0}
   height: 1.7
   hpBar: {fileID: 0}
   offset: 10
-  nextMove: 0

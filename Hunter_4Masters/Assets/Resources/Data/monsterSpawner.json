@@ -1,0 +1,13 @@
+{
+	"00_Spawner" : {
+		"Data_ID" : 911000,
+		"Name" : "Spawner_1",
+		"Release_Arrange" : [ 0.0, 0.0 ],
+		"Monsters" : [
+			[ -10000 ]
+		],
+		"Spawn_Time" : 3.0,
+		"IsEmergerd" : false,
+		"Hp" : 0.0
+	}
+}

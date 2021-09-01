@@ -9,16 +9,22 @@ public class Skeleton : Monster
         rigid = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        collider = GetComponent<CapsuleCollider2D>();
 
-        MakeHpBar();
-
-        Invoke("Think", 1);
+        ChangeDirection();
     }
 
     void FixedUpdate()
     {
         Move();
-        UpdateHpBarPosition();
+
+        // hpBar가 활성화 되어 있는 경우 hpBar도 업데이트
+        if(canvas) UpdateHpBarPosition();
+    }
+
+    public override void Skill()
+    {
+        Debug.Log("칼 휘두르기");
     }
 
 }

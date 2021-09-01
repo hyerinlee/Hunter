@@ -14,9 +14,6 @@ public class MonsterSpawner : MonoBehaviour
     public Dictionary<string, Monster> monsterDict;
     public Monster monsterData;
     
-    private int count = 0;
-    private int max = 3;
-    
     void Awake()
     {
         LoadMonsterData();
@@ -47,7 +44,8 @@ public class MonsterSpawner : MonoBehaviour
         GameObject monster = Resources.Load(monsterName) as GameObject;
 
         // 스크립트 불러오기
-        string scriptName = monsterName.Substring(0, 1).ToUpper() + monsterName.Substring(1);
+        string scriptName = monsterName.Substring(3);
+        Debug.Log(scriptName);
         Monster script = monster.GetComponent(scriptName) as Monster;
 
         // 몬스터 데이터 설정

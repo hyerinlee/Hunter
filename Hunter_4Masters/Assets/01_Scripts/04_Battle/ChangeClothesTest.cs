@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class ChangeClothesTest : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GameObject Clothes;
 
-    // Update is called once per frame
-    void Update()
+    void Change()
     {
-        
+        //Clothes.GameObject.Find("Stomach").spriteResolver.SetCategoryAndLabel(Stomach, "001_trainingSet");
     }
 }

@@ -153,6 +153,7 @@ public class Slot : MonoBehaviour,
             if (slotType == Const.equip)
             {
                 FosterManager.Instance.GetPlayerData().SetEquipItem(slotIndex, afterPlayerItem);
+                
             }
             else
             {   // 인벤슬롯이라면
