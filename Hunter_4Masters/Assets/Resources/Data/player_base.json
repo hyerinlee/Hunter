@@ -34,7 +34,7 @@
 				"HP" : {
 					"name" : "체력",
 					"max_point" : 100.0,
-					"cur_point" : 100.0
+					"cur_point" : 50.0
 				},
 				"SP" : {
 					"name" : "스태미나",
@@ -44,7 +44,7 @@
 				"WILL" : {
 					"name" : "정신상태",
 					"max_point" : 100.0,
-					"cur_point" : 100.0
+					"cur_point" : 50.0
 				}
 			},
 			"ETC" : [

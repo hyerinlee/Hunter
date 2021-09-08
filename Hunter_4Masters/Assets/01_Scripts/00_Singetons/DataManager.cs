@@ -18,6 +18,7 @@ public static class Const
     public const int equipNum = 3;
     public const int potionNum = 2;
     public const int requestNum = 3;
+    public const int healOptNum = 3;
 
     public const string defStr = "none";
     public const string defStr2 = "null";  // 통일해야 될듯
@@ -73,6 +74,24 @@ public class Request
     public int clear_amount;
     public int reward_money;
     public int[] reward_item;
+}
+
+public class ScHospitalData : HospitalBaseData
+{
+    public int data_ID;
+    public int target_sc;
+    public int[] able_object;
+}
+
+public class OtherHospitalData : HospitalBaseData
+{
+    public int healPercent;
+}
+
+public class HospitalBaseData
+{
+    public float cost_money;
+    public float cost_time;
 }
 
 public class ChoiceData
@@ -164,6 +183,7 @@ public class DataManager : Singleton<DataManager>
 {
     Dictionary<string, ActionData> actionDataDict = new Dictionary<string, ActionData>();    // moveData, laborData, ...
     Dictionary<string, Request> requestDict = new Dictionary<string, Request>();
+    Dictionary<string, ScHospitalData> scHospitalDict = new Dictionary<string, ScHospitalData>();
     Dictionary<string, Equipment> equipmentDict = new Dictionary<string, Equipment>();
     Dictionary<string, Potion> potionDict = new Dictionary<string, Potion>();
     Dictionary<int, string> detailMsg = new Dictionary<int, string>()
@@ -172,10 +192,18 @@ public class DataManager : Singleton<DataManager>
             {300003, "[좌절] \n 하...이번 생은 망했어 \n 모든 증가 스탯 * 50% \n 모든 감소 스탯 * 200%"},
             {300000, "[영양실조] \n 공격속도 * 50% \n 의지 * 75%"}
         };
+    
 
     private int[,] requestCost = new int[2, Const.requestMap.Length];   // 의뢰 소모량(스태미나, 시간)
-
     private string[,] curRequest = new string[Const.area.Length, Const.requestNum];   // *0번째(지리산)는 데이터 없음
+
+    private OtherHospitalData[,] otherHospitalData = new OtherHospitalData[4, Const.healOptNum];
+
+    // 0,1,3: HP, 2: WILL
+    private int[,] healPercent = { { 5, 10, 25 }, { 10, 50, 100 }, { 10, 50, 100 }, { 10, 25, 50} };
+    private int[,] costMoney = { { 5, 8, 20 }, { 20, 90, 160 }, { 50, 200, 350 }, { 30, 70, 150 } };
+    private float[,] costTime = { { 6, 30, 60 }, { 30, 120, 180 }, { 120, 240, 360 }, { 60, 180, 360 } };
+
 
     public override void Awake()
     {
@@ -183,6 +211,7 @@ public class DataManager : Singleton<DataManager>
         LoadActionData("Move");
         LoadActionData("Training");
         LoadRequestData();
+        LoadHospitalData();
         LoadItemData();
 
         InitRequestCost();
@@ -208,6 +237,23 @@ public class DataManager : Singleton<DataManager>
     private void LoadRequestData()
     {
         requestDict = JsonConvert.DeserializeObject<Dictionary<string, Request>>(Resources.Load<TextAsset>($"Data/request").text);
+    }
+
+    private void LoadHospitalData()
+    {
+        Dictionary<string, Dictionary<string, ScHospitalData>> hdd = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, ScHospitalData>>>(Resources.Load<TextAsset>($"Data/Hospital").text);
+        scHospitalDict = hdd.Values.ElementAt(0);
+
+        for(int i=0; i<4; i++)
+        {
+            for(int j=0; j<Const.healOptNum; j++)
+            {
+                otherHospitalData[i, j] = new OtherHospitalData();
+                otherHospitalData[i, j].healPercent = healPercent[i, j];
+                otherHospitalData[i, j].cost_money = costMoney[i, j];
+                otherHospitalData[i, j].cost_time = costTime[i, j];
+            }
+        }
     }
 
     private void LoadItemData()
@@ -266,6 +312,85 @@ public class DataManager : Singleton<DataManager>
     public int GetRequestCost(CostType cost, int index)
     {
         return requestCost[(int)cost, index];
+    }
+
+    //public List<HospitalBase>[] GetScHospitalData()
+    //{
+    //    List<HospitalBase>[] hdl = new List<HospitalBase>[3];
+    //    hdl[0] = new List<HospitalBase>();
+    //    hdl[1] = new List<HospitalBase>();
+    //    hdl[2] = new List<HospitalBase>();
+    //    int curObjCode = UIManager_Area.Instance.GetSpObjectCode();
+    //    if (curObjCode == -1) Debug.LogError("병원 건물 번호가 지정되지 않았음(objectCode==-1)");
+
+    //    foreach(KeyValuePair<string, HospitalData> pair in hospitalDict)
+    //    {
+    //        if (pair.Value.able_object.Contains<int>(curObjCode))
+    //        {
+    //            hdl[0].Add(pair.Value);
+    //        }
+    //    }
+
+    //    if (curObjCode == 2)
+    //    {
+    //        for (int i = 0; i < Const.healOptNum; i++)
+    //        {
+    //            hdl[2].Add(otherHospitalData[curObjCode, i]); // 세종-정신과
+    //        }
+    //    }
+    //    else {
+    //        for(int i=0; i<Const.healOptNum; i++)
+    //        {
+    //            hdl[1].Add(otherHospitalData[curObjCode, i]);
+    //        }
+    //    }
+
+    //    return hdl;
+    //}
+
+    public List<ScHospitalData> GetScHospitalData()
+    {
+        List<ScHospitalData> hd = new List<ScHospitalData>();
+
+        int curObjCode = UIManager_Area.Instance.GetSpObjectCode();
+        if (curObjCode == -1) Debug.LogError("병원 건물 번호가 지정되지 않았음(objectCode==-1)");
+
+        foreach (KeyValuePair<string, ScHospitalData> pair in scHospitalDict)
+        {
+            if (pair.Value.able_object.Contains<int>(curObjCode))
+            {
+                hd.Add(pair.Value);
+            }
+        }
+
+        return hd;
+    }
+
+    public List<OtherHospitalData>[] GetOtherHospitalData()
+    {
+        List<OtherHospitalData>[] hdl = new List<OtherHospitalData>[2]; // 0:hp, 1:will
+        hdl[0] = new List<OtherHospitalData>();
+        hdl[1] = new List<OtherHospitalData>();
+
+        int curObjCode = UIManager_Area.Instance.GetSpObjectCode();
+        if (curObjCode == -1) Debug.LogError("병원 건물 번호가 지정되지 않았음(objectCode==-1)");
+
+        if (curObjCode == 2)
+        {
+            for (int i = 0; i < Const.healOptNum; i++)
+            {
+                hdl[1].Add(otherHospitalData[curObjCode, i]); // 세종-정신과
+            }
+        }
+        else
+        {
+            for (int i = 0; i < Const.healOptNum; i++)
+            {
+                hdl[0].Add(otherHospitalData[curObjCode, i]);
+            }
+        }
+
+        return hdl;
     }
 
     public ChoiceData GetChoiceTitle(string action)
