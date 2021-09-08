@@ -39,11 +39,12 @@ public static class StatConverter
         curTime += " AM";
     }
 
-    // ex) 350.0 -> "+6시간 50분"
+    // ex) 350.0 -> "6시간 50분"
     public static string GetEstimatedTime(float value)
     {
-        string estTime = "+" + (int)value / 60 + "시간";
-        if ((int)value % 60 != 0) estTime += " " + (int)value % 60 + "분";
+        string estTime = "";
+        if(((int)value/60)>0) estTime += (int)value / 60 + "시간 ";
+        if ((int)value % 60 != 0) estTime += (int)value % 60 + "분";
         return estTime;
     }
 

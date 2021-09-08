@@ -25,21 +25,8 @@ public class PlayerData : ICloneable
         clone.Mon_Inven = (MonInven)this.Mon_Inven.Clone();
         return clone;
     }
-    public void AddToCurPoint(string key, float value)
-    {
-        if (Stats.ContainsKey(key))
-        {
-            Stats[key].cur_point += value;
-        }
-        else if (Cons.n_Cons.ContainsKey(key))
-        {
-            Cons.n_Cons[key].cur_point += value;
-        }
-        else if (key == Const.time) GameManager.Instance.tempSpendTime += (int)value;
-        else if (key == Const.money) Mon_Inven.Money += value;
-        else Debug.LogError(key + "에 해당하는 플레이어 데이터가 존재하지 않음");
-    }
 
+    #region public Get() functions ===========================================================================================================
     public float GetCurPoint(string key)
     {
         if (Stats.ContainsKey(key))
@@ -110,13 +97,37 @@ public class PlayerData : ICloneable
         return StatConverter.GetMoney(Mon_Inven.Money);
     }
 
-    public PlayerItem FindItemWithIndex(int slotIndex)
+    public PlayerItem GetItemByIndex(int slotIndex)
     {
-        for(int i=0; i<Mon_Inven.Inven.Count; i++)
+        for (int i = 0; i < Mon_Inven.Inven.Count; i++)
         {
             if (Mon_Inven.Inven[i].inven_index == slotIndex) return Mon_Inven.Inven[i];
         }
         return null;
+    }
+
+    #endregion public Get() functions ===========================================================================================================
+
+    public void ChangeCurPoint(string key, float value)
+    {
+        if (Stats.ContainsKey(key))
+        {
+            Stats[key].cur_point += value;
+        }
+        else if (Cons.n_Cons.ContainsKey(key))
+        {
+            Cons.n_Cons[key].cur_point = Mathf.Clamp(Mathf.RoundToInt(Cons.n_Cons[key].cur_point + value), 0, Cons.n_Cons[key].max_point); ;
+        }
+        else if (key == Const.time) GameManager.Instance.tempSpendTime += (int)value;
+        else if (key == Const.money) Mon_Inven.Money += value;
+        else Debug.LogError(key + "에 해당하는 플레이어 데이터가 존재하지 않음");
+    }
+
+    public void ChangeConsByPer(string stat, int percent)
+    {
+        // 소수점 반올림
+        int val = Mathf.RoundToInt(Cons.n_Cons[stat].cur_point * percent * 0.01f);
+        Cons.n_Cons[stat].cur_point = Mathf.Clamp(Cons.n_Cons[stat].cur_point + val, 0, Cons.n_Cons[stat].max_point);
     }
 
     // 아이템 인벤토리에 추가 시 호출(ItemData로)
@@ -145,7 +156,7 @@ public class PlayerData : ICloneable
             if (index != -1)
             {
                 // 이미 있는 포션아이템이라면
-                FindItemWithIndex(index).item_each += itemEach;
+                GetItemByIndex(index).item_each += itemEach;
                 return;
             }
             else
@@ -163,19 +174,8 @@ public class PlayerData : ICloneable
         });
 
         // 포션아이템이라면 개수데이터 추가
-        if (itemEach != -1) FindItemWithIndex(index).item_each = itemEach;
+        if (itemEach != -1) GetItemByIndex(index).item_each = itemEach;
 
-    }
-
-    private int GetFirstEmptyIndex()
-    {
-        int index = 0;
-
-        for (int i = 0; i < Mon_Inven.Inven.Count; i++)
-        {
-            if (index == Mon_Inven.Inven[i].inven_index) index++;   // 리스트 인덱스와 인벤 인덱스가 불일치하는 구간이 가장 처음 비는 인덱스
-        }
-        return index;
     }
 
     // 아이템 인벤토리에 추가 시 호출(PlayerItem으로)
@@ -219,7 +219,7 @@ public class PlayerData : ICloneable
             ItemData itemData = DataManager.Instance.GetItemData(item);
             for (int i = 0; i < itemData.effect.Count; i++)
             {
-                AddToCurPoint(itemData.effect[i].effect_variable, itemData.effect[i].GetMinValue());
+                ChangeCurPoint(itemData.effect[i].effect_variable, itemData.effect[i].GetMinValue());
             }
             Mon_Inven.Equipment[index].item_name = item.item_name;
             Mon_Inven.Equipment[index].item_index = item.item_index;
@@ -235,17 +235,12 @@ public class PlayerData : ICloneable
             ItemData itemData = DataManager.Instance.GetItemData(Mon_Inven.Equipment[index]);
             for (int i = 0; i < itemData.effect.Count; i++)
             {
-                AddToCurPoint(itemData.effect[i].effect_variable, -itemData.effect[i].GetMinValue());
+                ChangeCurPoint(itemData.effect[i].effect_variable, -itemData.effect[i].GetMinValue());
             }
             Mon_Inven.Equipment[index].item_name = "none";
             Mon_Inven.Equipment[index].item_index = 0;
         }
     }
-
-    //public void RemoveEquipItem(EquipItem item)
-    //{
-    //    Mon_Inven.Equipment.RemoveAt(item.equip_index);
-    //}
 
     public void RemoveEquipItem(EquipItem item, int itemEach)
     {
@@ -269,11 +264,26 @@ public class PlayerData : ICloneable
     }
 
 
-
     // 플레이어에게 옷 입히기
     public void SetArmor()
     {
         Debug.Log("옷입히기");
+    }
+
+    public void RemoveSpecialCondition(int index)
+    {
+        Cons.ETC.RemoveAt(index);
+    }
+
+    private int GetFirstEmptyIndex()
+    {
+        int index = 0;
+
+        for (int i = 0; i < Mon_Inven.Inven.Count; i++)
+        {
+            if (index == Mon_Inven.Inven[i].inven_index) index++;   // 리스트 인덱스와 인벤 인덱스가 불일치하는 구간이 가장 처음 비는 인덱스
+        }
+        return index;
     }
 }
 

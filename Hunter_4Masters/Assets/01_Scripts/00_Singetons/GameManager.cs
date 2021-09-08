@@ -24,6 +24,8 @@ public class GameManager : Singleton<GameManager>
     private float zoomXMidpos = 0.375f; // 줌 인·아웃 시 x좌표 중간지점(현재는 행동 선택 시에만 사용)
     private float zoomXDelta = 0.125f;   // 줌 인·아웃 시 x좌표 변화량
 
+    private int areaCode = 0;    // 타 지역 구현 전이므로 지리산 코드 고정
+
     private CinemachineFramingTransposer vcamTransposer;
     private IEnumerator zoomCrt;
 
@@ -57,6 +59,16 @@ public class GameManager : Singleton<GameManager>
         curTimeVal = (1440 - leftTimeVal % 1440) % 1440;
     }
 
+    public int GetAreaCode()
+    {
+        return areaCode;
+    }
+
+    public void SetAreaCode()
+    {
+
+    }
+
     public string GetDDay()
     {
         return StatConverter.GetBasicDDay(d_day);
@@ -65,7 +77,6 @@ public class GameManager : Singleton<GameManager>
     public string GetCurrentTimeByValue()
     {
         return StatConverter.GetBasicTime(curTimeVal);
-        //return DataManager.Instance.GetTimeByValue(curTimeVal);
     }
 
     public void Pause()
@@ -85,6 +96,12 @@ public class GameManager : Singleton<GameManager>
         isPlay = true;
         timeCoroutine = TimeCoroutine();
         StartCoroutine(timeCoroutine);
+    }
+
+    public void SkipTime(int val)
+    {
+        leftTimeVal -= val;
+        CalcTime();
     }
 
     public void SetController(bool value)

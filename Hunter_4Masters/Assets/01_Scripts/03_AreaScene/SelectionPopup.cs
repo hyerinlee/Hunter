@@ -296,7 +296,7 @@ public class SelectionPopup : MonoBehaviour
             {
                 GameManager.Instance.tempSpendTime -= (int)cd[selectedOption].consume[i].consume_value;
             }
-            else afterPd.AddToCurPoint(cd[selectedOption].consume[i].consume_variable, cd[selectedOption].consume[i].consume_value);
+            else afterPd.ChangeCurPoint(cd[selectedOption].consume[i].consume_variable, cd[selectedOption].consume[i].consume_value);
         }
 
         // 이벤트로 인해 변화한 값 적용
@@ -306,8 +306,8 @@ public class SelectionPopup : MonoBehaviour
             {
                 if (pair.Key != Const.defStr2)
                 {
-                    afterPd.AddToCurPoint(pair.Key, pair.Value);
-                    if (afterPd.GetCurPoint(pair.Key) < 0) afterPd.AddToCurPoint(pair.Key, -afterPd.GetCurPoint(pair.Key));
+                    afterPd.ChangeCurPoint(pair.Key, pair.Value);
+                    if (afterPd.GetCurPoint(pair.Key) < 0) afterPd.ChangeCurPoint(pair.Key, -afterPd.GetCurPoint(pair.Key));
                 }
             }
         }

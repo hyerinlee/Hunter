@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class Popup : MonoBehaviour
 {
-    [SerializeField] private GameObject selectPanel, shopPanel, requestPanel;
+    [SerializeField] private GameObject selectPanel, hospitalPanel, shopPanel, requestPanel;
     private SelectionPopup selectionPopup;
-    private RectTransform selectionPopupRT;
+    private RectTransform selectionPopupRT, hospitalPopupRT;
 
     private float slideMidPos = -840f;  // 선택지 팝업창 슬라이드 전·후의 중간지점
     private float slideDelta = 340f; // 선택지 팝업창 슬라이드 이동량
@@ -16,6 +16,7 @@ public class Popup : MonoBehaviour
     {
         selectionPopup = selectPanel.GetComponent<SelectionPopup>();
         selectionPopupRT = selectPanel.transform.GetChild(0).GetComponent<RectTransform>();
+        hospitalPopupRT = hospitalPanel.transform.GetChild(0).GetComponent<RectTransform>();
     }
 
     public SelectionPopup GetSelectionPopup()
@@ -41,44 +42,61 @@ public class Popup : MonoBehaviour
 
             GameManager.Instance.SetController(false);
             GameManager.Instance.Zoom(Vector3.forward);
-            selectPanel.SetActive(true);
-            StartCoroutine(PopupSlideCoroutine(Vector3.left));
+            if (action == "hospital")
+            {
+                hospitalPanel.SetActive(true);
+                StartCoroutine(PopupSlideCoroutine(Vector3.left, hospitalPopupRT));
+            }
+            else
+            {
+                selectPanel.SetActive(true);
+                selectionPopup.SetPopup(action);
+                StartCoroutine(PopupSlideCoroutine(Vector3.left, selectionPopupRT));
+            }
 
-            selectionPopup.SetPopup(action);
         }
     }
 
     // 선택지 팝업창 닫기 버튼에서 호출
-    public void CancelAction()
+    public void CancelAction(string action)
     {
         StopAllCoroutines();
 
         GameManager.Instance.Zoom(Vector3.back);
-        StartCoroutine(popupExitCoroutine());
+        StartCoroutine(popupExitCoroutine(action));
     }
 
     // 선택지 팝업창 닫을 때: 슬라이드 후 비활성화 해야 함
-    private IEnumerator popupExitCoroutine()
+    private IEnumerator popupExitCoroutine(string action)
     {
-        StartCoroutine(PopupSlideCoroutine(Vector3.right));
-        yield return new WaitForSeconds(0.5f);
-        selectPanel.SetActive(false);
+        if (action == "hospital")
+        {
+            StartCoroutine(PopupSlideCoroutine(Vector3.right, hospitalPopupRT));
+            yield return new WaitForSeconds(0.5f);
+            hospitalPanel.SetActive(false);
+        }
+        else
+        {
+            StartCoroutine(PopupSlideCoroutine(Vector3.right, selectionPopupRT));
+            yield return new WaitForSeconds(0.5f);
+            selectPanel.SetActive(false); 
+        }
         GameManager.Instance.SetController(true);
         GameManager.Instance.Resume();
         yield return null;
     }
 
     // 선택지 팝업창 슬라이드 코루틴
-    private IEnumerator PopupSlideCoroutine(Vector3 dir)
+    private IEnumerator PopupSlideCoroutine(Vector3 dir, RectTransform rt)
     {
-        Vector2 destPos = new Vector2(slideMidPos + slideDelta * dir.x, selectionPopupRT.anchoredPosition.y);
+        Vector2 destPos = new Vector2(slideMidPos + slideDelta * dir.x, rt.anchoredPosition.y);
         float offset = 0f;
-        while (selectionPopupRT.anchoredPosition != destPos && offset < 1.5f)
+        while (rt.anchoredPosition != destPos && offset < 1.5f)
         {
-            selectionPopupRT.anchoredPosition = Vector2.Lerp(selectionPopupRT.anchoredPosition, destPos, Time.deltaTime*4.5f);
+            rt.anchoredPosition = Vector2.Lerp(rt.anchoredPosition, destPos, Time.deltaTime*4.5f);
             offset += Time.deltaTime;
             yield return null;
         }
-        selectionPopupRT.anchoredPosition = destPos;
+        rt.anchoredPosition = destPos;
     }
 }

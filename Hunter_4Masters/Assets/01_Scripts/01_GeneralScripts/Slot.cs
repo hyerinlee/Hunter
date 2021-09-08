@@ -224,7 +224,7 @@ public class Slot : MonoBehaviour,
                 else
                 {
                     // 인벤토리 리스트의 이 슬롯 아이템과 같으면 병합하고, 그렇지 않으면 이 슬롯 아이템을 제거하고 인벤토리 리스트에 교체할 아이템 추가
-                    PlayerItem invenItem = FosterManager.Instance.GetPlayerData().FindItemWithIndex(slotIndex);
+                    PlayerItem invenItem = FosterManager.Instance.GetPlayerData().GetItemByIndex(slotIndex);
                     if (!MergePotion(ref invenItem, beforePlayerItem))
                     {
                         FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem);
@@ -236,7 +236,7 @@ public class Slot : MonoBehaviour,
             }
             else
             {
-                PlayerItem invenItem = FosterManager.Instance.GetPlayerData().FindItemWithIndex(slotIndex);
+                PlayerItem invenItem = FosterManager.Instance.GetPlayerData().GetItemByIndex(slotIndex);
                 if (!MergePotion(ref invenItem, beforePlayerItem))
                 {
                     if(playerItem!=null) FosterManager.Instance.GetPlayerData().RemoveInvenItem(playerItem, playerItem.item_each);

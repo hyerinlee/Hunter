@@ -61,7 +61,7 @@ public class RequestPopup : MonoBehaviour
         battleBtn.interactable = false;
         selectedReqIndex = -1;
 
-        SetRequestPopup(DataManager.Instance.GetCurRequest());
+        SetPopup(DataManager.Instance.GetCurRequest());
     }
 
     // 의뢰 선택
@@ -112,7 +112,7 @@ public class RequestPopup : MonoBehaviour
     }
 
     // 의뢰UI 세팅
-    private void SetRequestPopup(string[] requestKey)
+    private void SetPopup(string[] requestKey)
     {
         for (int i = 0; i < Const.requestNum; i++)
         {
