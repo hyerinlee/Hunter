@@ -89,7 +89,9 @@ public class PlayerData : ICloneable
 
     public string GetStateOutOfMax(string key)
     {
-        return Cons.n_Cons[key].cur_point + "/" + Cons.n_Cons[key].max_point;
+        if (Stats.ContainsKey(key)) return Stats[key].cur_point + "/" + Stats[key].max_point;
+        else if (Cons.n_Cons.ContainsKey(key)) return Cons.n_Cons[key].cur_point + "/" + Cons.n_Cons[key].max_point;
+        else throw new NullReferenceException();
     }
 
     public string GetMoney()
@@ -128,6 +130,11 @@ public class PlayerData : ICloneable
         // 소수점 반올림
         int val = Mathf.RoundToInt(Cons.n_Cons[stat].cur_point * percent * 0.01f);
         Cons.n_Cons[stat].cur_point = Mathf.Clamp(Cons.n_Cons[stat].cur_point + val, 0, Cons.n_Cons[stat].max_point);
+    }
+
+    public void IncreaseMaxPoint(string key, int value)
+    {
+        Stats[key].max_point += value;
     }
 
     // 아이템 인벤토리에 추가 시 호출(ItemData로)
@@ -432,6 +439,7 @@ public class FosterManager : Singleton<FosterManager>
 {
 
     private PlayerData playerData;
+    private int awakeningCnt = 1;
 
     public override void Awake()
     {
@@ -449,6 +457,16 @@ public class FosterManager : Singleton<FosterManager>
     public PlayerData GetPlayerData()
     {
         return playerData;
+    }
+
+    public int GetAwakeningCnt()
+    {
+        return awakeningCnt;
+    }
+
+    public void Awakening()
+    {
+        awakeningCnt++;
     }
 
     public void SetPlayerData(PlayerData pd)

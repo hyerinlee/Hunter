@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Popup : MonoBehaviour
 {
-    [SerializeField] private GameObject selectPanel, hospitalPanel, shopPanel, requestPanel;
+    [SerializeField] private GameObject selectPanel, hospitalPanel, shopPanel, requestPanel, awakeningPanel;
     private SelectionPopup selectionPopup;
     private RectTransform selectionPopupRT, hospitalPopupRT;
 
@@ -35,6 +35,10 @@ public class Popup : MonoBehaviour
         else if (action == "request")
         {
             requestPanel.SetActive(true);
+        }
+        else if (action == "awakening")
+        {
+            awakeningPanel.SetActive(true);
         }
         else
         {
