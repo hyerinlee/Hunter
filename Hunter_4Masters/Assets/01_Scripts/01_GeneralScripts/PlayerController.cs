@@ -96,8 +96,9 @@ public class PlayerController : MonoBehaviour
         if(col.CompareTag("Enemy") && isAttack == true)
         {
             //충돌한 Enemy 스크립트 불러오기
-            string scriptName = col.gameObject.name.Substring(3);
+            string scriptName = col.gameObject.name.Substring(3, 5);
             Monster script = col.gameObject.GetComponent(scriptName) as Monster;
+            Debug.Log(scriptName);
             script.Damaged(1);
         }
         isAttack = false;

@@ -1,4 +1,4 @@
-癤퓎sing System;
+using System;
 using System.IO;
 using System.Text;
 using System.Collections;
@@ -21,13 +21,22 @@ public class MapLoader : MonoBehaviour
 
     Dictionary<string, string[]> mapJson = new Dictionary<string, string[]>();
 
+    // // 스포너 부분
+    // Dictionary<string, MonsterSpawner> spawnerJson = new Dictionary<string, MonsterSpawner>();
+    // public MonsterSpawner spawnerData;
+
     private int num = 0;
     private string[] stages = {"01_stage", "02_stage", "03_stage"};
 
     public void LoadMap()
     {
+        // 맵 데이터
         mapJson = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(Resources.Load<TextAsset>($"Data/mapData").text);
         string[] stage = mapJson[stages[num]];
+
+        // // 스포너 데이터
+        // spawnerJson = JsonConvert.DeserializeObject<Dictionary<string, MonsterSpawner>>(Resources.Load<TextAsset>($"Data/monsterSpawner").text);
+        // spawnerData = spawnerJson["00_Spawner"];
 
         string[,] data = new string[stage.Length, stage[0].Length];
 
@@ -57,6 +66,16 @@ public class MapLoader : MonoBehaviour
                 else if(data[i, j].Equals("S"))
                 {
                     tileMap.SetTile(new Vector3Int(j, 0-i, 0), null);
+
+                    MonsterSpawner spawnerScript = spawner.GetComponent<MonsterSpawner>();
+                    
+                    // spawnerScript.name = spawnerData.name;
+                    // spawnerScript.release_Arrange = spawnerData.release_Arrange;
+                    // spawnerScript.monsters = spawnerData.monsters;
+                    // spawnerScript.spawn_Time = spawnerData.spawn_Time;
+                    // spawnerScript.isEmergerd = spawnerData.isEmergerd;
+                    // spawnerScript.hp = spawnerData.hp;
+
                     Instantiate(spawner, new Vector3Int(j+1, 0-i, 0), Quaternion.identity);
                 }
                 else if(data[i, j].Equals("P"))
