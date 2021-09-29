@@ -156,7 +156,7 @@ public class MonsterSpawner : MonoBehaviour
         {
             doSpawn = false;
             Debug.Log("몬스터 소환ㄴㄴ");
-            return; // 지금은 리턴 해주는데 실제 플레이에서는 지워야 할 듯 전툰 끝나기 전까지 스폰은 계속 해야하니깐 .. ?
+            return; // 지금은 리턴 해주는데 실제 플레이에서는 지워야 할 듯 전투 끝나기 전까지 스폰은 계속 해야하니깐 .. ?
         }
 
         if(doSpawn)
