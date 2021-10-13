@@ -155,6 +155,8 @@ public class ResultPopup : MonoBehaviour
             obj.SetActive(false);
         }
 
+        GameManager.Instance.Zoom(Vector3.back);
+        GameManager.Instance.SetController(true);
         GameManager.Instance.Resume();
     }
 }

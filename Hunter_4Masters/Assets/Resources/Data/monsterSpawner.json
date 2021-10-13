@@ -1,0 +1,54 @@
+{
+	"00_Spawner" : {
+		"Data_ID" : 911000,
+		"Name" : "Spawner_1",
+		"Release_Arrange" : [ 0.0, 3.0 ],
+		"Monsters" : [
+			[ -10000 ]
+		],
+		"Spawn_Time" : 3.0,
+		"IsEmerged" : false,
+		"Hp" : 0.0,
+		"Spawn_Limit" : 0
+	},
+	"99_SpawnerA" : {
+		"Data_ID" : 999999,
+		"Name" : "Spawner_A",
+		"Release_Arrange" : [ 0.0, 3.0 ],
+		"Monsters" : [
+			[ 999999, 999998, 999997 ],
+			[ 999997, 999996 ],
+			[ 999995, 999994, 999993 ]
+		],
+		"Spawn_Time" : 3.0,
+		"IsEmerged" : false,
+		"Hp" : 0.0,
+		"Spawn_Limit" : 9
+	},
+	"98_SpawnerB" : {
+		"Data_ID" : 999998,
+		"Name" : "Spawner_B",
+		"Release_Arrange" : [ 0.0, 3.0 ],
+		"Monsters" : [
+			[ 999993, 999994, 999997 ],
+			[ 999995, 999995, 999995 ]
+		],
+		"Spawn_Time" : 3.0,
+		"IsEmerged" : false,
+		"Hp" : 0.0,
+		"Spawn_Limit" : 8
+	},
+	"97_SpawnerC" : {
+		"Data_ID" : 999997,
+		"Name" : "Spawner_C",
+		"Release_Arrange" : [ 0.0, 3.0 ],
+		"Monsters" : [
+			[ 999998 ],
+			[ 999999, 999995 ]
+		],
+		"Spawn_Time" : 3.0,
+		"IsEmerged" : false,
+		"Hp" : 0.0,
+		"Spawn_Limit" : 7
+	}
+}

@@ -5,18 +5,19 @@ using UnityEngine.UI;
 
 public class Talk : MonoBehaviour
 {
-    private State state = State.NotInitialized;
+    // 현재는 텍스트 파일을 직접 추가하는 방식임 Resource 추출로 바꿔야 함
+    public TextAsset txt;
 
-    private List<string> text = new List<string>(new string[]
-    {
-        "첫번째 텍스트입니다. 자동으로 출력됩니다.",
-        "두번째 텍스트입니다. 스킵 버튼 터치 시 모든 텍스트가 출력됩니다.",
-        "마지막 텍스트입니다. 터치하면 종료합니다."
-    });
+    string[,] Sentence;
+    int lineSize, rowSize;
+
+    private State state = State.NotInitialized;
+    private List<string> script = new List<string>();
+
+    public int currentIdx = 0;
     
     [SerializeField]
     Text uiText;
-
 
     enum State
     {
@@ -25,61 +26,117 @@ public class Talk : MonoBehaviour
         PlayingSkipping,
         Completed,
     }
-
-    IEnumerator Start()
+    
+    void OnEnable()
     {
-        state = State.Playing;
-        for (int i = 0; i < text.Count; i += 1)
-        {
-            yield return PlayLine(text[i]);
-        }
-        state = State.Completed;
+        // 엔터단위와 탭으로 나눠서 배열의 크기 조정
+        string currentText = txt.text.Substring(0, txt.text.Length-1);
+        string[] line = currentText.Split('\n');
+
+        // 문장 수 계산
+        lineSize = line.Length;
+        rowSize = line[0].Split('\t').Length;
+        Sentence = new string[lineSize, rowSize];
+
+        // //한 줄에서 탭으로 나눔
+        // for(int i=0; i<lineSize; i++)
+        // {
+        //     string[] row = line[i].Split('\t');
+        //     for(int j=0; j<rowSize; j++)
+        //         Sentence[i, j] = row[j];
+        // }
+
+        // print(currentText);
+        // print(Sentence);
+
+        //script = line.ToList();
+
+        // line 배열을 script 리스트에 추가
+        script.AddRange(line);
+
+        // // script 리스트 출력
+        // for(int i=0; i<lineSize; i++)
+        //     Debug.Log(script[i]);
+
+        StartCoroutine(Play());
     }
 
-    IEnumerator PlayLine(string text)
+    // public void TestStart()
+    // {
+    //     // 엔터단위와 탭으로 나눠서 배열의 크기 조정
+    //     string currentText = txt.text.Substring(0, txt.text.Length-1);
+    //     string[] line = currentText.Split('\n');
+
+    //     // 문장 수 계산
+    //     lineSize = line.Length;
+    //     rowSize = line[0].Split('\t').Length;
+    //     Sentence = new string[lineSize, rowSize];
+
+    //     // //한 줄에서 탭으로 나눔
+    //     // for(int i=0; i<lineSize; i++)
+    //     // {
+    //     //     string[] row = line[i].Split('\t');
+    //     //     for(int j=0; j<rowSize; j++)
+    //     //         Sentence[i, j] = row[j];
+    //     // }
+
+    //     // print(currentText);
+    //     // print(Sentence);
+
+    //     //script = line.ToList();
+
+    //     // line 배열을 script 리스트에 추가
+    //     script.AddRange(line);
+
+    //     // // script 리스트 출력
+    //     // for(int i=0; i<lineSize; i++)
+    //     //     Debug.Log(script[i]);
+
+    //     StartCoroutine(Play());
+    // }
+
+    IEnumerator Play()
     {
-        for (int i = 0; i < text.Length + 1; i += 1)
+        state = State.Playing;
+        for (currentIdx = 0; currentIdx < script.Count; currentIdx++)
+        {
+            Debug.Log(currentIdx + "번째 줄 출력 중. 내용 : " + script[currentIdx]);
+
+            yield return Print(script[currentIdx]);
+        }
+        state = State.Completed;
+
+        uiText.text = "";
+        uiText.transform.parent.gameObject.SetActive(false);
+    }
+
+    IEnumerator Print(string script)
+    {
+        for (int i = 0; i < script.Length + 1; i++)
         {
             yield return new WaitForSeconds(0.1f);
             if (state == State.PlayingSkipping)
             {
-                uiText.text = text;
+                uiText.text = script;
                 state = State.Playing;
                 break;
             }
-            uiText.text = text.Substring(0, i);
+            uiText.text = script.Substring(0, i);
         }
         
-        yield return new WaitForSeconds(0.5f);
-
-        for (int i = 0; i < 25; i += 1)
-        {
+        while(state != State.PlayingSkipping)
             yield return new WaitForSeconds(0.1f);
-            if (state == State.PlayingSkipping)
-            {
-                state = State.Playing;
-                break;
-            }
-        }
+        state = State.Playing;
     }
 
     public void Skip()
     {
-        Debug.Log(state);
-        if(state == State.Completed)
-        {
-            Debug.Log("종료");
-            uiText.transform.parent.gameObject.SetActive(false);
-        }
-
         state = State.PlayingSkipping;
     }
 
-    public IEnumerator WaitForComplete()
+    public void Exit()
     {
-        while (state != State.Completed)
-        {
-            yield return null;
-        }
+        uiText.text = "";
+        uiText.transform.parent.gameObject.SetActive(false);
     }
 }

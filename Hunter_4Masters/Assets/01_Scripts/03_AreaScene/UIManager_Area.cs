@@ -12,6 +12,9 @@ public class UIManager_Area : Singleton<UIManager_Area>
     [SerializeField] private EtcStates etcPanel;
     [SerializeField] private Popup popup;
     [SerializeField] public Text hp, sp, day, time, money;
+
+    private int spObjectCode = -1;
+
     private GameObject[] skillPotionBtns = new GameObject[5];
     private Image[] skillPotionBtnImgs = new Image[5];
     private Text[] potioneachTxts = new Text[2];
@@ -41,6 +44,11 @@ public class UIManager_Area : Singleton<UIManager_Area>
     private void Update()
     {
         if (GameManager.Instance.isPlay) SetUI();
+    }
+
+    public int GetSpObjectCode()
+    {
+        return spObjectCode;
     }
 
     public void SetUI()
@@ -84,8 +92,7 @@ public class UIManager_Area : Singleton<UIManager_Area>
                     // potion
                     skillPotionBtns[i].GetComponent<Button>().onClick.AddListener(() => 
                     {
-                        Debug.Log("포션 1개 사용함");
-                        FosterManager.Instance.GetPlayerData().UsePotion(FosterManager.Instance.GetPlayerData().Mon_Inven.Equipment[Const.equipNum+i]);
+                        FosterManager.Instance.GetPlayerData().UsePotion(index);
                         SetSkills();
                     });
                 }
@@ -98,8 +105,9 @@ public class UIManager_Area : Singleton<UIManager_Area>
         }
     }
 
-    public void ActiveInteraction(Vector2 pos, string simulName)
+    public void ActiveInteraction(Vector2 pos, string simulName, int spObjectCode = -1) // 지금 참조 4개라 기본지정해줬는데 이거 끊으면 지우셈
     {
+        this.spObjectCode = spObjectCode;
         interaction.transform.position = pos + Vector2.up * 2;
         interaction.GetComponent<Image>().sprite = DataManager.Instance.GetSprite("", "Interact-" + simulName);
         interactBtn.onClick.RemoveAllListeners();

@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SelectionPopup : MonoBehaviour
@@ -11,30 +9,20 @@ public class SelectionPopup : MonoBehaviour
 
     // 실행 행동 UI
     [SerializeField] private Image actionImg;
-    [SerializeField] private Text actionInfo;
-
-    // 육성 UI
-    [SerializeField] private Image spGauge;
-    [SerializeField] private Text spTxt;
-    [SerializeField] private Text dayTxt;
-    [SerializeField] private Text timeTxt;
-    [SerializeField] private Text moneyTxt;
 
     // 카테고리 및 선택지 UI
-    [SerializeField] private Text[] categories = new Text[5];
     [SerializeField] private GameObject scrollView;
     private GameObject optionGroup;
     private GameObject[] options = new GameObject[10];
+    private Text[] optionName = new Text[10];
+    private Text[,] optionContents = new Text[10, 4];
+    private Text[,] optionTitleTxts = new Text[10, 4];
+    private Image[,] optionTitleImgs_rt = new Image[10, 4];
+    private Image[,] optionTitleImgs_sq = new Image[10, 4];
     private RectTransform optionGroupRT;
     private float scrollViewHeight;
     private float optionBtnHeight;
 
-
-    public Sprite[] actionImgTempData = new Sprite[2];
-    private string[] actionInfoTempData = { "평화로운 산골마을에 위치한 지리산은 가는 길은 그다지 평화롭지 않을 수도 있습니다.",
-                                        "헌터협회 사무보조 인력 모집 중\n\n" +
-                                        "근무시간: 시간협의\n" +
-                                        "제출서류: 이력서" };
     private PlayerData pd;
     private ChoiceData title;
     private Dictionary<string, ChoiceData> cd;
@@ -48,6 +36,7 @@ public class SelectionPopup : MonoBehaviour
     private KeyValuePair<string, EventData>[] occurEventArray = new KeyValuePair<string, EventData>[eventNum];
     private Dictionary<string, float>[] changesArray = new Dictionary<string, float>[eventNum];    // 변화량 합산할때도 사용
 
+
     private void Awake()
     {
         simulationPopup = simulationPanel.GetComponent<SimulationPopup>();
@@ -55,6 +44,15 @@ public class SelectionPopup : MonoBehaviour
         for (int i = 0; i < optionGroup.transform.childCount; i++)
         {
             options[i] = optionGroup.transform.GetChild(i).gameObject;
+            optionName[i] = options[i].transform.GetChild(0).GetComponent<Text>();
+            for(int j=0; j<4; j++)
+            {
+                optionTitleImgs_rt[i, j] = options[i].transform.GetChild(j + 1).GetChild(0).GetComponent<Image>();
+                optionTitleImgs_sq[i, j] = options[i].transform.GetChild(j + 1).GetChild(1).GetComponent<Image>();
+                optionTitleTxts[i, j] = options[i].transform.GetChild(j + 1).GetChild(2).GetComponent<Text>();
+
+                optionContents[i, j] = options[i].transform.GetChild(j + 5).GetComponent<Text>();
+            }
         }
         optionGroupRT = optionGroup.GetComponent<RectTransform>();
         // 선택지 버튼의 height값 가져오기(이후 선택지 개수에 따라 선택지박스 height 조정됨)
@@ -70,25 +68,8 @@ public class SelectionPopup : MonoBehaviour
         title = DataManager.Instance.GetChoiceTitle(action);
         cd = DataManager.Instance.GetChoiceData(action, 0);  //일단 areaCode 0으로 넣음
 
-
-        // 행동이미지와 행동설명데이터 UI에 적용 (데이터 만들면 변경예정)
-        actionImg.sprite = actionImgTempData[0];
-        actionInfo.text = actionInfoTempData[0];
-
-        // 육성데이터(pd) UI 적용
-        spGauge.fillAmount = pd.GetStatPercent(Const.sp);
-        spTxt.text = pd.GetStateOutOfMax(Const.sp);
-        dayTxt.text = GameManager.Instance.GetDDay();
-        timeTxt.text = GameManager.Instance.GetCurrentTimeByValue();
-        moneyTxt.text = pd.GetMoney();
-
-        // 카테고리 데이터 UI 적용
-        categories[0].text = title.name;
-        for (int i = 0; i < 3; i++)
-        {
-            categories[i + 1].text = title.consume[i].consume_variable;
-        }
-        categories[4].text = title.plusInfo;
+        // 행동 이름 표시
+        actionImg.sprite = DataManager.Instance.GetSprite("icons",action);
 
         // 선택지 리셋
         for (int i=0; i<options.Length; i++)
@@ -112,27 +93,75 @@ public class SelectionPopup : MonoBehaviour
     // (하나의) 선택지버튼 UI를 세팅
     private void SetOptionUI(KeyValuePair<string, ChoiceData> pair, int index)
     {
-        options[index].transform.GetChild(0).GetComponent<Text>().text = pair.Value.name;
-        for (int i = 0; i < 3; i++)
+        optionName[index].text = pair.Value.name;
+
+        int i = 0;
+        for (i = 0; i < pair.Value.consume.Count; i++)
         {
-            Text optionTxt = options[index].transform.GetChild(i + 1).GetComponent<Text>();
             // 돈과 시간만 형식이 지정되어있고 나머지는 단순 값 출력
-            switch (categories[i + 1].text)
+            switch (title.consume[i].consume_variable)
             {
                 case Const.money:
-                    optionTxt.text = StatConverter.GetMoney(pair.Value.consume[i].consume_value);
+                    SetOptionTitle(Const.money,index,i);
+                    optionContents[index,i].text = StatConverter.GetMoney(pair.Value.consume[i].consume_value);
                     break;
                 case Const.time:
-                    optionTxt.text = StatConverter.GetEstimatedTime(pair.Value.consume[i].consume_value);
+                    SetOptionTitle(Const.time, index, i);
+                    optionContents[index, i].text = StatConverter.GetEstimatedTime(pair.Value.consume[i].consume_value);
                     break;
                 default:
-                    optionTxt.text = pair.Value.consume[i].consume_value.ToString();
+                    SetOptionTitle(title.consume[i].consume_variable, index, i);
+                    optionContents[index, i].text = pair.Value.consume[i].consume_value.ToString();
                     break;
             }
         }
-        options[index].transform.GetChild(4).GetComponent<Text>().text = pair.Value.plusInfo;
+
+        // 조건이 있는 경우 세팅
+        if(pair.Value.condition.Count!=0 && pair.Value.condition[0].condition_variable != Const.defStr2)
+        {
+            SetOptionTitle("condition", index, i);
+
+            for (int j = 0; j < pair.Value.condition.Count; j++)
+            {
+                if (j != 0) optionContents[index, i].text += "/";
+                optionContents[index, i].text += DataManager.Instance.GetConditionRange(pair.Value.condition[j]);
+            }
+        }
+
+        // 추가정보가 있는 경우 세팅(*훈련 기준, 나머지 행동데이터 추가 시 변경 예정)
+        if (title.plusInfo != Const.defStr2)
+        {
+            string[] plusInfo = pair.Value.plusInfo.Split('/');
+            SetOptionTitle(plusInfo[0], index, 3);
+            optionContents[index, 3].text = plusInfo[1];
+        }
+        else
+        {
+            optionTitleImgs_rt[index, 3].enabled = false;
+            optionTitleImgs_sq[index, 3].enabled = false;
+            optionContents[index, 3].text = "";
+        }
+
         options[index].GetComponent<Button>().onClick.AddListener(() => OptionClick(pair.Key));
         options[index].GetComponent<Button>().interactable = IsOptionAvailable(pair.Value);
+    }
+
+    private void SetOptionTitle(string title, int index, int subIndex)
+    {
+        if(title == Const.money || title == Const.time || title == "condition")
+        {
+            optionTitleImgs_rt[index, subIndex].enabled = false;
+            optionTitleImgs_sq[index, subIndex].enabled = true;
+            optionTitleImgs_sq[index, subIndex].sprite = (index == 0) ? 
+                DataManager.Instance.GetSprite("icons", title) : optionTitleImgs_sq[0, subIndex].sprite;
+            optionTitleTxts[index, subIndex].text = "";
+        }
+        else
+        {
+            optionTitleImgs_rt[index, subIndex].enabled = true;
+            optionTitleImgs_sq[index, subIndex].enabled = false;
+            optionTitleTxts[index, subIndex].text = title;
+        }
     }
 
     // 육성데이터와 비교하여 선택가능한 선택지인지 확인
@@ -267,7 +296,7 @@ public class SelectionPopup : MonoBehaviour
             {
                 GameManager.Instance.tempSpendTime -= (int)cd[selectedOption].consume[i].consume_value;
             }
-            else afterPd.AddToCurPoint(cd[selectedOption].consume[i].consume_variable, cd[selectedOption].consume[i].consume_value);
+            else afterPd.ChangeCurPoint(cd[selectedOption].consume[i].consume_variable, cd[selectedOption].consume[i].consume_value);
         }
 
         // 이벤트로 인해 변화한 값 적용
@@ -277,8 +306,8 @@ public class SelectionPopup : MonoBehaviour
             {
                 if (pair.Key != Const.defStr2)
                 {
-                    afterPd.AddToCurPoint(pair.Key, pair.Value);
-                    if (afterPd.GetCurPoint(pair.Key) < 0) afterPd.AddToCurPoint(pair.Key, -afterPd.GetCurPoint(pair.Key));
+                    afterPd.ChangeCurPoint(pair.Key, pair.Value);
+                    if (afterPd.GetCurPoint(pair.Key) < 0) afterPd.ChangeCurPoint(pair.Key, -afterPd.GetCurPoint(pair.Key));
                 }
             }
         }

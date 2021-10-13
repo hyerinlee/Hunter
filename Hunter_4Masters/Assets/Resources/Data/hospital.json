@@ -1,0 +1,25 @@
+﻿{
+	"Hospital": {
+		"00_SampleSpecialCon": {
+			"Data_ID": 800000,
+			"Target_SC": 300000,
+			"Able_Object": [ 0, 1, 2, 3 ],
+			"Cost_Money": 100.0,
+			"Cost_Time": 60.0
+		},
+		"01_SampleSpecialCon": {
+			"Data_ID": 801001,
+			"Target_SC": 300001,
+			"Able_Object": [ 0, 1, 2, 3 ],
+			"Cost_Money": 100.0,
+			"Cost_Time": 60.0
+		},
+		"02_SampleSpecialCon": {
+			"Data_ID": 802002,
+			"Target_SC": 300003,
+			"Able_Object": [ 0, 1, 2, 3 ],
+			"Cost_Money": 100.0,
+			"Cost_Time": 60.0
+		}
+	}
+}

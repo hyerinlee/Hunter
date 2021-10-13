@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
 
     public GameObject attackMsg;
 
+    public bool isAttack = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -80,25 +82,27 @@ public class PlayerController : MonoBehaviour
 
     public void Attack()
     {
-        //공격 애니메이션 설정
-        //아직 공격애니메이션 없어서 공격 애니메이션 대신 넣었음
-        StartCoroutine(AttackCoroutine());
-        // Enemy.OnDamaged(10.0f);
+        anim.SetTrigger("isAttack");
+        //공격트리거: false 일 때에는 collider 충돌해도 enemy에게 데미지 없음
+        isAttack = true;
+
+        //무기 트리거인데 혹시 몰라서 남겨둠
+        //Collider2D weaponCollider = attackPoint.GetComponent<CapsuleCollider2D>();
     }
 
-    IEnumerator AttackCoroutine()
+    public void OnTriggerEnter2D(Collider2D col)
     {
-        anim.SetBool("isAttack", true);
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
-
-        foreach (Collider2D enemy in hitEnemies)
+        //충돌한 collider가 Enemy일 때
+        if(col.CompareTag("Enemy") && isAttack == true)
         {
-            Debug.Log("처맞는넘" + enemy.name);
-            enemy.GetComponent<EnemyMove>().OnDamaged(10);
+            //충돌한 Enemy 스크립트 불러오기
+            string scriptName = col.gameObject.name.Substring(3, 5);
+            Monster script = col.gameObject.GetComponent(scriptName) as Monster;
+            Debug.Log(scriptName);
+            script.Damaged(1);
         }
-            
-
-        yield return new WaitForSeconds(0.1f);
-        anim.SetBool("isAttack", false);
+        isAttack = false;
     }
+
+    
 }

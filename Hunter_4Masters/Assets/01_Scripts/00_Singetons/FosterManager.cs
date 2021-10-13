@@ -25,21 +25,8 @@ public class PlayerData : ICloneable
         clone.Mon_Inven = (MonInven)this.Mon_Inven.Clone();
         return clone;
     }
-    public void AddToCurPoint(string key, float value)
-    {
-        if (Stats.ContainsKey(key))
-        {
-            Stats[key].cur_point += value;
-        }
-        else if (Cons.n_Cons.ContainsKey(key))
-        {
-            Cons.n_Cons[key].cur_point += value;
-        }
-        else if (key == Const.time) GameManager.Instance.tempSpendTime += (int)value;
-        else if (key == Const.money) Mon_Inven.Money += value;
-        else Debug.LogError(key + "에 해당하는 플레이어 데이터가 존재하지 않음");
-    }
 
+    #region public Get() functions ===========================================================================================================
     public float GetCurPoint(string key)
     {
         if (Stats.ContainsKey(key))
@@ -102,7 +89,9 @@ public class PlayerData : ICloneable
 
     public string GetStateOutOfMax(string key)
     {
-        return Cons.n_Cons[key].cur_point + "/" + Cons.n_Cons[key].max_point;
+        if (Stats.ContainsKey(key)) return Stats[key].cur_point + "/" + Stats[key].max_point;
+        else if (Cons.n_Cons.ContainsKey(key)) return Cons.n_Cons[key].cur_point + "/" + Cons.n_Cons[key].max_point;
+        else throw new NullReferenceException();
     }
 
     public string GetMoney()
@@ -110,13 +99,42 @@ public class PlayerData : ICloneable
         return StatConverter.GetMoney(Mon_Inven.Money);
     }
 
-    public PlayerItem FindItemWithIndex(int slotIndex)
+    public PlayerItem GetItemByIndex(int slotIndex)
     {
-        for(int i=0; i<Mon_Inven.Inven.Count; i++)
+        for (int i = 0; i < Mon_Inven.Inven.Count; i++)
         {
             if (Mon_Inven.Inven[i].inven_index == slotIndex) return Mon_Inven.Inven[i];
         }
         return null;
+    }
+
+    #endregion public Get() functions ===========================================================================================================
+
+    public void ChangeCurPoint(string key, float value)
+    {
+        if (Stats.ContainsKey(key))
+        {
+            Stats[key].cur_point += value;
+        }
+        else if (Cons.n_Cons.ContainsKey(key))
+        {
+            Cons.n_Cons[key].cur_point = Mathf.Clamp(Mathf.RoundToInt(Cons.n_Cons[key].cur_point + value), 0, Cons.n_Cons[key].max_point); ;
+        }
+        else if (key == Const.time) GameManager.Instance.tempSpendTime += (int)value;
+        else if (key == Const.money) Mon_Inven.Money += value;
+        else Debug.LogError(key + "에 해당하는 플레이어 데이터가 존재하지 않음");
+    }
+
+    public void ChangeConsByPer(string stat, int percent)
+    {
+        // 소수점 반올림
+        int val = Mathf.RoundToInt(Cons.n_Cons[stat].cur_point * percent * 0.01f);
+        Cons.n_Cons[stat].cur_point = Mathf.Clamp(Cons.n_Cons[stat].cur_point + val, 0, Cons.n_Cons[stat].max_point);
+    }
+
+    public void IncreaseMaxPoint(string key, int value)
+    {
+        Stats[key].max_point += value;
     }
 
     // 아이템 인벤토리에 추가 시 호출(ItemData로)
@@ -128,31 +146,30 @@ public class PlayerData : ICloneable
         {
             Mon_Inven.Inven = Mon_Inven.Inven.OrderBy(x => x.inven_index).ToList();
 
-            if (itemEach == -1)
-            {   // 장비아이템일 때
-                index++;
-
+            // 포션아이템이면 이미 있는 아이템인지(+ 최대 개수보다 작은지) 체크
+            if (itemEach != -1)
+            {
                 for (int i = 0; i < Mon_Inven.Inven.Count; i++)
                 {
-                    if (index == Mon_Inven.Inven[i].inven_index) index++;   // 리스트 인덱스와 인벤 인덱스가 불일치하는 구간이 가장 처음 비는 인덱스
+                    if (Mon_Inven.Inven[i].item_index == item.data_ID &&
+                        Mon_Inven.Inven[i].item_each < ((Potion)DataManager.Instance.GetItemData(Mon_Inven.Inven[i])).max_capacity)
+                    {
+                        index = i;
+                    }
                 }
+
+            }
+
+            if (index != -1)
+            {
+                // 이미 있는 포션아이템이라면
+                GetItemByIndex(index).item_each += itemEach;
+                return;
             }
             else
-            {   // 포션아이템일 때
-                int firstEmptyIndex = 0;
-                for (int i = 0; i < Mon_Inven.Inven.Count; i++)
-                {
-                    if (Mon_Inven.Inven[i].item_index == item.data_ID) index = i; // 이미 있는 아이템인지 체크
-                    if (firstEmptyIndex == Mon_Inven.Inven[i].inven_index) firstEmptyIndex++;
+            {   // 장비아이템이거나 동일 포션아이템이라면
+                index = GetFirstEmptyIndex();
 
-                }
-
-                if (index != -1)
-                {
-                    Mon_Inven.Inven[index].item_each += itemEach;
-                    return;
-                }
-                else index = firstEmptyIndex;
             }
         }
 
@@ -160,10 +177,12 @@ public class PlayerData : ICloneable
         {
             inven_index = index,
             item_index = item.data_ID,
-            item_name = DataManager.Instance.GetKey(item)
+            item_name = DataManager.Instance.GetItemKey(item)
         });
 
-        if (itemEach > 0) FindItemWithIndex(index).item_each = itemEach; // 포션아이템일 경우 개수 추가
+        // 포션아이템이라면 개수데이터 추가
+        if (itemEach != -1) GetItemByIndex(index).item_each = itemEach;
+
     }
 
     // 아이템 인벤토리에 추가 시 호출(PlayerItem으로)
@@ -207,7 +226,7 @@ public class PlayerData : ICloneable
             ItemData itemData = DataManager.Instance.GetItemData(item);
             for (int i = 0; i < itemData.effect.Count; i++)
             {
-                AddToCurPoint(itemData.effect[i].effect_variable, itemData.effect[i].GetMinValue());
+                ChangeCurPoint(itemData.effect[i].effect_variable, itemData.effect[i].GetMinValue());
             }
             Mon_Inven.Equipment[index].item_name = item.item_name;
             Mon_Inven.Equipment[index].item_index = item.item_index;
@@ -223,17 +242,12 @@ public class PlayerData : ICloneable
             ItemData itemData = DataManager.Instance.GetItemData(Mon_Inven.Equipment[index]);
             for (int i = 0; i < itemData.effect.Count; i++)
             {
-                AddToCurPoint(itemData.effect[i].effect_variable, -itemData.effect[i].GetMinValue());
+                ChangeCurPoint(itemData.effect[i].effect_variable, -itemData.effect[i].GetMinValue());
             }
             Mon_Inven.Equipment[index].item_name = "none";
             Mon_Inven.Equipment[index].item_index = 0;
         }
     }
-
-    //public void RemoveEquipItem(EquipItem item)
-    //{
-    //    Mon_Inven.Equipment.RemoveAt(item.equip_index);
-    //}
 
     public void RemoveEquipItem(EquipItem item, int itemEach)
     {
@@ -251,14 +265,32 @@ public class PlayerData : ICloneable
         return (surplus > 0) ? surplus : 0;
     }
 
-    public void UsePotion(EquipItem item)
+    public void UsePotion(int index)
     {
-        // item_each 하나 감소시키는데, 만약 감소후 0이면 버튼이미지랑 갯수오브젝트 setactive false 해야됨.
-        RemoveEquipItem(item, 1);
-        for (int i = 0; i < DataManager.Instance.GetItemData(item).effect.Count; i++)
-        {
+        RemoveEquipItem(Mon_Inven.Equipment[index], 1);
+    }
 
+
+    // 플레이어에게 옷 입히기
+    public void SetArmor()
+    {
+        Debug.Log("옷입히기");
+    }
+
+    public void RemoveSpecialCondition(int index)
+    {
+        Cons.ETC.RemoveAt(index);
+    }
+
+    private int GetFirstEmptyIndex()
+    {
+        int index = 0;
+
+        for (int i = 0; i < Mon_Inven.Inven.Count; i++)
+        {
+            if (index == Mon_Inven.Inven[i].inven_index) index++;   // 리스트 인덱스와 인벤 인덱스가 불일치하는 구간이 가장 처음 비는 인덱스
         }
+        return index;
     }
 }
 
@@ -345,15 +377,18 @@ public class EquipItem : PlayerItem, ICloneable
 {
     public int equip_index;
 
-    public object Clone()
+    public EquipItem()
     {
-        return new EquipItem
-        {
-            equip_index = this.equip_index,
-            item_each = this.item_each,
-            item_name = this.item_name,
-            item_index = this.item_index
-        };
+    }
+
+    protected EquipItem(EquipItem that) : base(that)
+    {
+        this.equip_index = that.equip_index;
+    }
+
+    public override object Clone()
+    {
+        return new EquipItem(this);
     }
 }
 
@@ -361,23 +396,42 @@ public class InvenItem : PlayerItem, ICloneable
 {
     public int inven_index;
 
-    public object Clone()
+    public InvenItem()
     {
-        return new InvenItem
-        {
-            inven_index = this.inven_index,
-            item_each = this.item_each,
-            item_name = this.item_name,
-            item_index = this.item_index
-        };
+    }
+
+    protected InvenItem(InvenItem that) : base(that)
+    {
+        this.inven_index = that.inven_index;
+    }
+
+    public override object Clone()
+    {
+        return new InvenItem(this);
     }
 }
 
-public class PlayerItem
+public class PlayerItem : ICloneable
 {
     public string item_name;
     public int item_each;
     public int item_index;
+
+    public PlayerItem()
+    {
+    }
+
+    protected PlayerItem(PlayerItem that)
+    {
+        this.item_name = that.item_name;
+        this.item_each = that.item_each;
+        this.item_index = that.item_index;
+    }
+
+    public virtual object Clone()
+    {
+        return new PlayerItem(this);
+    }
 }
 #endregion
 
@@ -385,6 +439,7 @@ public class FosterManager : Singleton<FosterManager>
 {
 
     private PlayerData playerData;
+    private int awakeningCnt = 1;
 
     public override void Awake()
     {
@@ -402,6 +457,16 @@ public class FosterManager : Singleton<FosterManager>
     public PlayerData GetPlayerData()
     {
         return playerData;
+    }
+
+    public int GetAwakeningCnt()
+    {
+        return awakeningCnt;
+    }
+
+    public void Awakening()
+    {
+        awakeningCnt++;
     }
 
     public void SetPlayerData(PlayerData pd)

@@ -11,7 +11,7 @@ public class ItemInfo : MonoBehaviour
 
     public void SetItemInfo(ItemData id)
     {
-        itemImg.sprite = DataManager.Instance.GetSprite("Items", DataManager.Instance.GetKey(id));
+        itemImg.sprite = DataManager.Instance.GetSprite("Items", DataManager.Instance.GetItemKey(id));
         rankImg.sprite = DataManager.Instance.GetSprite("icons", "rank_" + id.rank);
 
         itemNameTxt.text = id.name + "\n" + Const.itemCategory[id.category];
@@ -22,7 +22,7 @@ public class ItemInfo : MonoBehaviour
             for (int i = 0; i < ((Equipment)id).condition.Count; i++)
             {
                 if (i == 0) itemDescTxt.text = "장착조건\n";
-                itemDescTxt.text += GetConditionRange(((Equipment)id).condition[i]) + "\n";
+                itemDescTxt.text += DataManager.Instance.GetConditionRange(((Equipment)id).condition[i]) + "\n";
             }
 
             for (int i = 0; i < id.effect.Count; i++)
@@ -51,22 +51,6 @@ public class ItemInfo : MonoBehaviour
             skill.SetActive(false);
         }
 
-    }
-
-    private string GetConditionRange(Condition con)
-    {
-        bool hasMinLimit = Mathf.Abs(con.condition_min - Const.minDef) > 0.0001f;
-        bool hasMaxLimit = Mathf.Abs(con.condition_max - Const.maxDef) > 0.0001f;
-        string str="";
-
-        if (hasMinLimit || hasMaxLimit)
-        {
-            str += con.condition_variable + " ";
-            if (hasMinLimit) str += con.condition_min + " 이상 ";
-            if (hasMaxLimit) str += con.condition_max + " 이하";
-        }
-
-        return str;
     }
 
     private string GetEffectRange(string minStr, string maxStr)
