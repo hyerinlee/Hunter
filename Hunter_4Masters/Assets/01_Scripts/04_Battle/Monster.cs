@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Monster : MonoBehaviour
 {
+    public int data_ID;
     public string name;
     public float hp, atk, aps, def, spd;
     public List<AttackRange> attackRange;
@@ -27,11 +28,13 @@ public class Monster : MonoBehaviour
     public RectTransform hpBar;
     public GameObject hpPoolObj;
 
+    public float lastDamagedTime = 0;
+
     public void MakeHpBar()
     {
-        canvas = GameObject.Find("Canvas");
+        //canvas = GameObject.Find("Canvas");
         hpBar = Instantiate(prfHpBar, canvas.transform).GetComponent<RectTransform>();
-        maxHp = hp;
+        //maxHp = hp;
         
         // //오브젝트풀링구현
         // hpPoolObj = ObjectPoolManager.Instance.pool.Pop();
@@ -98,7 +101,7 @@ public class Monster : MonoBehaviour
     public void Damaged(int damaged)
     {
         Debug.Log(name + "공격당함!");
-        if(!canvas)
+        if(!hpBar)
             MakeHpBar();
         hp -= 1;
         if(hp < 0)

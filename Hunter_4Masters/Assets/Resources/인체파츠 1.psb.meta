@@ -344,14 +344,14 @@ ScriptedImporter:
     internalID: 0
     spriteBone:
     - name: RHand_player
-      position: {x: 12.762798, y: -0.000014645491, z: 0}
-      rotation: {x: 0, y: 0, z: -0.23636076, w: 0.97166544}
-      length: 15.33189
+      position: {x: 12.762736, y: -0.000008796647, z: 5}
+      rotation: {x: 0, y: 0, z: -0.23636061, w: 0.9716654}
+      length: 15.331884
       parentId: 1
     - name: RArm_player
-      position: {x: 3.5850143, y: 15.211975, z: 0}
-      rotation: {x: 0, y: 0, z: -0.48120508, w: 0.8766081}
-      length: 12.762768
+      position: {x: 3.5850143, y: 15.211975, z: 5}
+      rotation: {x: 0, y: 0, z: -0.48120514, w: 0.8766081}
+      length: 12.762769
       parentId: -1
     spriteOutline: []
     vertices:
@@ -549,14 +549,14 @@ ScriptedImporter:
     internalID: 0
     spriteBone:
     - name: RHand_player
-      position: {x: 12.76282, y: -0.0000158314, z: 0}
-      rotation: {x: 0, y: 0, z: -0.23636076, w: 0.97166544}
-      length: 15.33189
+      position: {x: 12.762706, y: 0.00001122361, z: 5}
+      rotation: {x: 0, y: 0, z: -0.23636061, w: 0.9716654}
+      length: 15.331884
       parentId: 1
     - name: RArm_player
-      position: {x: -2.4149857, y: 20.211975, z: 0}
-      rotation: {x: 0, y: 0, z: -0.48120508, w: 0.8766081}
-      length: 12.762768
+      position: {x: -2.4149857, y: 20.211975, z: 5}
+      rotation: {x: 0, y: 0, z: -0.48120514, w: 0.8766081}
+      length: 12.762769
       parentId: -1
     spriteOutline: []
     vertices:
@@ -722,27 +722,27 @@ ScriptedImporter:
     internalID: 0
     spriteBone:
     - name: Stomach_player
-      position: {x: 13.385559, y: -7.2301025, z: 0}
+      position: {x: 13.385559, y: -7.2301025, z: 3}
       rotation: {x: 0, y: 0, z: 0.7138722, w: 0.700276}
       length: 14.373175
       parentId: -1
     - name: RArm_player
-      position: {x: 13.472403, y: -10.309733, z: 0}
-      rotation: {x: 0, y: 0, z: -0.96814024, w: 0.25040892}
-      length: 12.762763
+      position: {x: 13.472403, y: -10.309733, z: 5}
+      rotation: {x: 0, y: 0, z: -0.96814024, w: 0.25040883}
+      length: 12.762764
       parentId: 3
     - name: Head_player
-      position: {x: 18.272074, y: 0.000023356662, z: 0}
+      position: {x: 18.272074, y: 0.000023356662, z: 3}
       rotation: {x: 0, y: 0, z: 0.018358724, w: 0.99983144}
       length: 45.536827
       parentId: 3
     - name: Chest_player
-      position: {x: 14.373224, y: 0.000024164885, z: 0}
+      position: {x: 14.373224, y: 0.000024164885, z: 3}
       rotation: {x: 0, y: 0, z: 0.020651167, w: 0.9997868}
       length: 18.272196
       parentId: 0
     - name: LArm_player
-      position: {x: 14.029062, y: 5.3470397, z: 0}
+      position: {x: 14.029062, y: 5.3470397, z: 1}
       rotation: {x: 0, y: 0, z: 0.95246327, w: 0.3046537}
       length: 11.081359
       parentId: 3
@@ -979,7 +979,7 @@ ScriptedImporter:
         boneIndex2: 0
         boneIndex3: 0
     spritePhysicsOutline: []
-    indices: 120000001100000016000000070000000600000016000000160000000800000007000000160000000a00000009000000090000000800000016000000050000000400000016000000020000001600000003000000160000000400000003000000020000000100000016000000150000001600000000000000010000000000000016000000140000001600000015000000100000000f00000016000000160000000c0000000b0000000d0000000c0000000e000000160000000f0000000e0000000c000000160000000e0000001600000011000000100000001300000012000000140000001400000012000000160000001600000006000000050000000b0000000a00000016000000
+    indices: 1200000011000000160000001400000012000000160000001300000012000000140000001600000011000000100000000c000000160000000e000000160000000f0000000e0000000d0000000c0000000e000000160000000c0000000b000000100000000f00000016000000140000001600000015000000010000000000000016000000150000001600000000000000020000000100000016000000160000000400000003000000020000001600000003000000050000000400000016000000090000000800000016000000160000000a000000090000001600000008000000070000000700000006000000160000001600000006000000050000000b0000000a00000016000000
     edges:
     - {x: 1, y: 0}
     - {x: 2, y: 1}
@@ -1023,10 +1023,10 @@ ScriptedImporter:
     - name: LLeg_player
       position: {x: 0.78627014, y: 5.6675596, z: 0}
       rotation: {x: 0, y: 0, z: 0.9995734, w: 0.02920708}
-      length: 10.156115
+      length: 10.1561165
       parentId: 1
     - name: Stomach_player
-      position: {x: 18.385544, y: 1.7698975, z: 0}
+      position: {x: 18.385544, y: 1.7698975, z: 3}
       rotation: {x: 0, y: 0, z: 0.7138722, w: 0.700276}
       length: 14.373175
       parentId: -1
@@ -1036,17 +1036,17 @@ ScriptedImporter:
       length: 9.016279
       parentId: 1
     - name: RArm_player
-      position: {x: 13.472362, y: -10.309745, z: 0}
-      rotation: {x: 0, y: 0, z: -0.96814024, w: 0.25040892}
-      length: 12.762763
+      position: {x: 13.472362, y: -10.309745, z: 5}
+      rotation: {x: 0, y: 0, z: -0.96814024, w: 0.25040883}
+      length: 12.762764
       parentId: 4
     - name: Chest_player
-      position: {x: 14.373171, y: 0.0000024687943, z: 0}
+      position: {x: 14.373171, y: 0.0000024687943, z: 3}
       rotation: {x: 0, y: 0, z: 0.020651167, w: 0.9997868}
       length: 18.272196
       parentId: 1
     - name: LArm_player
-      position: {x: 14.02902, y: 5.3470283, z: 0}
+      position: {x: 14.02902, y: 5.3470283, z: 1}
       rotation: {x: 0, y: 0, z: 0.95246327, w: 0.3046537}
       length: 11.081359
       parentId: 4
@@ -1834,7 +1834,7 @@ ScriptedImporter:
     - name: LLeg_player
       position: {x: 8.703918, y: 19.447144, z: 0}
       rotation: {x: 0, y: 0, z: 0.7208274, w: -0.69311464}
-      length: 10.1561165
+      length: 10.156118
       parentId: -1
     spriteOutline: []
     vertices:
@@ -2038,7 +2038,7 @@ ScriptedImporter:
     - name: LLeg_player
       position: {x: 8.703911, y: 13.447144, z: 0}
       rotation: {x: 0, y: 0, z: 0.7208274, w: -0.69311464}
-      length: 10.1561165
+      length: 10.156118
       parentId: -1
     spriteOutline: []
     vertices:
@@ -2266,12 +2266,12 @@ ScriptedImporter:
     internalID: 0
     spriteBone:
     - name: LArm_player
-      position: {x: 13.923248, y: 16.820374, z: 0}
+      position: {x: 13.923248, y: 16.820374, z: 1}
       rotation: {x: 0, y: 0, z: 0.87464654, w: -0.48476118}
       length: 11.081362
       parentId: -1
     - name: LHand_player
-      position: {x: 11.081321, y: 0.000012009321, z: 0}
+      position: {x: 11.081321, y: 0.000012009321, z: 1}
       rotation: {x: 0, y: 0, z: -0.064322434, w: 0.9979292}
       length: 16.970282
       parentId: 0
@@ -2493,12 +2493,12 @@ ScriptedImporter:
     internalID: 0
     spriteBone:
     - name: LHand_player
-      position: {x: 11.08129, y: 0.000020671596, z: 0}
+      position: {x: 11.08129, y: 0.000020671596, z: 1}
       rotation: {x: 0, y: 0, z: -0.064322434, w: 0.9979292}
       length: 16.970282
       parentId: 1
     - name: LArm_player
-      position: {x: 17.923248, y: 21.820381, z: 0}
+      position: {x: 17.923248, y: 21.820381, z: 1}
       rotation: {x: 0, y: 0, z: 0.87464654, w: -0.48476118}
       length: 11.081362
       parentId: -1
@@ -5218,47 +5218,47 @@ ScriptedImporter:
   characterData:
     bones:
     - name: Stomach_player
-      position: {x: 69.385544, y: 40.76992, z: 0}
+      position: {x: 69.385544, y: 40.76992, z: 3}
       rotation: {x: 0, y: 0, z: 0.7138722, w: 0.700276}
       length: 14.373175
       parentId: -1
     - name: Chest_player
-      position: {x: 14.373176, y: -0.0000039547667, z: 0}
+      position: {x: 14.373176, y: -0.0000039547667, z: 3}
       rotation: {x: 0, y: 0, z: 0.02065118, w: 0.99978673}
       length: 18.272196
       parentId: 0
     - name: Head_player
-      position: {x: 18.272194, y: 0.000009303473, z: 0}
+      position: {x: 18.272194, y: 0.000009303473, z: 3}
       rotation: {x: 0, y: 0, z: 0.01835871, w: 0.9998315}
       length: 45.536827
       parentId: 1
     - name: RArm_player
-      position: {x: 13.47249, y: -10.309744, z: 0}
-      rotation: {x: 0, y: -0, z: -0.9681402, w: 0.25040883}
+      position: {x: 13.47249, y: -10.309744, z: 5}
+      rotation: {x: 0, y: -0, z: -0.9681402, w: 0.2504088}
       length: 12.762768
       parentId: 1
     - name: RHand_player
-      position: {x: 12.762765, y: -0.00000013332033, z: 0}
-      rotation: {x: 0, y: 0, z: -0.2363607, w: 0.9716654}
-      length: 15.331889
+      position: {x: 12.76277, y: 0.0000040125065, z: 5}
+      rotation: {x: 0, y: 0, z: -0.23636062, w: 0.97166544}
+      length: 15.331885
       parentId: 3
     - name: LArm_player
-      position: {x: 14.029112, y: 5.347032, z: 0}
+      position: {x: 14.029112, y: 5.347032, z: 1}
       rotation: {x: 0, y: -0, z: 0.9524632, w: 0.3046537}
       length: 11.081362
       parentId: 1
     - name: LHand_player
-      position: {x: 11.08136, y: -0.0000010131648, z: 0}
+      position: {x: 11.08136, y: -0.0000010131648, z: 1}
       rotation: {x: 0, y: 0, z: -0.064322375, w: 0.9979292}
       length: 16.970282
       parentId: 5
     - name: LLeg_player
       position: {x: 0.78634316, y: 5.667563, z: 0}
       rotation: {x: 0, y: -0, z: 0.9995734, w: 0.029207084}
-      length: 10.156116
+      length: 10.156117
       parentId: 0
     - name: LFoot_player
-      position: {x: 10.156117, y: 0.0000038234925, z: 0}
+      position: {x: 10.156119, y: 0.0000038982307, z: 0}
       rotation: {x: 0, y: 0, z: -0.004450826, w: -0.99999017}
       length: 6.569516
       parentId: 7
@@ -5272,14 +5272,9 @@ ScriptedImporter:
       rotation: {x: 0, y: 0, z: -0.15906252, w: 0.98726857}
       length: 9.1727495
       parentId: 9
-    - name: LTarget_player
-      position: {x: 16.970282, y: 0.000004225806, z: 0}
-      rotation: {x: 0, y: 0, z: 0.7560507, w: -0.6545131}
-      length: 21.976389
-      parentId: 6
     - name: RTatget_player
-      position: {x: 15.331886, y: 0.0000007398919, z: 0}
-      rotation: {x: 0, y: 0, z: -0.658521, w: 0.75256234}
+      position: {x: 15.331887, y: -0.000002688478, z: 5}
+      rotation: {x: 0, y: 0, z: -0.6585211, w: 0.75256234}
       length: 15.93544
       parentId: 4
     parts:
